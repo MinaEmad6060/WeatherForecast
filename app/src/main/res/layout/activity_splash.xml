@@ -23,7 +23,7 @@
         android:layout_marginBottom="60dp"
         android:backgroundTint="#4DFFFFFF"
         android:text="@string/get_started"
-        android:textColor="@color/black"
+        android:textColor="#66216524"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
