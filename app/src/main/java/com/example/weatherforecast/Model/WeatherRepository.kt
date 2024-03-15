@@ -9,7 +9,8 @@ object WeatherRepository : InterWeatherRepository {
 //    private var roomWeather: InterWeatherLocalDataSource = WeatherLocalDataSource()
 
 
-    override suspend fun getAllWeatherRemoteRepo() =
-        remoteWeather.getAllWeatherRemote()
+    override suspend fun getWeatherRemoteRepo(
+        lat: Double, lon: Double, key: String, units: String, lang: String) =
+        remoteWeather.getWeatherRemote(lat,lon,key,units,lang)
 
 }

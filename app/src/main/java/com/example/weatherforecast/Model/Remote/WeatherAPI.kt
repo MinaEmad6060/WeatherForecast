@@ -12,7 +12,9 @@ interface WeatherAPI {
     suspend fun getWeatherAPI(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Query("appid") appid: String
+        @Query("appid") appid: String,
+        @Query("units") units: String,
+        @Query("lang") lang: String
     ): CurrentWeather
 }
 
