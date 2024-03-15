@@ -1,8 +1,5 @@
 package com.example.weatherforecast.Home.ViewModel
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,13 +8,14 @@ import com.example.weatherforecast.Model.CurrentWeather
 import com.example.weatherforecast.Model.InterWeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
+
+
 
 class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
 
     private val TAG = "HomeFragmentViewModel"
+
     private var _weatherList = MutableLiveData<CurrentWeather>()
     var weatherList: LiveData<CurrentWeather> = _weatherList
 
@@ -30,7 +28,10 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
         }
     }
 
-    fun getDateAndTime(): String {
+
+
+
+    private fun getDateAndTime(): String {
         val calendar = Calendar.getInstance()
         return "${calendar.get(Calendar.YEAR)}"+
                 "-" + "${calendar.get(Calendar.MONTH) + 1}"+
