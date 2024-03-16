@@ -36,8 +36,31 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
         return "${calendar.get(Calendar.YEAR)}"+
                 "-" + "${calendar.get(Calendar.MONTH) + 1}"+
                 "-" + "${calendar.get(Calendar.DAY_OF_MONTH)}"+
-                " " + "${calendar.get(Calendar.HOUR_OF_DAY)}"+
+                " " + String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY)) +
                 ":" + "${calendar.get(Calendar.MINUTE)}"+
-                ":" + "${calendar.get(Calendar.SECOND)}"
+                ":" + String.format("%02d", calendar.get(Calendar.SECOND))
     }
+
+
+    //    fun convertTimeFormat(){
+//    val inputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+//    val outputFormat = SimpleDateFormat("h a", Locale.getDefault())
+//
+//    val time = "03:00:00"
+//    val date = inputFormat.parse(time)
+//    val formattedTime = outputFormat.format(date)
+//
+//    println(formattedTime)
+//    }
+
+//    fun convertDateFormat() {
+//        val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+//        val outputFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+//
+//        val dateStr = "16/03/2024"
+//        val date = inputFormat.parse(dateStr)
+//        val dayOfWeek = outputFormat.format(date)
+//
+//        println(dayOfWeek)
+//    }
 }

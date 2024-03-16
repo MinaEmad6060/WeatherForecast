@@ -31,10 +31,10 @@ const val REQUEST_LOCATION_CODE=100
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
-    private lateinit var sharedPreferences: SharedPreferences
-    lateinit var editor: Editor
     private lateinit var binding: ActivityMainBinding
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var sharedPreferences: SharedPreferences
+    lateinit var editor: Editor
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
         // Retrieve a value from the shared preferences
-//        val value = sharedPreferences.getString("key", "default_value")
+        // val value = sharedPreferences.getString("key", "default_value")
     }
 
     private fun replaceFragment(fragment: Fragment){

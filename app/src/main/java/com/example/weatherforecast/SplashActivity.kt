@@ -48,10 +48,7 @@ class SplashActivity : AppCompatActivity() {
 
         binding.btnStart.setOnClickListener {
             startActivity(
-                Intent(
-                    this@SplashActivity,
-                    MainActivity::class.java
-                )
+                Intent(this@SplashActivity, MainActivity::class.java)
             )
         }
     }
