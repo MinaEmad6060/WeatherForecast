@@ -12,7 +12,11 @@ data class CurrentWeather(
 
 data class Weather(val description:String, val icon: String)
 
-data class Main(val temp: Double, val humidity: String, val pressure: String)
+data class Main(val temp: Double,
+                val temp_min:Double,
+                val temp_max:Double,
+                val humidity: String,
+                val pressure: String)
 
 data class Wind(val speed: Double)
 

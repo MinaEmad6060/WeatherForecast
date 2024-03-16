@@ -26,4 +26,10 @@
     <string name="cloud_value">5</string>
     <string name="cloud_unit">%</string>
     <string name="cloud">Cloud</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="am">AM</string>
+    <string name="day">Friday</string>
+    <string name="desc_text">clear sky</string>
+    <string name="date_day">15/3/2024</string>
+    <string name="temp_text">16/18 C</string>
 </resources>
