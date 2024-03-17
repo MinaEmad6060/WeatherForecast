@@ -1,12 +1,13 @@
 package com.example.weatherforecast.Home.ViewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecast.Model.CurrentWeather
+import com.example.weatherforecast.Model.DataState
 import com.example.weatherforecast.Model.InterWeatherRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -15,20 +16,38 @@ import java.util.Calendar
 class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
 
     private val TAG = "HomeFragmentViewModel"
+    private val _weatherList = MutableStateFlow<DataState>(DataState.Loading)
+    val weatherList: StateFlow<DataState> = _weatherList
 
-    private var _weatherList = MutableLiveData<CurrentWeather>()
-    var weatherList: LiveData<CurrentWeather> = _weatherList
+    private val _additionalWeatherList = MutableStateFlow<DataState>(DataState.Loading)
+    val additionalWeatherList: StateFlow<DataState> = _additionalWeatherList
 
     fun getWeatherRemoteVM(lat: Double, lon: Double, key: String, units: String, lang: String) {
         viewModelScope.launch(Dispatchers.IO){
-            val weatherItems = repo.getWeatherRemoteRepo(lat,lon,key,units,lang)
-            weatherItems.date = getDateAndTime().split(" ")[0]
-            weatherItems.time = getDateAndTime().split(" ")[1]
-            _weatherList.postValue(weatherItems)
+            repo.getWeatherRemoteRepo(lat,lon,key,units,lang)
+                .catch {
+                    _weatherList.value = DataState.Failure(it)
+                }
+                .collect{
+                    it.date = getDateAndTime().split(" ")[0]
+                    it.time = getDateAndTime().split(" ")[1]
+                    _weatherList.value = DataState.Success(it)
+                }
         }
     }
 
-
+    fun getAdditionalWeatherRemoteVM(
+        lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int) {
+        viewModelScope.launch(Dispatchers.IO){
+            repo.getAdditionalWeatherRemoteRepo(lat,lon,key,units,lang,cnt)
+                .catch {
+                    _additionalWeatherList.value = DataState.Failure(it)
+                }
+                .collect{
+                    _additionalWeatherList.value = DataState.Success(it)
+                }
+        }
+    }
 
 
     private fun getDateAndTime(): String {
@@ -41,26 +60,4 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
                 ":" + String.format("%02d", calendar.get(Calendar.SECOND))
     }
 
-
-    //    fun convertTimeFormat(){
-//    val inputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-//    val outputFormat = SimpleDateFormat("h a", Locale.getDefault())
-//
-//    val time = "03:00:00"
-//    val date = inputFormat.parse(time)
-//    val formattedTime = outputFormat.format(date)
-//
-//    println(formattedTime)
-//    }
-
-//    fun convertDateFormat() {
-//        val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-//        val outputFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-//
-//        val dateStr = "16/03/2024"
-//        val date = inputFormat.parse(dateStr)
-//        val dayOfWeek = outputFormat.format(date)
-//
-//        println(dayOfWeek)
-//    }
 }
