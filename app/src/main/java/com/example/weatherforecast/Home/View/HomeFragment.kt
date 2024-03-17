@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.content.SharedPreferences.Editor
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ class HomeFragment : Fragment() {
     private var lat=0.0
     private var lon=0.0
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: Editor
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
@@ -47,10 +49,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.fab.setOnClickListener {
-            startActivity(Intent(requireActivity(), MapsActivity::class.java))
-        }
 
+        handlingHomeFAB()
         setHourlyAdapter()
         setWeeklyAdapter()
         getSharedPreferences()
@@ -95,6 +95,16 @@ class HomeFragment : Fragment() {
                     else -> Log.i(TAG, "loading: ")
                 }
             }
+        }
+    }
+
+
+    private fun handlingHomeFAB(){
+        binding.fab.setOnClickListener {
+            editor = sharedPreferences.edit()
+            editor.putString("SelectedFragment", "Home")
+            editor.apply()
+            startActivity(Intent(requireActivity(), MapsActivity::class.java))
         }
     }
 

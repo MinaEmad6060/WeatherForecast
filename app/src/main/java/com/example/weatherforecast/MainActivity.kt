@@ -15,9 +15,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.weatherforecast.Alert.View.AlertFragment
 import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
+import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
+import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Model.WeatherRepository
 import com.example.weatherforecast.Settings.View.SettingsFragment
 import com.example.weatherforecast.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -26,6 +31,8 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 const val REQUEST_LOCATION_CODE=100
 
@@ -36,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: Editor
 
+    private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
+    private lateinit var mainViewModel: HomeFragmentViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +55,26 @@ class MainActivity : AppCompatActivity() {
         initSharedPreferences()
         checkLocationAvailability()
         addNavigationListener()
+        initViewModel()
+
+//        lifecycleScope.launch {
+//        mainViewModel.navigateToFragment.collectLatest { fragmentTag ->
+//                fragmentTag?.let { tag ->
+//                    Log.i(TAG, "onCreate: $tag")
+//                    when (tag) {
+//                        "Home" -> replaceFragment(HomeFragment())
+//                        "Fav" -> replaceFragment(FavouriteFragment())
+//                        else -> FavouriteFragment() // Handle unknown tags or default case
+//                    }
+////                    fragment.let {
+////                        // Navigate to the desired fragment
+////                        supportFragmentManager.beginTransaction()
+////                            .replace(R.id.frag_container, it)
+////                            .addToBackStack(null)
+////                            .commit()
+////                    }
+//                }
+//        }}
     }
 
     private fun addNavigationListener(){
@@ -68,12 +98,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initViewModel(){
+        mainViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        mainViewModel =
+            ViewModelProvider(this, mainViewModelFactory)
+                .get(HomeFragmentViewModel::class.java)
+    }
+
     private fun initSharedPreferences(){
         sharedPreferences =
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
-        // Retrieve a value from the shared preferences
-        // val value = sharedPreferences.getString("key", "default_value")
     }
 
     private fun replaceFragment(fragment: Fragment){

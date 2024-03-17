@@ -22,6 +22,16 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
     private val _additionalWeatherList = MutableStateFlow<DataState>(DataState.Loading)
     val additionalWeatherList: StateFlow<DataState> = _additionalWeatherList
 
+    //
+    private val _navigateToFragment = MutableStateFlow("Fav")
+    val navigateToFragment: StateFlow<String> = _navigateToFragment
+
+    fun navigateToFragment(fragmentTag: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _navigateToFragment.value = fragmentTag
+        }
+    }
+    //
     fun getWeatherRemoteVM(lat: Double, lon: Double, key: String, units: String, lang: String) {
         viewModelScope.launch(Dispatchers.IO){
             repo.getWeatherRemoteRepo(lat,lon,key,units,lang)
