@@ -19,6 +19,9 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
     private val _weatherList = MutableStateFlow<DataState>(DataState.Loading)
     val weatherList: StateFlow<DataState> = _weatherList
 
+    private val _additionalWeatherList = MutableStateFlow<DataState>(DataState.Loading)
+    val additionalWeatherList: StateFlow<DataState> = _additionalWeatherList
+
     fun getWeatherRemoteVM(lat: Double, lon: Double, key: String, units: String, lang: String) {
         viewModelScope.launch(Dispatchers.IO){
             repo.getWeatherRemoteRepo(lat,lon,key,units,lang)
@@ -29,6 +32,19 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
                     it.date = getDateAndTime().split(" ")[0]
                     it.time = getDateAndTime().split(" ")[1]
                     _weatherList.value = DataState.Success(it)
+                }
+        }
+    }
+
+    fun getAdditionalWeatherRemoteVM(
+        lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int) {
+        viewModelScope.launch(Dispatchers.IO){
+            repo.getAdditionalWeatherRemoteRepo(lat,lon,key,units,lang,cnt)
+                .catch {
+                    _additionalWeatherList.value = DataState.Failure(it)
+                }
+                .collect{
+                    _additionalWeatherList.value = DataState.Success(it)
                 }
         }
     }
@@ -44,26 +60,4 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
                 ":" + String.format("%02d", calendar.get(Calendar.SECOND))
     }
 
-
-    //    fun convertTimeFormat(){
-//    val inputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-//    val outputFormat = SimpleDateFormat("h a", Locale.getDefault())
-//
-//    val time = "03:00:00"
-//    val date = inputFormat.parse(time)
-//    val formattedTime = outputFormat.format(date)
-//
-//    println(formattedTime)
-//    }
-
-//    fun convertDateFormat() {
-//        val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-//        val outputFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-//
-//        val dateStr = "16/03/2024"
-//        val date = inputFormat.parse(dateStr)
-//        val dayOfWeek = outputFormat.format(date)
-//
-//        println(dayOfWeek)
-//    }
 }
