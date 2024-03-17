@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,10 +18,19 @@ import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.MainActivity
 import com.example.weatherforecast.MapsActivity
-import com.example.weatherforecast.Model.Remote.DetailedWeather
+import com.example.weatherforecast.Model.Clouds
+import com.example.weatherforecast.Model.CurrentWeather
+import com.example.weatherforecast.Model.DataState
+import com.example.weatherforecast.Model.Main
+import com.example.weatherforecast.Model.Weather
+import com.example.weatherforecast.Model.WeatherList
+//import com.example.weatherforecast.Model.Remote.DetailedWeather
 import com.example.weatherforecast.Model.WeatherRepository
+import com.example.weatherforecast.Model.Wind
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
@@ -32,7 +42,9 @@ class HomeFragment : Fragment() {
     private lateinit var hourlyLayoutManager: LinearLayoutManager
     private lateinit var weeklyAdapter: HomeFragmentAdapter
     private lateinit var weeklyLayoutManager: LinearLayoutManager
-    val listOfWeather = MutableList(5) { DetailedWeather("") }
+    private var lat=0.0
+    private var lon=0.0
+    private val listOfWeather = MutableList(5) {CurrentWeather()}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +60,31 @@ class HomeFragment : Fragment() {
             startActivity(Intent(requireActivity(), MapsActivity::class.java))
         }
 
+        setHourlyAdapter()
+        setWeeklyAdapter()
+        getSharedPreferences()
+        initViewModel()
+
+        homeFragmentViewModel.getWeatherRemoteVM(
+            lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en"
+        )
+
+
+        lifecycleScope.launch {
+            homeFragmentViewModel.weatherList.collectLatest { value ->
+                when(value){
+                    is DataState.Success -> {
+                            Log.i(TAG, "success: ")
+                            updateUI(value)
+                    }
+                    is DataState.Failure -> {Log.i(TAG, "fail: ")}
+                    else -> Log.i(TAG, "loading: ")
+                }
+            }
+        }
+    }
+
+    private fun setHourlyAdapter(){
         hourlyAdapter = HomeFragmentAdapter(R.layout.item_hourly)
         hourlyLayoutManager = LinearLayoutManager(requireActivity(),
             RecyclerView.HORIZONTAL, false)
@@ -55,11 +92,9 @@ class HomeFragment : Fragment() {
             adapter = hourlyAdapter
             layoutManager = hourlyLayoutManager
         }
-
         hourlyAdapter.submitList(listOfWeather)
-
-
-
+    }
+    private fun setWeeklyAdapter(){
         weeklyAdapter = HomeFragmentAdapter(R.layout.item_weekly)
         weeklyLayoutManager = LinearLayoutManager(requireActivity(),
             RecyclerView.VERTICAL, false)
@@ -67,34 +102,36 @@ class HomeFragment : Fragment() {
             adapter = weeklyAdapter
             layoutManager = weeklyLayoutManager
         }
-
         weeklyAdapter.submitList(listOfWeather)
+    }
 
+
+    private fun getSharedPreferences()
+    {
         sharedPreferences =
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
-        val lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
-        val lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
+        lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+    }
+
+
+    private fun initViewModel(){
         homeFragmentViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
         homeFragmentViewModel =
             ViewModelProvider(this, homeFragmentViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)
-
-        homeFragmentViewModel.getWeatherRemoteVM(
-            lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en"
-        )
-
-        homeFragmentViewModel.weatherList.observe(requireActivity()) { value ->
-            binding.date.text = value.date
-            binding.time.text = value.time
-            binding.city.text = value.name
-            binding.temperatureValue.text = value.main.temp.toInt().toString()
-            binding.humidityValue.text = value.main.humidity
-            binding.pressureValue.text = value.main.pressure
-            binding.windValue.text = value.wind.speed.toString()
-            binding.cloudValue.text = value.clouds.all.toString()
-            binding.weatherStatus.text = value.weather[0].description
-        }
     }
 
+    private fun updateUI(value: DataState.Success){
+        binding.date.text = value.data.date
+        binding.time.text = value.data.time
+        binding.city.text = value.data.name
+        binding.temperatureValue.text = value.data.main.temp.toInt().toString()
+        binding.humidityValue.text = value.data.main.humidity
+        binding.pressureValue.text = value.data.main.pressure
+        binding.windValue.text = value.data.wind.speed.toString()
+        binding.cloudValue.text = value.data.clouds.all.toString()
+        binding.weatherStatus.text = value.data.weather[0].description
+    }
 
 }

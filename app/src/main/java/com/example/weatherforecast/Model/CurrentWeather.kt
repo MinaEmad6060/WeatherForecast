@@ -1,13 +1,14 @@
 package com.example.weatherforecast.Model
 
 data class CurrentWeather(
-    val weather: MutableList<Weather>,
-    val main: Main,
-    val wind: Wind,
-    val clouds: Clouds,
-    val name: String,
-    var time: String,
-    var date: String
+    var weather: MutableList<Weather> = mutableListOf(Weather("Sunny", "01d")),
+    var main: Main= Main(25.0, 20.0, 30.0, "50", "1013"),
+    var wind: Wind= Wind(5.0),
+    var clouds: Clouds= Clouds(20),
+    var name: String= "London",
+    var time: String= "12:00 PM",
+    var date: String= "2024-03-17",
+    var list: MutableList<WeatherList> = mutableListOf(WeatherList("2024-03-17 12:00:00"))
 )
 
 data class Weather(val description:String, val icon: String)
@@ -21,3 +22,4 @@ data class Main(val temp: Double,
 data class Wind(val speed: Double)
 
 data class Clouds(val all: Int)
+data class WeatherList(val dt_txt:String)
