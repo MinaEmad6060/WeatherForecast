@@ -23,7 +23,7 @@
             android:weightSum="4">
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/additional_weather_time_hourly"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -32,7 +32,7 @@
                 android:textSize="@dimen/very_small_text" />
 
             <ImageView
-                android:id="@+id/weather_desc_icon"
+                android:id="@+id/additional_weather_img_hourly"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -41,7 +41,7 @@
                 android:src="@drawable/ic_launcher_background" />
 
             <TextView
-                android:id="@+id/weather_temp_item"
+                android:id="@+id/additional_weather_temp_hourly"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

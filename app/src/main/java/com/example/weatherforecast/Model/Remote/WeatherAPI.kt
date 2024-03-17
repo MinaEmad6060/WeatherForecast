@@ -16,6 +16,17 @@ interface WeatherAPI {
         @Query("units") units: String,
         @Query("lang") lang: String
     ): CurrentWeather
+
+
+    @GET("forecast")
+    suspend fun getAdditionalWeatherAPI(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") appid: String,
+        @Query("units") units: String,
+        @Query("lang") lang: String,
+        @Query("cnt") cnt: Int
+    ): CurrentWeather
 }
 
 /*https://api.openweathermap.org/data/2.5/weather?

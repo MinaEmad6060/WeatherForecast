@@ -11,22 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.MainActivity
 import com.example.weatherforecast.MapsActivity
-import com.example.weatherforecast.Model.Clouds
-import com.example.weatherforecast.Model.CurrentWeather
 import com.example.weatherforecast.Model.DataState
-import com.example.weatherforecast.Model.Main
-import com.example.weatherforecast.Model.Weather
-import com.example.weatherforecast.Model.WeatherList
-//import com.example.weatherforecast.Model.Remote.DetailedWeather
 import com.example.weatherforecast.Model.WeatherRepository
-import com.example.weatherforecast.Model.Wind
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -34,17 +25,17 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
+    private var lat=0.0
+    private var lon=0.0
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
-    private lateinit var hourlyAdapter: HomeFragmentAdapter
+    private lateinit var hourlyAdapter: HomeFragmentHourlyAdapter
     private lateinit var hourlyLayoutManager: LinearLayoutManager
-    private lateinit var weeklyAdapter: HomeFragmentAdapter
+    private lateinit var weeklyAdapter: HomeFragmentWeeklyAdapter
     private lateinit var weeklyLayoutManager: LinearLayoutManager
-    private var lat=0.0
-    private var lon=0.0
-    private val listOfWeather = MutableList(5) {CurrentWeather()}
+//    private val listOfWeather = MutableList(5) {CurrentWeather()}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,15 +60,38 @@ class HomeFragment : Fragment() {
             lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en"
         )
 
+        homeFragmentViewModel.getAdditionalWeatherRemoteVM(
+            lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 40
+        )
+
 
         lifecycleScope.launch {
             homeFragmentViewModel.weatherList.collectLatest { value ->
                 when(value){
                     is DataState.Success -> {
                             Log.i(TAG, "success: ")
-                            updateUI(value)
+                            updateWeatherUI(value)
                     }
                     is DataState.Failure -> {Log.i(TAG, "fail: ")}
+                    else -> Log.i(TAG, "loading: ")
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
+                when(value){
+                    is DataState.Success -> {
+                        Log.i(TAG, "additionalWeatherList-success: ")
+                        val hourlyList = value.data.list.take(9)
+                        val weeklyList = value.data.list.filterIndexed { index, _ -> ((index+1) % 8 == 0)}
+                        for (i in hourlyList){
+                            Log.i(TAG, "print element: ${i.dt_txt}")
+                        }
+                        hourlyAdapter.submitList(hourlyList)
+                        weeklyAdapter.submitList(weeklyList)
+                    }
+                    is DataState.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
                     else -> Log.i(TAG, "loading: ")
                 }
             }
@@ -85,24 +99,24 @@ class HomeFragment : Fragment() {
     }
 
     private fun setHourlyAdapter(){
-        hourlyAdapter = HomeFragmentAdapter(R.layout.item_hourly)
+        hourlyAdapter = HomeFragmentHourlyAdapter()
         hourlyLayoutManager = LinearLayoutManager(requireActivity(),
             RecyclerView.HORIZONTAL, false)
         binding.hourlyRecyclerView.apply {
             adapter = hourlyAdapter
             layoutManager = hourlyLayoutManager
         }
-        hourlyAdapter.submitList(listOfWeather)
+        //hourlyAdapter.submitList(listOfWeather)
     }
     private fun setWeeklyAdapter(){
-        weeklyAdapter = HomeFragmentAdapter(R.layout.item_weekly)
+        weeklyAdapter = HomeFragmentWeeklyAdapter()
         weeklyLayoutManager = LinearLayoutManager(requireActivity(),
             RecyclerView.VERTICAL, false)
         binding.weekRecyclerView.apply {
             adapter = weeklyAdapter
             layoutManager = weeklyLayoutManager
         }
-        weeklyAdapter.submitList(listOfWeather)
+        //weeklyAdapter.submitList(listOfWeather)
     }
 
 
@@ -122,9 +136,9 @@ class HomeFragment : Fragment() {
                 .get(HomeFragmentViewModel::class.java)
     }
 
-    private fun updateUI(value: DataState.Success){
-        binding.date.text = value.data.date
-        binding.time.text = value.data.time
+    private fun updateWeatherUI(value: DataState.Success){
+        binding.weatherDate.text = value.data.date
+        binding.weatherTime.text = value.data.time
         binding.city.text = value.data.name
         binding.temperatureValue.text = value.data.main.temp.toInt().toString()
         binding.humidityValue.text = value.data.main.humidity
