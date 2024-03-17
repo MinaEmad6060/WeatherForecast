@@ -4,20 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.example.weatherforecast.Model.Remote.DetailedWeather
+import com.example.weatherforecast.Model.CurrentWeather
 import com.example.weatherforecast.R
 
 
 class HomeFragmentAdapter(private val selectLayout: Int) :
-    ListAdapter<DetailedWeather, ProductViewHolder>(WeatherDiffUtil()){
+    ListAdapter<CurrentWeather, ProductViewHolder>(WeatherDiffUtil()){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val inflater : LayoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(selectLayout,parent,false)
