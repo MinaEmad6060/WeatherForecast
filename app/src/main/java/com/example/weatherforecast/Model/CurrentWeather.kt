@@ -1,13 +1,9 @@
 package com.example.weatherforecast.Model
 
 data class CurrentWeather(
-    var weather: MutableList<Weather> = mutableListOf(Weather("Sunny", "01d")),
-    var main: Main= Main(25.0, 20.0, 30.0, "50", "1013"),
-    var wind: Wind= Wind(5.0),
-    var clouds: Clouds= Clouds(20),
-    var name: String= "London",
-    var time: String= "12:00 PM",
-    var date: String= "2024-03-17",
+    var city: City= City(""),
+    var time: String= "",
+    var date: String= "",
     var list: MutableList<AdditionalWeather> = mutableListOf(AdditionalWeather())
 )
 
@@ -21,8 +17,12 @@ data class Main(val temp: Double,
 
 data class Wind(val speed: Double)
 
+data class City(val name: String)
+
 data class Clouds(val all: Int)
 data class AdditionalWeather(
-    var weather: MutableList<Weather> = mutableListOf(Weather("Sunny", "01d")),
-    var main: Main= Main(25.0, 20.0, 30.0, "50", "1013"),
-    var dt_txt:String="2024-03-17 12:00:00")
+    var weather: MutableList<Weather> = mutableListOf(Weather("", "")),
+    var main: Main= Main(0.0, 0.0, 0.0, "", ""),
+    var wind: Wind= Wind(0.0),
+    var clouds: Clouds= Clouds(0),
+    var dt_txt:String="")

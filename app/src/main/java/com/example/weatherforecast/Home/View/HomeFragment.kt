@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.content.SharedPreferences.Editor
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +23,10 @@ import com.example.weatherforecast.Model.DataState
 import com.example.weatherforecast.Model.WeatherRepository
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
@@ -56,38 +60,19 @@ class HomeFragment : Fragment() {
         getSharedPreferences()
         initViewModel()
 
-        homeFragmentViewModel.getWeatherRemoteVM(
-            lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en"
-        )
-
         homeFragmentViewModel.getAdditionalWeatherRemoteVM(
             lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 40
         )
-
-
-        lifecycleScope.launch {
-            homeFragmentViewModel.weatherList.collectLatest { value ->
-                when(value){
-                    is DataState.Success -> {
-                            Log.i(TAG, "success: ")
-                            updateWeatherUI(value)
-                    }
-                    is DataState.Failure -> {Log.i(TAG, "fail: ")}
-                    else -> Log.i(TAG, "loading: ")
-                }
-            }
-        }
 
         lifecycleScope.launch {
             homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                 when(value){
                     is DataState.Success -> {
-                        Log.i(TAG, "additionalWeatherList-success: ")
+                        updateWeatherUI(value)
+
                         val hourlyList = value.data.list.take(9)
                         val weeklyList = value.data.list.filterIndexed { index, _ -> ((index+1) % 8 == 0)}
-                        for (i in hourlyList){
-                            Log.i(TAG, "print element: ${i.dt_txt}")
-                        }
+
                         hourlyAdapter.submitList(hourlyList)
                         weeklyAdapter.submitList(weeklyList)
                     }
@@ -116,7 +101,6 @@ class HomeFragment : Fragment() {
             adapter = hourlyAdapter
             layoutManager = hourlyLayoutManager
         }
-        //hourlyAdapter.submitList(listOfWeather)
     }
     private fun setWeeklyAdapter(){
         weeklyAdapter = HomeFragmentWeeklyAdapter()
@@ -126,7 +110,6 @@ class HomeFragment : Fragment() {
             adapter = weeklyAdapter
             layoutManager = weeklyLayoutManager
         }
-        //weeklyAdapter.submitList(listOfWeather)
     }
 
 
@@ -149,13 +132,13 @@ class HomeFragment : Fragment() {
     private fun updateWeatherUI(value: DataState.Success){
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
-        binding.city.text = value.data.name
-        binding.temperatureValue.text = value.data.main.temp.toInt().toString()
-        binding.humidityValue.text = value.data.main.humidity
-        binding.pressureValue.text = value.data.main.pressure
-        binding.windValue.text = value.data.wind.speed.toString()
-        binding.cloudValue.text = value.data.clouds.all.toString()
-        binding.weatherStatus.text = value.data.weather[0].description
+        binding.city.text = value.data.city.name
+        binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()
+        binding.humidityValue.text = value.data.list[0].main.humidity
+        binding.pressureValue.text = value.data.list[0].main.pressure
+        binding.windValue.text = value.data.list[0].wind.speed.toString()
+        binding.cloudValue.text = value.data.list[0].clouds.all.toString()
+        binding.weatherStatus.text = value.data.list[0].weather[0].description
     }
 
 }

@@ -29,8 +29,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var selectedFragment: String
-
-
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
 
@@ -64,15 +62,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             ).show()
         }
         myMap.setOnMarkerClickListener {
-            if(selectedFragment == "Home"){
-                mainViewModel.navigateToFragment("Home")
-//                startActivity(Intent(this@MapsActivity, MainActivity::class.java))
-            }else if(selectedFragment == "Fav"){
-                mainViewModel.navigateToFragment("Fav")
-//                startActivity(Intent(this@MapsActivity, FavouriteFragment::class.java))
-            }
+//            if(selectedFragment == "Home"){
+////                mainViewModel.navigateToFragment("Home")
+//            }else if(selectedFragment == "Fav"){
+////                mainViewModel.navigateToFragment("Fav")
+//            }
             startActivity(Intent(this@MapsActivity, MainActivity::class.java))
-
             true
         }
     }
@@ -90,11 +85,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mainViewModel =
             ViewModelProvider(this, mainViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)
-    }
-
-
-    fun navigateToSpecificFragment() {
-
     }
 
 }

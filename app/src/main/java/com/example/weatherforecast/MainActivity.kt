@@ -10,13 +10,11 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.weatherforecast.Alert.View.AlertFragment
 import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
@@ -31,8 +29,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 const val REQUEST_LOCATION_CODE=100
 
@@ -42,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: Editor
-
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
 
@@ -51,46 +46,65 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        savedInstanceState ?: replaceFragment(HomeFragment())
         initSharedPreferences()
         checkLocationAvailability()
-        addNavigationListener()
+        checkSaveOnInstance(savedInstanceState)
         initViewModel()
+    }
 
-//        lifecycleScope.launch {
-//        mainViewModel.navigateToFragment.collectLatest { fragmentTag ->
-//                fragmentTag?.let { tag ->
-//                    Log.i(TAG, "onCreate: $tag")
-//                    when (tag) {
-//                        "Home" -> replaceFragment(HomeFragment())
-//                        "Fav" -> replaceFragment(FavouriteFragment())
-//                        else -> FavouriteFragment() // Handle unknown tags or default case
-//                    }
-////                    fragment.let {
-////                        // Navigate to the desired fragment
-////                        supportFragmentManager.beginTransaction()
-////                            .replace(R.id.frag_container, it)
-////                            .addToBackStack(null)
-////                            .commit()
-////                    }
-//                }
-//        }}
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        editor.putString("lastFragmentTag", "HomeFragment")
+//        editor.apply()
+//    }
+
+    private fun checkSaveOnInstance(savedInstanceState: Bundle?){
+        savedInstanceState ?: run {
+            val lastFragmentTag = sharedPreferences.getString("lastFragmentTag", null)
+            when (lastFragmentTag) {
+                "HomeFragment" -> {
+                    replaceFragment(HomeFragment(), "HomeFragment")
+                    binding.bottomNav.selectedItemId = R.id.homeFragment
+                    addNavigationListener()
+                }
+                "FavouriteFragment" -> {
+                    replaceFragment(FavouriteFragment(), "FavouriteFragment")
+                    binding.bottomNav.selectedItemId = R.id.favFragment
+                    addNavigationListener()
+                }
+                "AlertFragment" -> {
+                    replaceFragment(AlertFragment(), "AlertFragment")
+                    binding.bottomNav.selectedItemId = R.id.alertFragment
+                    addNavigationListener()
+                }
+                "SettingsFragment" -> {
+                    replaceFragment(SettingsFragment(), "SettingsFragment")
+                    binding.bottomNav.selectedItemId = R.id.settingsFragment
+                    addNavigationListener()
+                }
+                else ->  {
+                    replaceFragment(HomeFragment(), "HomeFragment")
+                    binding.bottomNav.selectedItemId = R.id.homeFragment
+                    addNavigationListener()
+                }
+            }
+        }
     }
 
     private fun addNavigationListener(){
         binding.bottomNav.setOnItemSelectedListener { item ->
             when(item.itemId){
                 R.id.homeFragment ->{
-                    replaceFragment(HomeFragment())
+                    replaceFragment(HomeFragment(), "HomeFragment")
                     true }
                 R.id.favFragment ->{
-                    replaceFragment(FavouriteFragment())
+                    replaceFragment(FavouriteFragment(), "FavouriteFragment")
                     true}
                 R.id.alertFragment -> {
-                    replaceFragment(AlertFragment())
+                    replaceFragment(AlertFragment(), "AlertFragment")
                     true}
                 R.id.settingsFragment ->{
-                    replaceFragment(SettingsFragment())
+                    replaceFragment(SettingsFragment(), "SettingsFragment")
                     true}
 
                 else -> {false}
@@ -111,10 +125,13 @@ class MainActivity : AppCompatActivity() {
         editor = sharedPreferences.edit()
     }
 
-    private fun replaceFragment(fragment: Fragment){
+    private fun replaceFragment(fragment: Fragment, fragTag: String){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frag_container,fragment)
         transaction.commit()
+
+        editor.putString("lastFragmentTag", fragTag)
+        editor.apply()
     }
 
     private fun checkLocationAvailability(){
@@ -186,7 +203,5 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent)
     }
-
-
 
 }

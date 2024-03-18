@@ -16,35 +16,9 @@ import java.util.Calendar
 class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
 
     private val TAG = "HomeFragmentViewModel"
-    private val _weatherList = MutableStateFlow<DataState>(DataState.Loading)
-    val weatherList: StateFlow<DataState> = _weatherList
 
     private val _additionalWeatherList = MutableStateFlow<DataState>(DataState.Loading)
     val additionalWeatherList: StateFlow<DataState> = _additionalWeatherList
-
-    //
-    private val _navigateToFragment = MutableStateFlow("Fav")
-    val navigateToFragment: StateFlow<String> = _navigateToFragment
-
-    fun navigateToFragment(fragmentTag: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _navigateToFragment.value = fragmentTag
-        }
-    }
-    //
-    fun getWeatherRemoteVM(lat: Double, lon: Double, key: String, units: String, lang: String) {
-        viewModelScope.launch(Dispatchers.IO){
-            repo.getWeatherRemoteRepo(lat,lon,key,units,lang)
-                .catch {
-                    _weatherList.value = DataState.Failure(it)
-                }
-                .collect{
-                    it.date = getDateAndTime().split(" ")[0]
-                    it.time = getDateAndTime().split(" ")[1]
-                    _weatherList.value = DataState.Success(it)
-                }
-        }
-    }
 
     fun getAdditionalWeatherRemoteVM(
         lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int) {
@@ -54,6 +28,8 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
                     _additionalWeatherList.value = DataState.Failure(it)
                 }
                 .collect{
+                    it.date = getDateAndTime().split(" ")[0]
+                    it.time = getDateAndTime().split(" ")[1]
                     _additionalWeatherList.value = DataState.Success(it)
                 }
         }

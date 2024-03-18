@@ -27,14 +27,14 @@ class FavouriteFragmentAdapter :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: FavouriteWeatherViewHolder, position: Int) {
         val currentObj = getItem(position)
-        holder.favCity.text = currentObj.name
-        holder.favTemp.text = currentObj.main.temp.toString()
-        Glide.with(holder.itemView.context)
-            .load("https://openweathermap.org/img/wn/"
-                    +currentObj.weather[0].icon+"@2x.png")
-            .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.favImg)
+//        holder.favCity.text = currentObj.name
+//        holder.favTemp.text = currentObj.main.temp.toString()
+//        Glide.with(holder.itemView.context)
+//            .load("https://openweathermap.org/img/wn/"
+//                    +currentObj.weather[0].icon+"@2x.png")
+//            .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .into(holder.favImg)
     }
 }
 

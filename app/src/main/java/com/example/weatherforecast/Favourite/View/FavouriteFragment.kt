@@ -56,27 +56,24 @@ class FavouriteFragment : Fragment() {
         getSharedPreferences()
         initViewModel()
 
-        favFragmentViewModel.getWeatherRemoteVM(
-            lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en"
-        )
 
 
 
-        lifecycleScope.launch {
-            favFragmentViewModel.weatherList.collectLatest { value ->
-                when(value){
-                    is DataState.Success -> {
-                        Log.i(TAG, "additionalWeatherList-success: $lat $lon")
-//                        for (i in hourlyList){
-//                            Log.i(TAG, "print element: ${i.dt_txt}")
-//                        }
-                        //favAdapter.submitList(value.data)
-                    }
-                    is DataState.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
-                    else -> Log.i(TAG, "loading: ")
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            favFragmentViewModel.weatherList.collectLatest { value ->
+//                when(value){
+//                    is DataState.Success -> {
+//                        Log.i(TAG, "additionalWeatherList-success: $lat $lon")
+////                        for (i in hourlyList){
+////                            Log.i(TAG, "print element: ${i.dt_txt}")
+////                        }
+//                        //favAdapter.submitList(value.data)
+//                    }
+//                    is DataState.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
+//                    else -> Log.i(TAG, "loading: ")
+//                }
+//            }
+//        }
 
     }
 

@@ -8,10 +8,6 @@ object WeatherRepository : InterWeatherRepository {
     private var remoteWeather: InterWeatherRemoteDataSource = WeatherRemoteDataSource()
 //    private var roomWeather: InterWeatherLocalDataSource = WeatherLocalDataSource()
 
-
-    override suspend fun getWeatherRemoteRepo(
-        lat: Double, lon: Double, key: String, units: String, lang: String) =
-        remoteWeather.getWeatherRemote(lat,lon,key,units,lang)
     override suspend fun getAdditionalWeatherRemoteRepo(
         lat: Double, lon: Double, key: String, units: String, lang: String,cnt: Int) =
         remoteWeather.getAdditionalWeatherRemote(lat,lon,key,units,lang,cnt)
