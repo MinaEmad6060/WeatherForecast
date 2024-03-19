@@ -25,6 +25,7 @@ import com.example.weatherforecast.Model.Local.Home.DataStateHome
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.WeatherRepository
 import com.example.weatherforecast.databinding.FragmentHomeBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -95,6 +96,7 @@ class HomeFragment : Fragment() {
             }
             else{
 
+                Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                 homeFragmentViewModel.homeWeatherList.collectLatest { value ->
                     when(value){
                         is DataStateHome.Success -> {
@@ -182,8 +184,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateOfflineWeatherUI(value: DataStateHome.Success){
-        binding.weatherDate.text = value.data[0].date
-        binding.weatherTime.text = value.data[0].time
+        binding.weatherDate.text = homeFragmentViewModel.getDateAndTime().split(" ")[0]
+        binding.weatherTime.text = homeFragmentViewModel.getDateAndTime().split(" ")[1]
         binding.city.text = value.data[0].cityName
         binding.temperatureValue.text = value.data[0].temperature
         binding.humidityValue.text = value.data[0].humidity
@@ -202,6 +204,8 @@ class HomeFragment : Fragment() {
             additionalWeather.main.temp=homeWeatherList[i].temperature.toDouble()
             additionalWeather.main.humidity=homeWeatherList[i].humidity
             additionalWeather.main.pressure=homeWeatherList[i].pressure
+            additionalWeather.main.temp_min=homeWeatherList[i].minTemperature.toDouble()
+            additionalWeather.main.temp_max=homeWeatherList[i].maxTemperature.toDouble()
             additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
             additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
             additionalWeather.weather[0].description=homeWeatherList[i].weatherDescription
@@ -211,27 +215,24 @@ class HomeFragment : Fragment() {
     }
 
     suspend fun saveDataToRoom(
-        hourlyList: List<AdditionalWeather>, value: DataState.Success, start: Int){
-        for(i in 0..<hourlyList.size){
+        myList: List<AdditionalWeather>, value: DataState.Success, start: Int){
+        for(i in 0..<myList.size){
             homeWeather = HomeWeather(i+start)
 
-            homeWeather.date = homeFragmentViewModel.getDateAndTime().split(" ")[0]
-            homeWeather.time = homeFragmentViewModel.getDateAndTime().split(" ")[1]
+            homeWeather.date = myList[i].dt_txt.split(" ")[0]
+            homeWeather.time = myList[i].dt_txt.split(" ")[1]
             homeWeather.cityName = value.data.city.name
-            homeWeather.weatherDescription = hourlyList[i].weather[0].description
-            homeWeather.weatherIcon = hourlyList[i].weather[0].icon
-            homeWeather.temperature = hourlyList[i].main.temp.toInt().toString()
-            homeWeather.minTemperature = hourlyList[i].main.temp_min.toInt().toString()
-            homeWeather.maxTemperature = hourlyList[i].main.temp_max.toInt().toString()
-            homeWeather.humidity = hourlyList[i].main.humidity
-            homeWeather.pressure = hourlyList[i].main.pressure
-            homeWeather.windSpeed = hourlyList[i].wind.speed.toString()
-            homeWeather.clouds = hourlyList[i].clouds.all.toString()
+            homeWeather.weatherDescription = myList[i].weather[0].description
+            homeWeather.weatherIcon = myList[i].weather[0].icon
+            homeWeather.temperature = myList[i].main.temp.toInt().toString()
+            homeWeather.minTemperature = myList[i].main.temp_min.toInt().toString()
+            homeWeather.maxTemperature = myList[i].main.temp_max.toInt().toString()
+            homeWeather.humidity = myList[i].main.humidity
+            homeWeather.pressure = myList[i].main.pressure
+            homeWeather.windSpeed = myList[i].wind.speed.toString()
+            homeWeather.clouds = myList[i].clouds.all.toString()
 
-            homeWeather.clouds =hourlyList[i].clouds.all.toString()
-            homeFragmentViewModel.insertAllHomeWeatherVM(
-                homeWeather,requireActivity())
-            Log.i("homeWeather", "insert:${homeWeather.clouds}")
+            homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather,requireActivity())
         }
     }
     fun isNetworkConnected(): Boolean {

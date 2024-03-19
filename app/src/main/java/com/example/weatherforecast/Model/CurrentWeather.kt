@@ -11,8 +11,8 @@ data class Weather(var description:String, val icon: String)
 
 data class Main(
     var temp: Double,
-    val temp_min:Double,
-    val temp_max:Double,
+    var temp_min:Double,
+    var temp_max:Double,
     var humidity: String,
     var pressure: String)
 
