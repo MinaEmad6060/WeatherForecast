@@ -19,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.MapsActivity
+import com.example.weatherforecast.Model.AdditionalWeather
 import com.example.weatherforecast.Model.DataState
+import com.example.weatherforecast.Model.Local.Home.DataStateHome
+import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.WeatherRepository
-import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -41,7 +43,9 @@ class HomeFragment : Fragment() {
     private lateinit var hourlyLayoutManager: LinearLayoutManager
     private lateinit var weeklyAdapter: HomeFragmentWeeklyAdapter
     private lateinit var weeklyLayoutManager: LinearLayoutManager
-//    private val listOfWeather = MutableList(5) {CurrentWeather()}
+    lateinit var homeWeather: HomeWeather
+    private lateinit var roomList : MutableList<AdditionalWeather>
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,29 +63,65 @@ class HomeFragment : Fragment() {
         setWeeklyAdapter()
         getSharedPreferences()
         initViewModel()
-
-        homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-            lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 40
-        )
+        homeFragmentViewModel.getAllHomeWeatherVM(requireActivity())
 
         lifecycleScope.launch {
-            homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
-                when(value){
-                    is DataState.Success -> {
-                        updateWeatherUI(value)
+            if (isNetworkConnected()){
+                homeFragmentViewModel.getAdditionalWeatherRemoteVM(
+                    lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 40
+                )
+                homeFragmentViewModel.deleteAllHomeWeatherVM(requireActivity())
+                homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
+                    when(value){
+                        is DataState.Success -> {
 
-                        val hourlyList = value.data.list.take(9)
-                        val weeklyList = value.data.list.filterIndexed { index, _ -> ((index+1) % 8 == 0)}
+                            roomList = value.data.list
+                            val hourlyList = value.data.list.take(9)
+                            val weeklyList =
+                                value.data.list.filterIndexed { index, _ -> ((index+1) % 8 == 0)}
 
-                        hourlyAdapter.submitList(hourlyList)
-                        weeklyAdapter.submitList(weeklyList)
+                            saveDataToRoom(hourlyList,value,0)
+                            saveDataToRoom(weeklyList,value,9)
+
+                            updateOnlineWeatherUI(value)
+
+                            hourlyAdapter.submitList(hourlyList)
+                            weeklyAdapter.submitList(weeklyList)
+                        }
+                        is DataState.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
+                        else -> Log.i(TAG, "loading: ")
                     }
-                    is DataState.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
-                    else -> Log.i(TAG, "loading: ")
                 }
+            }
+            else{
+
+                homeFragmentViewModel.homeWeatherList.collectLatest { value ->
+                    when(value){
+                        is DataStateHome.Success -> {
+                            if (value.data.isNotEmpty()){
+                                updateOfflineWeatherUI(value)
+                                val hourlyList = value.data.filterIndexed { index, _ -> index in 0..8}
+                                val weeklyList =
+                                    value.data.filterIndexed { index, _ -> index in 9..13}
+
+                                hourlyAdapter.submitList(convertFromRoomToRemote(hourlyList))
+                                weeklyAdapter.submitList(convertFromRoomToRemote(weeklyList))
+                            }
+
+                        }
+                        is DataStateHome.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
+                        else -> Log.i(TAG, "loading: ")
+                    }
+                }
+
             }
         }
     }
+
+
+
+
+
 
 
     private fun handlingHomeFAB(){
@@ -129,7 +169,7 @@ class HomeFragment : Fragment() {
                 .get(HomeFragmentViewModel::class.java)
     }
 
-    private fun updateWeatherUI(value: DataState.Success){
+    private fun updateOnlineWeatherUI(value: DataState.Success){
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
         binding.city.text = value.data.city.name
@@ -139,6 +179,65 @@ class HomeFragment : Fragment() {
         binding.windValue.text = value.data.list[0].wind.speed.toString()
         binding.cloudValue.text = value.data.list[0].clouds.all.toString()
         binding.weatherStatus.text = value.data.list[0].weather[0].description
+    }
+
+    private fun updateOfflineWeatherUI(value: DataStateHome.Success){
+        binding.weatherDate.text = value.data[0].date
+        binding.weatherTime.text = value.data[0].time
+        binding.city.text = value.data[0].cityName
+        binding.temperatureValue.text = value.data[0].temperature
+        binding.humidityValue.text = value.data[0].humidity
+        binding.pressureValue.text = value.data[0].pressure
+        binding.windValue.text = value.data[0].windSpeed
+        binding.cloudValue.text = value.data[0].clouds
+        binding.weatherStatus.text = value.data[0].weatherDescription
+    }
+
+    fun convertFromRoomToRemote(homeWeatherList: List<HomeWeather>): MutableList<AdditionalWeather> {
+        val additionalWeatherList: MutableList<AdditionalWeather> = mutableListOf()
+
+        for(i in 0..<homeWeatherList.size){
+            val additionalWeather = AdditionalWeather()
+            additionalWeather.dt_txt=homeWeatherList[i].date+" "+homeWeatherList[i].time
+            additionalWeather.main.temp=homeWeatherList[i].temperature.toDouble()
+            additionalWeather.main.humidity=homeWeatherList[i].humidity
+            additionalWeather.main.pressure=homeWeatherList[i].pressure
+            additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
+            additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
+            additionalWeather.weather[0].description=homeWeatherList[i].weatherDescription
+            additionalWeatherList.add(additionalWeather)
+        }
+        return additionalWeatherList
+    }
+
+    suspend fun saveDataToRoom(
+        hourlyList: List<AdditionalWeather>, value: DataState.Success, start: Int){
+        for(i in 0..<hourlyList.size){
+            homeWeather = HomeWeather(i+start)
+
+            homeWeather.date = homeFragmentViewModel.getDateAndTime().split(" ")[0]
+            homeWeather.time = homeFragmentViewModel.getDateAndTime().split(" ")[1]
+            homeWeather.cityName = value.data.city.name
+            homeWeather.weatherDescription = hourlyList[i].weather[0].description
+            homeWeather.weatherIcon = hourlyList[i].weather[0].icon
+            homeWeather.temperature = hourlyList[i].main.temp.toInt().toString()
+            homeWeather.minTemperature = hourlyList[i].main.temp_min.toInt().toString()
+            homeWeather.maxTemperature = hourlyList[i].main.temp_max.toInt().toString()
+            homeWeather.humidity = hourlyList[i].main.humidity
+            homeWeather.pressure = hourlyList[i].main.pressure
+            homeWeather.windSpeed = hourlyList[i].wind.speed.toString()
+            homeWeather.clouds = hourlyList[i].clouds.all.toString()
+
+            homeWeather.clouds =hourlyList[i].clouds.all.toString()
+            homeFragmentViewModel.insertAllHomeWeatherVM(
+                homeWeather,requireActivity())
+            Log.i("homeWeather", "insert:${homeWeather.clouds}")
+        }
+    }
+    fun isNetworkConnected(): Boolean {
+        val connectivityManager = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
     }
 
 }

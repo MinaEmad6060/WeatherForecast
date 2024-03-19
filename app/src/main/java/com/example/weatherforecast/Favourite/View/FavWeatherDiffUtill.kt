@@ -5,7 +5,7 @@ import com.example.weatherforecast.Model.CurrentWeather
 
 class FavWeatherDiffUtil : DiffUtil.ItemCallback<CurrentWeather>() {
     override fun areItemsTheSame(oldItem: CurrentWeather, newItem: CurrentWeather): Boolean {
-        return oldItem.date == newItem.date
+        return oldItem.list[0].dt_txt == newItem.list[0].dt_txt
     }
 
     override fun areContentsTheSame(oldItem: CurrentWeather, newItem: CurrentWeather): Boolean {
