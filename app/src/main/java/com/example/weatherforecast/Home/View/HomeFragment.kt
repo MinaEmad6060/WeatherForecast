@@ -6,8 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.content.SharedPreferences.Editor
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +40,7 @@ class HomeFragment : Fragment() {
     private lateinit var hourlyLayoutManager: LinearLayoutManager
     private lateinit var weeklyAdapter: HomeFragmentWeeklyAdapter
     private lateinit var weeklyLayoutManager: LinearLayoutManager
-    lateinit var homeWeather: HomeWeather
+    private lateinit var homeWeather: HomeWeather
     private lateinit var roomList : MutableList<AdditionalWeather>
 
 
@@ -124,11 +122,6 @@ class HomeFragment : Fragment() {
         editor.putString("goToFragment","")
         editor.apply()
     }
-
-
-
-
-
 
 
     private fun handlingHomeFAB(){
@@ -219,6 +212,7 @@ class HomeFragment : Fragment() {
             additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
             additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
             additionalWeather.weather[0].description=homeWeatherList[i].weatherDescription
+            additionalWeather.weather[0].icon=homeWeatherList[i].weatherIcon
             additionalWeatherList.add(additionalWeather)
         }
         return additionalWeatherList

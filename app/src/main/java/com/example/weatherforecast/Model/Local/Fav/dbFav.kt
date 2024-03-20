@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = arrayOf(FavWeather::class), version = 1 )
+@Database(entities = arrayOf(FavWeather::class), version = 2 )
 abstract class dbFav : RoomDatabase() {
     abstract fun getFavWeatherDao(): FavWeatherDAO
     companion object{

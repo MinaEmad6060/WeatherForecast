@@ -44,8 +44,6 @@ class HomeFragmentWeeklyAdapter :
             Glide.with(holder.itemView.context)
                 .load("https://openweathermap.org/img/wn/"
                         +currentObj.weather[0].icon+"@2x.png")
-                .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))
-                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.weeklyImg)
 
     }

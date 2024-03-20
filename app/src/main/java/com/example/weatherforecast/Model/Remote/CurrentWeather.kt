@@ -7,7 +7,7 @@ data class CurrentWeather(
     var list: MutableList<AdditionalWeather> = mutableListOf(AdditionalWeather())
 )
 
-data class Weather(var description:String, val icon: String)
+data class Weather(var description:String, var icon: String)
 
 data class Main(
     var temp: Double,

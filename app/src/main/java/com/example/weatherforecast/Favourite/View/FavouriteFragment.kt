@@ -1,5 +1,6 @@
 package com.example.weatherforecast.Favourite.View
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,12 +18,14 @@ import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModel
 import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.MainActivity
 import com.example.weatherforecast.MapsActivity
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.DataStateRemote
 import com.example.weatherforecast.Model.WeatherRepository
 import com.example.weatherforecast.databinding.FragmentFavouriteBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -84,6 +87,7 @@ class FavouriteFragment : Fragment() {
                         favWeather = FavWeather()
                         favWeather.cityName = value.data.city.name
                         favWeather.temperature = value.data.list[0].main.temp
+                        favWeather.img = value.data.list[0].weather[0].icon
                         favWeather.lat = lat
                         favWeather.lon = lon
                         favFragmentViewModel.insertFavWeatherVM(favWeather,requireActivity())
@@ -132,7 +136,13 @@ class FavouriteFragment : Fragment() {
     }
 
     private fun setFavAdapter(){
-        favAdapter = FavouriteFragmentAdapter()
+        favAdapter = FavouriteFragmentAdapter({
+            delFavWeather ->
+            showAlert("Delete favourite Item"
+                ,"Are you sure you want delete this City?"
+                ,delFavWeather,requireActivity())},
+            { favDetails -> navToFavDetails(favDetails) }
+        )
         favLayoutManager = LinearLayoutManager(requireActivity(),
             RecyclerView.VERTICAL, false)
         binding.favRecyclerView.apply {
@@ -166,6 +176,34 @@ class FavouriteFragment : Fragment() {
         editor.putString("SelectedFragment","Fav")
         editor.apply()
 
+    }
+
+    fun navToFavDetails(favDetails: FavWeather){
+        if(homeFragmentViewModel.isNetworkConnected(requireActivity())){
+            editor.putString("latitude",favDetails.lat.toString())
+            editor.putString("longitude",favDetails.lon.toString())
+            editor.putString("lastFragmentTag","HomeFragment")
+            editor.apply()
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+        }else Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
+    }
+
+
+    fun showAlert(title: String, message: String, delFavWeather: FavWeather,context: Context):Int {
+        val builder = AlertDialog.Builder(context)
+        var result =0
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("OK") { dialog, which ->
+            // Handle positive button click
+           result= favFragmentViewModel.deleteFavWeatherVM(delFavWeather, context)
+        }
+        builder.setNegativeButton("Cancel") { dialog, which ->
+            // Handle negative button click
+        }
+        builder.show()
+        return result
     }
 
 }

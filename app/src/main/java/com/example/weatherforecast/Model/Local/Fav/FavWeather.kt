@@ -14,5 +14,6 @@ data class FavWeather(
     var lon: Double=0.0,
     var cityName: String="",
     var temperature: Double=0.0,
+    var img :String ="",
     var units: String=""
 )

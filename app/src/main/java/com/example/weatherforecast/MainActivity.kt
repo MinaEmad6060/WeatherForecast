@@ -82,11 +82,6 @@ class MainActivity : AppCompatActivity() {
                     binding.bottomNav.selectedItemId = R.id.settingsFragment
                     addNavigationListener()
                 }
-                "Test" -> {
-                    replaceFragment(TestFragment(), "Test")
-                    //binding.bottomNav.selectedItemId = R.id.settingsFragment
-                    addNavigationListener()
-                }
                 else ->  {
                     replaceFragment(HomeFragment(), "HomeFragment")
                     binding.bottomNav.selectedItemId = R.id.homeFragment
