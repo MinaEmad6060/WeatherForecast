@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Local.Home
+package com.example.weatherforecast.Model.Local.Fav
 
 import android.content.Context
 import androidx.room.Database
@@ -6,16 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = arrayOf(HomeWeather::class), version = 3 )
-abstract class dataBase : RoomDatabase() {
-    abstract fun getHomeWeatherDao(): HomeWeatherDAO
+@Database(entities = arrayOf(FavWeather::class), version = 1 )
+abstract class dbFav : RoomDatabase() {
+    abstract fun getFavWeatherDao(): FavWeatherDAO
     companion object{
         @Volatile
-        private var INSTANCE: dataBase? = null
-        fun getInstance (ctx: Context): dataBase {
+        private var INSTANCE: dbFav? = null
+        fun getInstance (ctx: Context): dbFav {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    ctx.applicationContext, dataBase::class.java, "HomeWeatherDB")
+                    ctx.applicationContext, dbFav::class.java, "FavWeatherDB")
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
