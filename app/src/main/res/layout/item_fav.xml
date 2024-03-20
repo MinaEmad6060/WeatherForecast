@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:weightSum="6"
+            android:weightSum="10"
             android:orientation="horizontal">
 
             <TextView
@@ -30,18 +30,15 @@
                 android:text="@string/fav_city"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:textStyle="bold" />
 
-
             <ImageView
-                android:id="@+id/fav_weather_img"
+                android:id="@+id/fav_img"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:padding="3dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_launcher_background"
+                android:layout_weight="2"
+                android:src="@drawable/ic_launcher_background"
                 />
 
 
@@ -55,14 +52,15 @@
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_weight="1"/>
+                android:layout_weight="2"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/fav_delete"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:background="@color/white"
+                android:layout_weight="2"
                 android:src="@drawable/delete"
                 />
 

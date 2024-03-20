@@ -7,15 +7,15 @@ import androidx.room.RoomDatabase
 
 
 @Database(entities = arrayOf(HomeWeather::class), version = 3 )
-abstract class dataBase : RoomDatabase() {
+abstract class dbHome : RoomDatabase() {
     abstract fun getHomeWeatherDao(): HomeWeatherDAO
     companion object{
         @Volatile
-        private var INSTANCE: dataBase? = null
-        fun getInstance (ctx: Context): dataBase {
+        private var INSTANCE: dbHome? = null
+        fun getInstance (ctx: Context): dbHome {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    ctx.applicationContext, dataBase::class.java, "HomeWeatherDB")
+                    ctx.applicationContext, dbHome::class.java, "HomeWeatherDB")
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
