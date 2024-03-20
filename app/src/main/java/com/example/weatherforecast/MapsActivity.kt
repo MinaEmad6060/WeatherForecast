@@ -62,11 +62,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             ).show()
         }
         myMap.setOnMarkerClickListener {
-//            if(selectedFragment == "Home"){
-////                mainViewModel.navigateToFragment("Home")
-//            }else if(selectedFragment == "Fav"){
-////                mainViewModel.navigateToFragment("Fav")
-//            }
+            if(selectedFragment == "Home"){
+                editor.putString("goToFragment","Home")
+                editor.apply()
+            }else if(selectedFragment == "Fav"){
+                editor.putString("goToFragment","Fav")
+                editor.apply()
+            }
             startActivity(Intent(this@MapsActivity, MainActivity::class.java))
             true
         }

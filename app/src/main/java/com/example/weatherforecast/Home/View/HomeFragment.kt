@@ -6,8 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.content.SharedPreferences.Editor
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,17 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.MapsActivity
-import com.example.weatherforecast.Model.AdditionalWeather
-import com.example.weatherforecast.Model.DataState
-import com.example.weatherforecast.Model.Local.Home.DataStateHome
+import com.example.weatherforecast.Model.Remote.AdditionalWeather
+import com.example.weatherforecast.Model.Remote.DataStateRemote
+import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.WeatherRepository
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
@@ -44,7 +40,7 @@ class HomeFragment : Fragment() {
     private lateinit var hourlyLayoutManager: LinearLayoutManager
     private lateinit var weeklyAdapter: HomeFragmentWeeklyAdapter
     private lateinit var weeklyLayoutManager: LinearLayoutManager
-    lateinit var homeWeather: HomeWeather
+    private lateinit var homeWeather: HomeWeather
     private lateinit var roomList : MutableList<AdditionalWeather>
 
 
@@ -67,15 +63,15 @@ class HomeFragment : Fragment() {
         homeFragmentViewModel.getAllHomeWeatherVM(requireActivity())
 
         lifecycleScope.launch {
-            if (isNetworkConnected()){
+            if (homeFragmentViewModel.isNetworkConnected(requireActivity())){
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
                     lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 40
                 )
                 homeFragmentViewModel.deleteAllHomeWeatherVM(requireActivity())
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                     when(value){
-                        is DataState.Success -> {
-
+                        is DataStateRemote.Success -> {
+                            Log.i(TAG, "additionalWeatherList-Success: ")
                             roomList = value.data.list
                             val hourlyList = value.data.list.take(9)
                             val weeklyList =
@@ -89,7 +85,7 @@ class HomeFragment : Fragment() {
                             hourlyAdapter.submitList(hourlyList)
                             weeklyAdapter.submitList(weeklyList)
                         }
-                        is DataState.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
+                        is DataStateRemote.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
                         else -> Log.i(TAG, "loading: ")
                     }
                 }
@@ -99,7 +95,8 @@ class HomeFragment : Fragment() {
                 Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                 homeFragmentViewModel.homeWeatherList.collectLatest { value ->
                     when(value){
-                        is DataStateHome.Success -> {
+                        is DataStateHomeRoom.Success -> {
+                            Log.i(TAG, "room-success: ")
                             if (value.data.isNotEmpty()){
                                 updateOfflineWeatherUI(value)
                                 val hourlyList = value.data.filterIndexed { index, _ -> index in 0..8}
@@ -111,8 +108,8 @@ class HomeFragment : Fragment() {
                             }
 
                         }
-                        is DataStateHome.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
-                        else -> Log.i(TAG, "loading: ")
+                        is DataStateHomeRoom.Failure -> {Log.i(TAG, "room-fail: ")}
+                        else -> Log.i(TAG, "room-loading: ")
                     }
                 }
 
@@ -120,16 +117,16 @@ class HomeFragment : Fragment() {
         }
     }
 
-
-
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        editor.putString("goToFragment","")
+        editor.apply()
+    }
 
 
     private fun handlingHomeFAB(){
         binding.fab.setOnClickListener {
-            editor = sharedPreferences.edit()
-            editor.putString("SelectedFragment", "Home")
+            editor.putString("goToFragment","")
             editor.apply()
             startActivity(Intent(requireActivity(), MapsActivity::class.java))
         }
@@ -161,6 +158,9 @@ class HomeFragment : Fragment() {
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        editor=sharedPreferences.edit()
+        editor.putString("SelectedFragment","Home")
+        editor.apply()
     }
 
 
@@ -171,7 +171,8 @@ class HomeFragment : Fragment() {
                 .get(HomeFragmentViewModel::class.java)
     }
 
-    private fun updateOnlineWeatherUI(value: DataState.Success){
+
+    private fun updateOnlineWeatherUI(value: DataStateRemote.Success){
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
         binding.city.text = value.data.city.name
@@ -183,7 +184,7 @@ class HomeFragment : Fragment() {
         binding.weatherStatus.text = value.data.list[0].weather[0].description
     }
 
-    private fun updateOfflineWeatherUI(value: DataStateHome.Success){
+    private fun updateOfflineWeatherUI(value: DataStateHomeRoom.Success){
         binding.weatherDate.text = homeFragmentViewModel.getDateAndTime().split(" ")[0]
         binding.weatherTime.text = homeFragmentViewModel.getDateAndTime().split(" ")[1]
         binding.city.text = value.data[0].cityName
@@ -195,6 +196,8 @@ class HomeFragment : Fragment() {
         binding.weatherStatus.text = value.data[0].weatherDescription
     }
 
+
+    //
     fun convertFromRoomToRemote(homeWeatherList: List<HomeWeather>): MutableList<AdditionalWeather> {
         val additionalWeatherList: MutableList<AdditionalWeather> = mutableListOf()
 
@@ -209,13 +212,14 @@ class HomeFragment : Fragment() {
             additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
             additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
             additionalWeather.weather[0].description=homeWeatherList[i].weatherDescription
+            additionalWeather.weather[0].icon=homeWeatherList[i].weatherIcon
             additionalWeatherList.add(additionalWeather)
         }
         return additionalWeatherList
     }
 
     suspend fun saveDataToRoom(
-        myList: List<AdditionalWeather>, value: DataState.Success, start: Int){
+        myList: List<AdditionalWeather>, value: DataStateRemote.Success, start: Int){
         for(i in 0..<myList.size){
             homeWeather = HomeWeather(i+start)
 
@@ -235,10 +239,6 @@ class HomeFragment : Fragment() {
             homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather,requireActivity())
         }
     }
-    fun isNetworkConnected(): Boolean {
-        val connectivityManager = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
-    }
+
 
 }

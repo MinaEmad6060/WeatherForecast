@@ -1,12 +1,14 @@
 package com.example.weatherforecast.Home.ViewModel
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecast.Model.DataState
+import com.example.weatherforecast.Model.Remote.DataStateRemote
 import com.example.weatherforecast.Model.InterWeatherRepository
-import com.example.weatherforecast.Model.Local.Home.DataStateHome
+import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -22,24 +24,24 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
 
     private val TAG = "HomeFragmentViewModel"
 
-    private val _additionalWeatherList = MutableStateFlow<DataState>(DataState.Loading)
-    val additionalWeatherList: StateFlow<DataState> = _additionalWeatherList
+    private val _additionalWeatherList = MutableStateFlow<DataStateRemote>(DataStateRemote.Loading)
+    val additionalWeatherList: StateFlow<DataStateRemote> = _additionalWeatherList
 
 
-    private val _homeWeatherList = MutableStateFlow<DataStateHome>(DataStateHome.Loading)
-    val homeWeatherList: StateFlow<DataStateHome> = _homeWeatherList
+    private val _homeWeatherList = MutableStateFlow<DataStateHomeRoom>(DataStateHomeRoom.Loading)
+    val homeWeatherList: StateFlow<DataStateHomeRoom> = _homeWeatherList
 
     fun getAdditionalWeatherRemoteVM(
         lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int) {
         viewModelScope.launch(Dispatchers.IO){
             repo.getAdditionalWeatherRemoteRepo(lat,lon,key,units,lang,cnt)
                 .catch {
-                    _additionalWeatherList.value = DataState.Failure(it)
+                    _additionalWeatherList.value = DataStateRemote.Failure(it)
                 }
                 .collect{
                     it.date = getDateAndTime().split(" ")[0]
                     it.time = getDateAndTime().split(" ")[1]
-                    _additionalWeatherList.value = DataState.Success(it)
+                    _additionalWeatherList.value = DataStateRemote.Success(it)
                 }
         }
     }
@@ -50,11 +52,11 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
             repo.getAllHomeWeatherLocalRepo(context)
                 .catch {
                     Log.i("vmRoom", "getAllHomeWeatherVM: fail")
-                    _homeWeatherList.value = DataStateHome.Failure(it)
+                    _homeWeatherList.value = DataStateHomeRoom.Failure(it)
                 }
                 .collect{
                     Log.i("vmRoom", "getAllHomeWeatherVM: success")
-                    _homeWeatherList.value = DataStateHome.Success(it)
+                    _homeWeatherList.value = DataStateHomeRoom.Success(it)
                 }
         }
     }
@@ -84,8 +86,14 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
                 "-" + "${calendar.get(Calendar.MONTH) + 1}"+
                 "-" + "${calendar.get(Calendar.DAY_OF_MONTH)}"+
                 " " + String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY)) +
-                ":" + "${calendar.get(Calendar.MINUTE)}"+
+                ":" + String.format("%02d", calendar.get(Calendar.MINUTE))+
                 ":" + String.format("%02d", calendar.get(Calendar.SECOND))
+    }
+
+    fun isNetworkConnected(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
     }
 
 }
