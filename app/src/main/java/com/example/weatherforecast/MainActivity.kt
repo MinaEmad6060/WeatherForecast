@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     addNavigationListener()
                 }
                 "SettingsFragment" -> {
-                    replaceFragment(SettingsFragment(), "SettingsFragment")
+                    replaceFragment(SettingsFragment(), "HomeFragment")
                     binding.bottomNav.selectedItemId = R.id.settingsFragment
                     addNavigationListener()
                 }
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(AlertFragment(), "AlertFragment")
                     true}
                 R.id.settingsFragment ->{
-                    replaceFragment(SettingsFragment(), "SettingsFragment")
+                    replaceFragment(SettingsFragment(), "HomeFragment")
                     true}
 
                 else -> {false}
@@ -129,7 +129,6 @@ class MainActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frag_container,fragment)
         transaction.commit()
-
         editor.putString("lastFragmentTag", fragTag)
         editor.apply()
     }

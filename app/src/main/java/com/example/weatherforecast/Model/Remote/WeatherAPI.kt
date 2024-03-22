@@ -1,6 +1,5 @@
 package com.example.weatherforecast.Model.Remote
 
-import com.example.weatherforecast.Model.CurrentWeather
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
