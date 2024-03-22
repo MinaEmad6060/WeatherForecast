@@ -33,6 +33,9 @@ class FavouriteFragment : Fragment() {
     private val TAG = "FavFragment"
     private var lat=0.0
     private var lon=0.0
+    private var language="EN"
+    private var temperature="metric"
+    private var degree="°C"
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var binding: FragmentFavouriteBinding
@@ -43,6 +46,7 @@ class FavouriteFragment : Fragment() {
     private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
     private lateinit var favWeather: FavWeather
+
 
 
 
@@ -78,7 +82,7 @@ class FavouriteFragment : Fragment() {
             editor.putString("goToFragment","")
             editor.apply()
             homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-                lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 1
+                lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, language, 1
             )
             homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                 when(value){
@@ -90,6 +94,7 @@ class FavouriteFragment : Fragment() {
                         favWeather.img = value.data.list[0].weather[0].icon
                         favWeather.lat = lat
                         favWeather.lon = lon
+                        favWeather.units = degree
                         favFragmentViewModel.insertFavWeatherVM(favWeather,requireActivity())
                     }
                     is DataStateRemote.Failure -> {Log.i(TAG, "Remote fail: ")}
@@ -172,6 +177,10 @@ class FavouriteFragment : Fragment() {
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
+        temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
+        degree = sharedPreferences.getString("degreeSettings", "°C")!!
+//        measure = sharedPreferences.getString("measureSettings", "m/s")!!
         editor = sharedPreferences.edit()
         editor.putString("SelectedFragment","Fav")
         editor.apply()

@@ -1,60 +1,120 @@
 package com.example.weatherforecast.Settings.View
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
+import com.example.weatherforecast.MainActivity
+import com.example.weatherforecast.MapsActivity
 import com.example.weatherforecast.R
+import com.example.weatherforecast.databinding.FragmentHomeBinding
+import com.example.weatherforecast.databinding.FragmentSettingsBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SettingsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var binding: FragmentSettingsBinding
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+    var itemSelected="a"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SettingsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getSharedPreferences()
+        val locationItems = listOf("GPS", "Map")
+        val languageItems = listOf("EN", "AR")
+        val temperatureItems = listOf("°C", "°F","K")
+        val windSpeedItems = listOf("m/s", "mile/h")
+
+        updateDropList(binding.locationList, locationItems, "location")
+        updateDropList(binding.languageList, languageItems, "language")
+        updateDropList(binding.temperatureList, temperatureItems, "temperature")
+        updateDropList(binding.windList, windSpeedItems, "wind")
+
+    }
+
+    fun updateDropList(dropDownList: AutoCompleteTextView, items: List<String>, category: String){
+        val adapter = ArrayAdapter(requireActivity(), R.layout.item_drop_list,items)
+        dropDownList.setAdapter(adapter)
+        handlingDropDownListClick(dropDownList, category)
+        Log.i("setting", "updateDropList: $itemSelected")
+
+    }
+
+
+    private fun handlingDropDownListClick(dropDownList: AutoCompleteTextView, category: String){
+        dropDownList.onItemClickListener = AdapterView.OnItemClickListener{
+                adapterView, view, position, id ->
+            itemSelected = adapterView.getItemAtPosition(position).toString()
+            when(category){
+                "location" -> {
+                    if(itemSelected == "GPS"){
+                        startActivity(Intent(requireActivity(), MainActivity::class.java))
+                    }else if(itemSelected == "Map"){
+                        startActivity(Intent(requireActivity(), MapsActivity::class.java))
+                    }
+                }
+                "language" -> {
+                        editor.putString("languageSettings",itemSelected)
+                        editor.apply()
+                        startActivity(Intent(requireActivity(), MainActivity::class.java))
+                }
+                "temperature" -> {
+                    if (itemSelected=="°C"){
+                        editor.putString("temperatureSettings","metric")
+                        editor.putString("degreeSettings",itemSelected)
+                    }else if (itemSelected=="K"){
+                        editor.putString("temperatureSettings","standard")
+                        editor.putString("degreeSettings",itemSelected)
+                    }else if (itemSelected=="°F"){
+                        editor.putString("temperatureSettings","imperial")
+                        editor.putString("degreeSettings",itemSelected)
+                    }
+
+                    editor.apply()
+                    startActivity(Intent(requireActivity(), MainActivity::class.java))
+                }
+                "wind" -> {
+                    if (itemSelected=="m/s"){
+                        editor.putString("measureSettings",itemSelected)
+                    }else if (itemSelected=="mile/h") {
+                        editor.putString("measureSettings", itemSelected)
+                    }
+
+                    editor.apply()
+                    startActivity(Intent(requireActivity(), MainActivity::class.java))
                 }
             }
+            Toast.makeText(requireActivity(), "item $itemSelected", Toast.LENGTH_SHORT).show()
+        }
     }
+
+
+
+    private fun getSharedPreferences()
+    {
+        sharedPreferences =
+            requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
+//        lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
+//        lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        editor=sharedPreferences.edit()
+//        editor.putString("SelectedFragment","Home")
+//        editor.apply()
+    }
+
 }
