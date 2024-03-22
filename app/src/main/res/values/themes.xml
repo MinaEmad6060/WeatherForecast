@@ -11,4 +11,13 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+
+    <style name="PreferenceCategoryTitle">
+        <item name="android:textSize">100sp</item> <!-- Change the text size as needed -->
+    </style>
+
+    <style name="CustomPreferenceCategory" parent="Preference.Category">
+        <item name="android:textSize">500sp</item> <!-- Adjust this value to increase or decrease the text size -->
+    </style>
 </resources>

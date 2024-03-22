@@ -23,6 +23,7 @@ class FavouriteFragmentAdapter(
     val favDetails: (FavWeather)->Unit
     )
     : ListAdapter<FavWeather, FavouriteWeatherViewHolder>(FavWeatherDiffUtil()){
+    var units: String="°C"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteWeatherViewHolder {
         val inflater : LayoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -35,7 +36,8 @@ class FavouriteFragmentAdapter(
         val currentObj = getItem(position)
         Log.i("adapterFav", "currentObj :${currentObj.cityName}")
         holder.favCity.text = currentObj.cityName
-        holder.favTemp.text = currentObj.temperature.toInt().toString()+"°C"
+        holder.favTemp.text = currentObj.temperature.toInt().toString()
+        holder.favUnit.text = currentObj.units
         Glide.with(holder.itemView.context)
             .load("https://openweathermap.org/img/wn/"
                     +currentObj.img+"@2x.png")
@@ -53,6 +55,7 @@ class FavouriteWeatherViewHolder (view : View): RecyclerView.ViewHolder(view){
     var favImg : ImageView = view.findViewById(R.id.fav_img)
     var btnDel : ImageButton = view.findViewById(R.id.fav_delete)
     val card : CardView = view.findViewById(R.id.fav_card_view)
+    var favUnit : TextView = view.findViewById(R.id.fav_unit)
 }
 
 
