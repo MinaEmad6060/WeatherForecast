@@ -26,4 +26,6 @@ data class AdditionalWeather(
     var main: Main = Main(0.0, 0.0, 0.0, "", ""),
     var wind: Wind = Wind(0.0),
     var clouds: Clouds = Clouds(0),
-    var dt_txt:String="")
+    var dt_txt:String="",
+    var units: String=""
+)

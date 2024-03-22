@@ -31,6 +31,10 @@ class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
     private var lat=0.0
     private var lon=0.0
+    private var language="EN"
+    private var temperature="metric"
+    private var degree="°C"
+    private var measure="m/s"
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: Editor
     private lateinit var binding: FragmentHomeBinding
@@ -60,12 +64,15 @@ class HomeFragment : Fragment() {
         setWeeklyAdapter()
         getSharedPreferences()
         initViewModel()
+
+
+        Log.i("language", "onViewCreated: $language")
         homeFragmentViewModel.getAllHomeWeatherVM(requireActivity())
 
         lifecycleScope.launch {
             if (homeFragmentViewModel.isNetworkConnected(requireActivity())){
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-                    lat, lon, "a92ea15347fafa48d308e4c367a39bb8", "metric", "en", 40
+                    lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, language, 40
                 )
                 homeFragmentViewModel.deleteAllHomeWeatherVM(requireActivity())
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
@@ -81,7 +88,8 @@ class HomeFragment : Fragment() {
                             saveDataToRoom(weeklyList,value,9)
 
                             updateOnlineWeatherUI(value)
-
+                            hourlyList[0].units = degree
+                            weeklyList[0].units = degree
                             hourlyAdapter.submitList(hourlyList)
                             weeklyAdapter.submitList(weeklyList)
                         }
@@ -158,6 +166,10 @@ class HomeFragment : Fragment() {
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
+        temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
+        degree = sharedPreferences.getString("degreeSettings", "°C")!!
+        measure = sharedPreferences.getString("measureSettings", "m/s")!!
         editor=sharedPreferences.edit()
         editor.putString("SelectedFragment","Home")
         editor.apply()
@@ -176,10 +188,15 @@ class HomeFragment : Fragment() {
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
         binding.city.text = value.data.city.name
+        binding.temperatureUnitHome.text = degree
         binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()
         binding.humidityValue.text = value.data.list[0].main.humidity
         binding.pressureValue.text = value.data.list[0].main.pressure
         binding.windValue.text = value.data.list[0].wind.speed.toString()
+        if (measure=="mile/h"){
+            binding.windValue.text = String.format("%.1f", ((value.data.list[0].wind.speed)*2.23694))
+        }
+        binding.windUnitHome.text = measure
         binding.cloudValue.text = value.data.list[0].clouds.all.toString()
         binding.weatherStatus.text = value.data.list[0].weather[0].description
     }
@@ -188,12 +205,18 @@ class HomeFragment : Fragment() {
         binding.weatherDate.text = homeFragmentViewModel.getDateAndTime().split(" ")[0]
         binding.weatherTime.text = homeFragmentViewModel.getDateAndTime().split(" ")[1]
         binding.city.text = value.data[0].cityName
+        binding.temperatureUnitHome.text = value.data[0].units
         binding.temperatureValue.text = value.data[0].temperature
         binding.humidityValue.text = value.data[0].humidity
         binding.pressureValue.text = value.data[0].pressure
         binding.windValue.text = value.data[0].windSpeed
+        if (measure=="mile/h"){
+            binding.windValue.text = String.format("%.1f", ((value.data[0].windSpeed.toDouble())*2.23694))
+        }
+        binding.windUnitHome.text = measure
         binding.cloudValue.text = value.data[0].clouds
         binding.weatherStatus.text = value.data[0].weatherDescription
+
     }
 
 
@@ -213,6 +236,7 @@ class HomeFragment : Fragment() {
             additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
             additionalWeather.weather[0].description=homeWeatherList[i].weatherDescription
             additionalWeather.weather[0].icon=homeWeatherList[i].weatherIcon
+            additionalWeather.units = homeWeatherList[0].units
             additionalWeatherList.add(additionalWeather)
         }
         return additionalWeatherList
@@ -234,7 +258,11 @@ class HomeFragment : Fragment() {
             homeWeather.humidity = myList[i].main.humidity
             homeWeather.pressure = myList[i].main.pressure
             homeWeather.windSpeed = myList[i].wind.speed.toString()
+            if (measure=="mile/h"){
+                homeWeather.windSpeed = String.format("%.1f", ((myList[i].wind.speed)*2.23694))
+            }
             homeWeather.clouds = myList[i].clouds.all.toString()
+            homeWeather.units = degree
 
             homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather,requireActivity())
         }
