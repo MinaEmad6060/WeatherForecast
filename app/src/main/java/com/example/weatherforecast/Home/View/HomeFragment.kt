@@ -71,6 +71,7 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             if (homeFragmentViewModel.isNetworkConnected(requireActivity())){
+                Log.i("myLoc", "onViewCreated: $lat & $lon")
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
                     lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, language, 40
                 )
