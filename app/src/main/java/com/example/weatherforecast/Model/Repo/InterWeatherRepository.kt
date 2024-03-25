@@ -6,12 +6,19 @@ import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
 import com.example.weatherforecast.Model.Remote.Home.CurrentWeather
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface InterWeatherRepository {
+//    suspend fun getAdditionalWeatherRemoteRepo(
+//        lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int
+//    ): StateFlow<CurrentWeather>
+
+
     suspend fun getAdditionalWeatherRemoteRepo(
         lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int
-    ): StateFlow<CurrentWeather>
+    ): Flow<CurrentWeather>
+
 
     suspend fun getAlertWeatherRemoteRepo(
         lat: Double, lon: Double, key: String

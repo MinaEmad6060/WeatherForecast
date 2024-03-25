@@ -26,12 +26,9 @@ import kotlinx.coroutines.launch
 
 class Receiver : BroadcastReceiver(){
 
-    private var title = ""
     private var id = "n"
 
     override fun onReceive(context: Context?, intent: Intent?) {
-//        title = intent?.getStringExtra("title") ?: "none"
-//        Log.i("alertRemote", "title : $title ")
 
         id = intent?.getStringExtra("myData") ?: "not found"
         Log.i("alertRemote", "id : $id ")

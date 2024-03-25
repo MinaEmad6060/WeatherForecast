@@ -1,9 +1,12 @@
 package com.example.weatherforecast.Model.Remote.Home
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface InterWeatherRemoteDataSource {
 
+//    suspend fun getAdditionalWeatherRemote(
+//        lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int): StateFlow<CurrentWeather>
     suspend fun getAdditionalWeatherRemote(
-        lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int): StateFlow<CurrentWeather>
+        lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int): Flow<CurrentWeather>
 }
