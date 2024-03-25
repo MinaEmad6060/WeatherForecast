@@ -1,7 +1,7 @@
 package com.example.weatherforecast.Home.View
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.weatherforecast.Model.Remote.AdditionalWeather
+import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 
 
 class WeatherDiffUtil : DiffUtil.ItemCallback<AdditionalWeather>() {

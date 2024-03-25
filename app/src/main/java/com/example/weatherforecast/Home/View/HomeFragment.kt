@@ -16,12 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.MapsActivity
-import com.example.weatherforecast.Model.Remote.AdditionalWeather
-import com.example.weatherforecast.Model.Remote.DataStateRemote
+import com.example.weatherforecast.Main.MapsActivity
+import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
+import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
-import com.example.weatherforecast.Model.WeatherRepository
+import com.example.weatherforecast.Model.Repo.WeatherRepository
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +48,11 @@ class HomeFragment : Fragment() {
     private lateinit var roomList : MutableList<AdditionalWeather>
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i("MAINTEST", "HomeFrag : onCreate")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +63,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         handlingHomeFAB()
         setHourlyAdapter()
         setWeeklyAdapter()
@@ -78,7 +82,7 @@ class HomeFragment : Fragment() {
                 homeFragmentViewModel.deleteAllHomeWeatherVM(requireActivity())
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                     when(value){
-                        is DataStateRemote.Success -> {
+                        is DataStateHomeRemote.Success -> {
                             Log.i(TAG, "additionalWeatherList-Success: ")
                             roomList = value.data.list
                             val hourlyList = value.data.list.take(9)
@@ -94,7 +98,7 @@ class HomeFragment : Fragment() {
                             hourlyAdapter.submitList(hourlyList)
                             weeklyAdapter.submitList(weeklyList)
                         }
-                        is DataStateRemote.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
+                        is DataStateHomeRemote.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
                         else -> Log.i(TAG, "loading: ")
                     }
                 }
@@ -185,7 +189,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun updateOnlineWeatherUI(value: DataStateRemote.Success){
+    private fun updateOnlineWeatherUI(value: DataStateHomeRemote.Success){
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
         binding.city.text = value.data.city.name
@@ -244,7 +248,7 @@ class HomeFragment : Fragment() {
     }
 
     suspend fun saveDataToRoom(
-        myList: List<AdditionalWeather>, value: DataStateRemote.Success, start: Int){
+        myList: List<AdditionalWeather>, value: DataStateHomeRemote.Success, start: Int){
         for(i in 0..<myList.size){
             homeWeather = HomeWeather(i+start)
 

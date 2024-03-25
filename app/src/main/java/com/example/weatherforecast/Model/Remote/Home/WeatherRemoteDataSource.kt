@@ -1,9 +1,9 @@
-package com.example.weatherforecast.Model.Remote
+package com.example.weatherforecast.Model.Remote.Home
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class WeatherRemoteDataSource:InterWeatherRemoteDataSource {
+class WeatherRemoteDataSource: InterWeatherRemoteDataSource {
 
     override suspend fun getAdditionalWeatherRemote(
         lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int): StateFlow<CurrentWeather> {

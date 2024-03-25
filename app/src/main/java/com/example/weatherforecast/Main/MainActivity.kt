@@ -1,4 +1,4 @@
-package com.example.weatherforecast
+package com.example.weatherforecast.Main
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -20,7 +21,8 @@ import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Model.WeatherRepository
+import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
 import com.example.weatherforecast.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("MAINTEST", "Activity : onCreate")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initSharedPreferences()
@@ -60,6 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
         savedInstanceState ?: run {
+
             val lastFragmentTag = sharedPreferences.getString("lastFragmentTag", null)
             when (lastFragmentTag) {
                 "HomeFragment" -> {
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity() {
                     addNavigationListener()
                 }
                 else ->  {
+                    checkLocationAvailability()
                     replaceFragment(HomeFragment(), "HomeFragment")
                     binding.bottomNav.selectedItemId = R.id.homeFragment
                     addNavigationListener()
@@ -134,6 +139,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLocationAvailability(){
+        Log.i("MAINTEST", "checkLocationAvailability : onCreate")
         if(checkPermission()){
             if(isLocationEnabled()) getFreshLocation()
             else enableLocationServices()
@@ -179,6 +185,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getFreshLocation(){
+        Log.i("MAINTEST", "getFreshLocation : onCreate")
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this)
         fusedLocationProviderClient.requestLocationUpdates(
             LocationRequest.Builder(0).apply {
@@ -187,6 +194,7 @@ class MainActivity : AppCompatActivity() {
             object : LocationCallback(){
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
+                    Log.i("MAINTEST", "onLocationResult : onCreate")
                     val location = locationResult.lastLocation
                     editor.putString("latitude", location?.latitude.toString())
                     editor.putString("longitude", location?.longitude.toString())

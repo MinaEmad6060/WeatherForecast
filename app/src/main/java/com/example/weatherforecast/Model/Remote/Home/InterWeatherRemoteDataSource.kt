@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Remote
+package com.example.weatherforecast.Model.Remote.Home
 
 import kotlinx.coroutines.flow.StateFlow
 

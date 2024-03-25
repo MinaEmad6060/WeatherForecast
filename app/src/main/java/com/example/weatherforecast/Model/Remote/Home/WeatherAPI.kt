@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Remote
+package com.example.weatherforecast.Model.Remote.Home
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

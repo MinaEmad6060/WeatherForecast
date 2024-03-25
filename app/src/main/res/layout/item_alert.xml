@@ -94,7 +94,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/fav_delete"
+                android:id="@+id/alert_delete"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
