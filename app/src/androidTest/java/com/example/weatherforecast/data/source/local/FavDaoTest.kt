@@ -16,6 +16,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.greaterThan
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -50,10 +51,10 @@ class FavDaoTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertFavByInstance_favInstance_greaterThanZeroIfSuccess() = runBlockingTest {
+    fun insertFavByInstanceDao_favInstance_greaterThanZeroIfSuccess() = runBlockingTest {
         // Given
         val favWeather = FavWeather()
-        dao.insert(favWeather)
+        val resultInsert=dao.insert(favWeather)
         dao.insert(favWeather)
         dao.insert(favWeather)
 
@@ -68,12 +69,13 @@ class FavDaoTest {
 
         // Then
         assertThat(resultTask, not(nullValue()))
+        assertThat(resultInsert, `is`(greaterThan(0)))
         assertThat(resultTask.size, `is`(3))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getFavWeather_listOfFav() = runBlockingTest {
+    fun getFavWeatherDao_listOfFav() = runBlockingTest {
         // Given
         val favWeather = FavWeather()
         favWeather.cityName = "Alex"
@@ -96,7 +98,7 @@ class FavDaoTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun deleteFavWeather_returnsOneIfSuccess() = runBlockingTest {
+    fun deleteFavWeatherDao_returnsOneIfSuccessAndZeroIfFail() = runBlockingTest {
         // Given
         val favWeather = FavWeather(1)
         val favWeather2 = FavWeather(2)

@@ -5,19 +5,19 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="deleteFavWeather_oneIfSuccess()">
+      <entry key="deleteFavWeather_returnsOneIfSuccessAndZeroIfFail()">
         <State />
       </entry>
-      <entry key="deleteFavWeather_returnsOneIfSuccess()">
+      <entry key="getFavWeatherLocal_listOfFav()">
         <State />
       </entry>
       <entry key="getFavWeather_listOfFav()">
         <State />
       </entry>
-      <entry key="insertFavByInstance_favInstance_greaterThanZeroIfSuccess()">
+      <entry key="insertFavByInstance_favInstanceAndContext_greaterThanZeroIfSuccess()">
         <State />
       </entry>
-      <entry key="insertFavByInstance_favInstance_idOfFavInstance()">
+      <entry key="testGetFavWeatherLocal()">
         <State />
       </entry>
     </value>
