@@ -70,8 +70,6 @@ class FavouriteFragment : Fragment() {
         Log.i("goto", "goto: ${sharedPreferences}")
 
 
-        //favFragmentViewModel.deleteAllFavWeatherVM(requireActivity())
-        //favFragmentViewModel.insertAllHomeWeatherVM(favWeather,requireActivity())
         favFragmentViewModel.getFavWeatherVM(requireActivity())
 
         Log.i(TAG, "lat&lon $lat $lon")

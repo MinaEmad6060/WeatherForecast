@@ -50,27 +50,10 @@ class AlertFragmentViewModel(private var repo: InterWeatherRepository): ViewMode
         }
     }
 
-//    fun deleteAlertWeatherVM(id: Int, context: Context): Int{
-//        var res =0
-//        viewModelScope.async(Dispatchers.IO) {
-//            res = repo.deleteAlertWeatherLocalRepo(id,context)
-//            getAlertWeatherVM(context)
-//        }
-//        return res
-//    }
     fun deleteAlertWeatherVM(id: String, context: Context): Int{
         var res =0
         viewModelScope.async(Dispatchers.IO) {
             res = repo.deleteAlertWeatherLocalRepo(id,context)
-            getAlertWeatherVM(context)
-        }
-        return res
-    }
-
-    fun deleteAllAlertWeatherVM(context: Context): Int{
-        var res =0
-        viewModelScope.async(Dispatchers.IO) {
-            res = repo.deleteAllAlertWeatherLocalRepo(context)
             getAlertWeatherVM(context)
         }
         return res

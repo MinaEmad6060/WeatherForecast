@@ -42,14 +42,6 @@ class FavFragmentViewModel(private var repo: InterWeatherRepository): ViewModel(
         return res
     }
 
-    fun deleteAllFavWeatherVM(context: Context): Int{
-        var res =0
-        viewModelScope.async(Dispatchers.IO) {
-            res = repo.deleteAllFavWeatherLocalRepo(context)
-            getFavWeatherVM(context)        }
-        return res
-    }
-
     fun insertFavWeatherVM(favWeather: FavWeather, context: Context): Long{
         var res :Long=0
         viewModelScope.async(Dispatchers.IO) {

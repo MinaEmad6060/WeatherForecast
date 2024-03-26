@@ -29,9 +29,6 @@ class FavLocalDataSource: InterFavLocalDataSource {
         return getRoomInstance(context).insert(favWeather)
     }
 
-    override suspend fun deleteAllFavWeatherLocal(context: Context): Int {
-        return getRoomInstance(context).deleteAll()
-    }
 
 
     private var roomRef: FavWeatherDAO? = null

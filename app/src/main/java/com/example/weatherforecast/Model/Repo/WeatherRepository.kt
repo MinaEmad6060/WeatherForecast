@@ -54,9 +54,6 @@ object WeatherRepository : InterWeatherRepository {
         return roomFavWeather.deleteFavWeatherLocal(favWeather,context)
     }
 
-    override suspend fun deleteAllFavWeatherLocalRepo(context: Context): Int {
-        return roomFavWeather.deleteAllFavWeatherLocal(context)
-    }
 
     override suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Long {
         return roomFavWeather.insertFavWeatherLocal(favWeather,context)
@@ -65,16 +62,8 @@ object WeatherRepository : InterWeatherRepository {
     override suspend fun getAlertWeatherLocalRepo(context: Context): StateFlow<List<AlertCalendar>> {
         return roomAlertWeather.getAlertWeatherLocal(context)
     }
-
-//    override suspend fun deleteAlertWeatherLocalRepo(id: Int, context: Context): Int {
-//        return roomAlertWeather.deleteAlertWeatherLocal(id,context)
-//    }
     override suspend fun deleteAlertWeatherLocalRepo(id: String, context: Context): Int {
         return roomAlertWeather.deleteAlertWeatherLocal(id,context)
-    }
-
-    override suspend fun deleteAllAlertWeatherLocalRepo(context: Context): Int {
-        return roomAlertWeather.deleteAllAlertWeatherLocal(context)
     }
 
     override suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar, context: Context): Long {

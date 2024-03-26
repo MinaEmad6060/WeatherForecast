@@ -17,7 +17,4 @@ interface FavWeatherDAO {
 
     @Delete
     suspend fun delete(favWeather: FavWeather): Int
-
-    @Query("DELETE FROM fav_table")
-    suspend fun deleteAll(): Int
 }
