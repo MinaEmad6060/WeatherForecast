@@ -4,7 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/test2"
     tools:context=".Alert.View.AlertFragment">
+
+    <View
+        android:id="@+id/home_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/bg_view_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/alert_fab"
@@ -19,10 +30,13 @@
         app:shapeAppearanceOverlay="@style/CircleShape"
         />
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alert_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="20dp"
         android:padding="5dp"
         />
 

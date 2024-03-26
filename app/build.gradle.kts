@@ -3,8 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("kotlin-kapt")
-//    //
-//    id("kotlin-parcelize")
+    //
+    id("kotlin-parcelize")
 }
 
 android {
@@ -34,12 +34,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
+
+    buildFeatures{
+        viewBinding=true
+    }
+}
+
+kapt{
+    correctErrorTypes=true
 }
 
 
@@ -116,8 +124,6 @@ dependencies {
 // AndroidX Test - JVM testing
     testImplementation("androidx.test:core-ktx:$androidXTestCoreVersion")
 
-//Timber
-    implementation("com.jakewharton.timber:timber:5.0.1")
 
 // hamcrest
     testImplementation("org.hamcrest:hamcrest:2.2")

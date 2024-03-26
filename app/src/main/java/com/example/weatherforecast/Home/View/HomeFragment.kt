@@ -1,15 +1,18 @@
 package com.example.weatherforecast.Home.View
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.content.SharedPreferences.Editor
+import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,6 +66,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().window.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            statusBarColor= Color.TRANSPARENT
+        }
+        ObjectAnimator.ofInt(binding.progressBar, "progress", 6)
+            .start()
         handlingHomeFAB()
         setHourlyAdapter()
         setWeeklyAdapter()
@@ -84,6 +94,8 @@ class HomeFragment : Fragment() {
                     when(value){
                         is DataStateHomeRemote.Success -> {
                             Log.i(TAG, "additionalWeatherList-Success: ")
+                            binding.progressBar.visibility  = View.GONE
+                            binding.All.visibility = View.VISIBLE
                             roomList = value.data.list
                             val hourlyList = value.data.list.take(9)
                             val weeklyList =
@@ -99,7 +111,12 @@ class HomeFragment : Fragment() {
                             weeklyAdapter.submitList(weeklyList)
                         }
                         is DataStateHomeRemote.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
-                        else -> Log.i(TAG, "loading: ")
+                        else -> {
+                            binding.All.visibility = View.GONE
+                            binding.progressBar.visibility = View.VISIBLE
+                            Log.i(TAG, "loading: ")
+                        }
+
                     }
                 }
             }

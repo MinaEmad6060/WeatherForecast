@@ -6,7 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
+    android:background="@drawable/test2"
     tools:context=".Settings.View.SettingsFragment">
+
+    <View
+        android:id="@+id/home_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/bg_view_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
