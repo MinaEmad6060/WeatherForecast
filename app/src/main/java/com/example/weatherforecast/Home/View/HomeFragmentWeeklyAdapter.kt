@@ -10,9 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
-import com.example.weatherforecast.Model.Remote.AdditionalWeather
+import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.R
 import java.text.SimpleDateFormat
 import java.util.Locale

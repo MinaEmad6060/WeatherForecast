@@ -1,6 +1,7 @@
 package com.example.weatherforecast.Alert.View
 
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.NotificationChannel
@@ -9,6 +10,7 @@ import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,12 +19,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
+import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
+import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
+import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
+import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
+import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
+import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
+import com.example.weatherforecast.Model.Repo.WeatherRepository
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentAlertBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Random
 
@@ -30,7 +47,14 @@ class AlertFragment : Fragment() {
 
     private val TAG = "AlertFragment"
     private lateinit var binding: FragmentAlertBinding
-    //private var timeInMillis :Long = 0
+    private lateinit var alarmManager: AlarmManager
+    private lateinit var pendingIntent: PendingIntent
+
+    private var lat=0.0
+    private var lon=0.0
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
     private lateinit var dialogAlert: Dialog
     private lateinit var startDateEditText: TextView
     private lateinit var startDateAlert: String
@@ -45,6 +69,16 @@ class AlertFragment : Fragment() {
     private var startChoice: Long = 0
     private var endChoice: Long = 0
 
+    private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
+    private lateinit var homeFragmentViewModel: HomeFragmentViewModel
+
+    private lateinit var alertFragmentViewModelFactory: AlertFragmentViewModelFactory
+    companion object {
+        lateinit var alertFragmentViewModel: AlertFragmentViewModel
+    }
+
+    private lateinit var alertAdapter: AlertFragmentAdapter
+    private lateinit var alertLayoutManager: LayoutManager
 
 
     override fun onCreateView(
@@ -57,6 +91,7 @@ class AlertFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getSharedPreferences()
         initDialog()
         onClickFAB()
         onClickStartDate()
@@ -66,7 +101,102 @@ class AlertFragment : Fragment() {
         onClickDialogCancel()
         createNotificationChannel()
         onClickDialogOk()
-        //convertToMillisecond()
+        initHomeViewModel()
+        initAlertViewModel()
+        setAlertAdapter()
+        alertFragmentViewModel.getAlertWeatherVM(requireActivity())
+
+        Log.i("alertLatLon", "lat: $lat lon: $lon")
+
+        //33.44//-94.04
+
+        lifecycleScope.launch {
+            alertFragmentViewModel.alertWeatherRoom.collectLatest { value ->
+                when(value){
+                    is DataStateAlertRoom.Success -> {
+                        Log.i("alert", "favWeather-success:")
+                        alertAdapter.submitList(value.data)
+                    }
+                    is DataStateAlertRoom.Failure -> {Log.i(TAG, "favWeather-fail: ")}
+                    else -> Log.i("alert", "favWeather-loading: ")
+                }
+            }
+        }
+
+    }
+
+
+    private fun getSharedPreferences()
+    {
+        sharedPreferences =
+            requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
+        lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
+        lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        editor = sharedPreferences.edit()
+        editor.putString("SelectedFragment","Fav")
+        editor.apply()
+    }
+
+    private fun setAlertAdapter(){
+        alertAdapter = AlertFragmentAdapter { delAlertWeather ->
+            showAlert(
+                "Delete Alert Item", "Are you sure you want delete this Alert?",
+                delAlertWeather, requireActivity()
+            )
+        }
+
+        alertLayoutManager = LinearLayoutManager(requireActivity(),
+            RecyclerView.VERTICAL, false)
+        binding.alertRecyclerView.apply {
+            adapter = alertAdapter
+            layoutManager = alertLayoutManager
+        }
+    }
+
+    private fun showAlert(title: String, message: String, alertCalendar: AlertCalendar, context: Context):Int {
+        val builder = AlertDialog.Builder(context)
+        var result =0
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("OK") { dialog, which ->
+//            result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.id, context)
+            result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.infoOfAlert, context)
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, which ->
+        }
+
+        builder.show()
+        return result
+    }
+
+    private fun saveAlertToRoom() :AlertCalendar {
+        val alertCalendar= AlertCalendar()
+//        alertCalendar.startDate=startDateAlert
+//        alertCalendar.endDate=endDateAlert
+//        alertCalendar.startTime=startTimeAlert
+//        alertCalendar.endTime=endTimeAlert
+        alertCalendar.infoOfAlert=startDateAlert+","+
+                startTimeAlert+","+
+                endDateAlert+","+
+                endTimeAlert
+        alertFragmentViewModel.insertAlertWeatherVM(alertCalendar,requireActivity())
+        Log.i("alertRemote", "saveAlertToRoom : ${alertCalendar.infoOfAlert} ")
+        return alertCalendar
+    }
+
+    private fun initHomeViewModel() {
+        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        homeFragmentViewModel =
+            ViewModelProvider(this, homeFragmentViewModelFactory)
+                .get(HomeFragmentViewModel::class.java)
+    }
+
+    private fun initAlertViewModel() {
+        alertFragmentViewModelFactory = AlertFragmentViewModelFactory(WeatherRepository)
+        alertFragmentViewModel =
+            ViewModelProvider(this, alertFragmentViewModelFactory)
+                .get(AlertFragmentViewModel::class.java)
     }
 
     private fun onClickFAB(){
@@ -78,7 +208,9 @@ class AlertFragment : Fragment() {
     private fun onClickDialogOk(){
         btnOk=dialogAlert.findViewById(R.id.dialog_ok)
         btnOk.setOnClickListener{
-            initAlarm()
+            val alertCalendar=saveAlertToRoom()
+            Log.i("alertRemote", "onClickDialogOk : ${alertCalendar.infoOfAlert} ")
+            initAlarm(alertCalendar)
             dialogAlert.cancel()
         }
     }
@@ -103,21 +235,16 @@ class AlertFragment : Fragment() {
         }
     }
 
-    private fun initAlarm(){
+    private fun initAlarm(alertCalendar: AlertCalendar){
         Toast.makeText(requireActivity(), "Reminder Set!", Toast.LENGTH_SHORT).show()
-
         val intent = Intent(requireActivity(), Receiver::class.java)
-        intent.putExtra("title","iphone")
-        val pendingIntent = PendingIntent.getBroadcast(requireActivity(), 0, intent,
+//        intent.putExtra("title","iphone")
+        intent.putExtra("myData", "${alertCalendar.infoOfAlert}")
+        Log.i("alertRemote", "initAlarm : ${alertCalendar.infoOfAlert} ")
+        pendingIntent = PendingIntent.getBroadcast(requireActivity(), 0, intent,
             PendingIntent.FLAG_IMMUTABLE)
 
-        val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-//        val timeAtButtonClick = System.currentTimeMillis()
-//        Log.i("timeInMillis", "timeInMillis1: $timeAtButtonClick")
-//
-//        val tenSecondsInMillis = 1000 * 0
-//        Log.i("timeInMillis", "timeInMillis2: ${timeAtButtonClick + tenSecondsInMillis }")
+        alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         startChoice=convertToMillisecond(startDateAlert,startTimeAlert)
         endChoice=convertToMillisecond(endDateAlert,endTimeAlert)

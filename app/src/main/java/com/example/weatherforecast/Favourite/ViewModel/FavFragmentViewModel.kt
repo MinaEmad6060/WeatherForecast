@@ -4,19 +4,15 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecast.Model.InterWeatherRepository
+import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
-import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
-import com.example.weatherforecast.Model.Local.Home.HomeWeather
-import com.example.weatherforecast.Model.Remote.DataStateRemote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class FavFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
     private val _favWeather= MutableStateFlow<DataStateFavRoom>(DataStateFavRoom.Loading)
@@ -43,14 +39,6 @@ class FavFragmentViewModel(private var repo: InterWeatherRepository): ViewModel(
             res = repo.deleteFavWeatherLocalRepo(favWeather,context)
             getFavWeatherVM(context)
         }
-        return res
-    }
-
-    fun deleteAllFavWeatherVM(context: Context): Int{
-        var res =0
-        viewModelScope.async(Dispatchers.IO) {
-            res = repo.deleteAllFavWeatherLocalRepo(context)
-            getFavWeatherVM(context)        }
         return res
     }
 

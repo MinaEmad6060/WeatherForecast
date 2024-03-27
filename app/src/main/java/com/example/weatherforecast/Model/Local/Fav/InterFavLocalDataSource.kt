@@ -9,5 +9,4 @@ interface InterFavLocalDataSource {
     fun getFavWeatherLocal(context: Context): StateFlow<List<FavWeather>>
     suspend fun deleteFavWeatherLocal(favWeather: FavWeather, context: Context): Int
     suspend fun insertFavWeatherLocal(favWeather: FavWeather, context: Context): Long
-    suspend fun deleteAllFavWeatherLocal(context: Context): Int
 }

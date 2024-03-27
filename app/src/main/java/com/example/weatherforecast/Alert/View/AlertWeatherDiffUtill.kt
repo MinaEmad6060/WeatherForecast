@@ -1,16 +1,18 @@
-//package com.example.weatherforecast.Alert.View
-//
-//
-//import androidx.recyclerview.widget.DiffUtil
-//import com.example.weatherforecast.Model.Local.Fav.FavWeather
-//import com.example.weatherforecast.Model.Remote.CurrentWeather
-//
-//class FavWeatherDiffUtil : DiffUtil.ItemCallback<FavWeather>() {
-//    override fun areItemsTheSame(oldItem: FavWeather, newItem: FavWeather): Boolean {
+package com.example.weatherforecast.Alert.View
+
+
+import androidx.recyclerview.widget.DiffUtil
+import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
+
+class AlertWeatherDiffUtil : DiffUtil.ItemCallback<AlertCalendar>() {
+//    override fun areItemsTheSame(oldItem: AlertCalendar, newItem: AlertCalendar): Boolean {
 //        return oldItem.id == newItem.id
 //    }
-//
-//    override fun areContentsTheSame(oldItem: FavWeather, newItem: FavWeather): Boolean {
-//        return oldItem == newItem
-//    }
-//}
+override fun areItemsTheSame(oldItem: AlertCalendar, newItem: AlertCalendar): Boolean {
+    return oldItem.infoOfAlert == newItem.infoOfAlert
+}
+
+    override fun areContentsTheSame(oldItem: AlertCalendar, newItem: AlertCalendar): Boolean {
+        return oldItem == newItem
+    }
+}

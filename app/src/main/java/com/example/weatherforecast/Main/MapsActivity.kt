@@ -1,4 +1,4 @@
-package com.example.weatherforecast
+package com.example.weatherforecast.Main
 
 import android.content.Context
 import android.content.Intent
@@ -7,13 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.example.weatherforecast.Favourite.View.FavouriteFragment
-import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Model.WeatherRepository
+import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.R
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

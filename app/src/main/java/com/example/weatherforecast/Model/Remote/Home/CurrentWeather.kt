@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Remote
+package com.example.weatherforecast.Model.Remote.Home
 
 data class CurrentWeather(
     var city: City = City(""),

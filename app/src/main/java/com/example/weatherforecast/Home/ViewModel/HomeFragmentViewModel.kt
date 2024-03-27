@@ -6,8 +6,8 @@ import android.net.NetworkInfo
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecast.Model.Remote.DataStateRemote
-import com.example.weatherforecast.Model.InterWeatherRepository
+import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
+import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +24,8 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
 
     private val TAG = "HomeFragmentViewModel"
 
-    private val _additionalWeatherList = MutableStateFlow<DataStateRemote>(DataStateRemote.Loading)
-    val additionalWeatherList: StateFlow<DataStateRemote> = _additionalWeatherList
+    private val _additionalWeatherList = MutableStateFlow<DataStateHomeRemote>(DataStateHomeRemote.Loading)
+    val additionalWeatherList: StateFlow<DataStateHomeRemote> = _additionalWeatherList
 
 
     private val _homeWeatherList = MutableStateFlow<DataStateHomeRoom>(DataStateHomeRoom.Loading)
@@ -36,12 +36,12 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
         viewModelScope.launch(Dispatchers.IO){
             repo.getAdditionalWeatherRemoteRepo(lat,lon,key,units,lang,cnt)
                 .catch {
-                    _additionalWeatherList.value = DataStateRemote.Failure(it)
+                    _additionalWeatherList.value = DataStateHomeRemote.Failure(it)
                 }
                 .collect{
                     it.date = getDateAndTime().split(" ")[0]
                     it.time = getDateAndTime().split(" ")[1]
-                    _additionalWeatherList.value = DataStateRemote.Success(it)
+                    _additionalWeatherList.value = DataStateHomeRemote.Success(it)
                 }
         }
     }

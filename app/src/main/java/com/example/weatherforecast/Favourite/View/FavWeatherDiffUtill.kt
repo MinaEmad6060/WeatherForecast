@@ -2,7 +2,6 @@ package com.example.weatherforecast.Favourite.View
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
-import com.example.weatherforecast.Model.Remote.CurrentWeather
 
 class FavWeatherDiffUtil : DiffUtil.ItemCallback<FavWeather>() {
     override fun areItemsTheSame(oldItem: FavWeather, newItem: FavWeather): Boolean {

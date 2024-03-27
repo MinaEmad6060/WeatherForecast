@@ -18,12 +18,12 @@ import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModel
 import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.MainActivity
-import com.example.weatherforecast.MapsActivity
+import com.example.weatherforecast.Main.MainActivity
+import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
-import com.example.weatherforecast.Model.Remote.DataStateRemote
-import com.example.weatherforecast.Model.WeatherRepository
+import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
+import com.example.weatherforecast.Model.Repo.WeatherRepository
 import com.example.weatherforecast.databinding.FragmentFavouriteBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
@@ -70,8 +70,6 @@ class FavouriteFragment : Fragment() {
         Log.i("goto", "goto: ${sharedPreferences}")
 
 
-        //favFragmentViewModel.deleteAllFavWeatherVM(requireActivity())
-        //favFragmentViewModel.insertAllHomeWeatherVM(favWeather,requireActivity())
         favFragmentViewModel.getFavWeatherVM(requireActivity())
 
         Log.i(TAG, "lat&lon $lat $lon")
@@ -86,7 +84,7 @@ class FavouriteFragment : Fragment() {
             )
             homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                 when(value){
-                    is DataStateRemote.Success -> {
+                    is DataStateHomeRemote.Success -> {
                         Log.i(TAG, "Remote Success: ")
                         favWeather = FavWeather()
                         favWeather.cityName = value.data.city.name
@@ -97,7 +95,7 @@ class FavouriteFragment : Fragment() {
                         favWeather.units = degree
                         favFragmentViewModel.insertFavWeatherVM(favWeather,requireActivity())
                     }
-                    is DataStateRemote.Failure -> {Log.i(TAG, "Remote fail: ")}
+                    is DataStateHomeRemote.Failure -> {Log.i(TAG, "Remote fail: ")}
                     else -> Log.i(TAG, "Remote loading: ")
                 }
             }
@@ -126,12 +124,6 @@ class FavouriteFragment : Fragment() {
 
     }
 
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        editor.putString("goToFragment","")
-//        editor.apply()
-//    }
-
     private fun handlingFavFAB(){
         binding.favFab.setOnClickListener {
             editor.putString("goToFragment","")
@@ -154,7 +146,6 @@ class FavouriteFragment : Fragment() {
             adapter = favAdapter
             layoutManager = favLayoutManager
         }
-        //favAdapter.submitList(listOfWeather)
     }
 
     private fun initFavViewModel(){
@@ -180,7 +171,6 @@ class FavouriteFragment : Fragment() {
         language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
         temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
         degree = sharedPreferences.getString("degreeSettings", "°C")!!
-//        measure = sharedPreferences.getString("measureSettings", "m/s")!!
         editor = sharedPreferences.edit()
         editor.putString("SelectedFragment","Fav")
         editor.apply()
