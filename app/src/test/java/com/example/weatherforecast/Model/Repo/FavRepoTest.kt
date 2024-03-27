@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Repo.FavTest.Repo
+package com.example.weatherforecast.Model.Repo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
