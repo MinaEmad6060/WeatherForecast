@@ -32,12 +32,15 @@ import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
+import com.example.weatherforecast.Model.Local.Alert.AlertWeatherDAO
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
+import com.example.weatherforecast.Model.Repo.Alert.AlertRepo
 import com.example.weatherforecast.Model.Repo.WeatherRepository
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentAlertBinding
+import com.example.weatherforecast.di.AppContainer
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -75,11 +78,17 @@ class AlertFragment : Fragment() {
     private lateinit var alertFragmentViewModelFactory: AlertFragmentViewModelFactory
     companion object {
         lateinit var alertFragmentViewModel: AlertFragmentViewModel
+        lateinit var alertWeatherId: String
     }
 
     private lateinit var alertAdapter: AlertFragmentAdapter
     private lateinit var alertLayoutManager: LayoutManager
+    private lateinit var appContainer: AppContainer
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContainer = AppContainer(context.applicationContext)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,7 +113,7 @@ class AlertFragment : Fragment() {
         initHomeViewModel()
         initAlertViewModel()
         setAlertAdapter()
-        alertFragmentViewModel.getAlertWeatherVM(requireActivity())
+        alertFragmentViewModel.getAlertWeatherVM()
 
         Log.i("alertLatLon", "lat: $lat lon: $lon")
 
@@ -160,7 +169,9 @@ class AlertFragment : Fragment() {
         builder.setMessage(message)
         builder.setPositiveButton("OK") { dialog, which ->
 //            result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.id, context)
-            result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.infoOfAlert, context)
+            lifecycleScope.launch {
+                result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.infoOfAlert)
+            }
         }
 
         builder.setNegativeButton("Cancel") { dialog, which ->
@@ -172,15 +183,13 @@ class AlertFragment : Fragment() {
 
     private fun saveAlertToRoom() :AlertCalendar {
         val alertCalendar= AlertCalendar()
-//        alertCalendar.startDate=startDateAlert
-//        alertCalendar.endDate=endDateAlert
-//        alertCalendar.startTime=startTimeAlert
-//        alertCalendar.endTime=endTimeAlert
         alertCalendar.infoOfAlert=startDateAlert+","+
                 startTimeAlert+","+
                 endDateAlert+","+
                 endTimeAlert
-        alertFragmentViewModel.insertAlertWeatherVM(alertCalendar,requireActivity())
+        lifecycleScope.launch {
+            alertFragmentViewModel.insertAlertWeatherVM(alertCalendar)
+        }
         Log.i("alertRemote", "saveAlertToRoom : ${alertCalendar.infoOfAlert} ")
         return alertCalendar
     }
@@ -193,7 +202,11 @@ class AlertFragment : Fragment() {
     }
 
     private fun initAlertViewModel() {
-        alertFragmentViewModelFactory = AlertFragmentViewModelFactory(WeatherRepository)
+        alertFragmentViewModelFactory = AlertFragmentViewModelFactory(
+            AlertRepo(appContainer.alertWeatherRemoteDataSource,
+                appContainer.alertWeatherLocalDataSource
+                )
+        )
         alertFragmentViewModel =
             ViewModelProvider(this, alertFragmentViewModelFactory)
                 .get(AlertFragmentViewModel::class.java)
@@ -238,9 +251,9 @@ class AlertFragment : Fragment() {
     private fun initAlarm(alertCalendar: AlertCalendar){
         Toast.makeText(requireActivity(), "Reminder Set!", Toast.LENGTH_SHORT).show()
         val intent = Intent(requireActivity(), Receiver::class.java)
-//        intent.putExtra("title","iphone")
-        intent.putExtra("myData", "${alertCalendar.infoOfAlert}")
-        Log.i("alertRemote", "initAlarm : ${alertCalendar.infoOfAlert} ")
+        alertWeatherId=alertCalendar.infoOfAlert
+//        intent.putExtra("myId", alertCalendar.infoOfAlert)
+        Log.i("alertRemote", "initAlarm : $alertWeatherId ")
         pendingIntent = PendingIntent.getBroadcast(requireActivity(), 0, intent,
             PendingIntent.FLAG_IMMUTABLE)
 

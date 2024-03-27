@@ -16,9 +16,9 @@ interface InterWeatherRepository {
     ): Flow<CurrentWeather>
 
 
-    suspend fun getAlertWeatherRemoteRepo(
-        lat: Double, lon: Double, key: String
-    ): StateFlow<OneCallAlert>
+//    suspend fun getAlertWeatherRemoteRepo(
+//        lat: Double, lon: Double, key: String
+//    ): StateFlow<OneCallAlert>
 
 
 
@@ -33,8 +33,8 @@ interface InterWeatherRepository {
 //    suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Long
 
 
-    suspend fun getAlertWeatherLocalRepo(context: Context): StateFlow<List<AlertCalendar>>
-    suspend fun deleteAlertWeatherLocalRepo(id: String, context: Context): Int
-    suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar, context: Context): Long
+//    suspend fun getAlertWeatherLocalRepo(context: Context): StateFlow<List<AlertCalendar>>
+//    suspend fun deleteAlertWeatherLocalRepo(id: String, context: Context): Int
+//    suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar, context: Context): Long
 
 }

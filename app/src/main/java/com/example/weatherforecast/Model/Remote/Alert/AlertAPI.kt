@@ -24,8 +24,8 @@ object RetrofitHelper {
         .baseUrl(baseURL)
         .build()
 }
-object API {
-    val retrofitAlertService : AlertAPI by lazy {
-        RetrofitHelper.retrofitInstance.create(AlertAPI::class.java)
-    }
-}
+//object API {
+//    val retrofitAlertService : AlertAPI by lazy {
+//        RetrofitHelper.retrofitInstance.create(AlertAPI::class.java)
+//    }
+//}

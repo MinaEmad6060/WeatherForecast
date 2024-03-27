@@ -9,6 +9,7 @@ import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
+import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class AlertFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
+class AlertFragmentViewModel(private var repo: InterAlertRepo): ViewModel() {
     private val _alertWeatherRoom= MutableStateFlow<DataStateAlertRoom>(DataStateAlertRoom.Loading)
     val alertWeatherRoom: StateFlow<DataStateAlertRoom> = _alertWeatherRoom
 
@@ -36,9 +37,9 @@ class AlertFragmentViewModel(private var repo: InterWeatherRepository): ViewMode
         }
     }
 
-    fun getAlertWeatherVM(context: Context){
+    fun getAlertWeatherVM(){
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getAlertWeatherLocalRepo(context)
+            repo.getAlertWeatherLocalRepo()
                 .catch {
                     Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _alertWeatherRoom.value = DataStateAlertRoom.Failure(it)
@@ -50,21 +51,21 @@ class AlertFragmentViewModel(private var repo: InterWeatherRepository): ViewMode
         }
     }
 
-    fun deleteAlertWeatherVM(id: String, context: Context): Int{
+    suspend fun deleteAlertWeatherVM(id: String): Int{
         var res =0
         viewModelScope.async(Dispatchers.IO) {
-            res = repo.deleteAlertWeatherLocalRepo(id,context)
-            getAlertWeatherVM(context)
-        }
+            res = repo.deleteAlertWeatherLocalRepo(id)
+            getAlertWeatherVM()
+        }.await()
         return res
     }
 
-    fun insertAlertWeatherVM(alertCalendar: AlertCalendar, context: Context): Long{
+    suspend fun insertAlertWeatherVM(alertCalendar: AlertCalendar): Long{
         var res :Long=0
         viewModelScope.async(Dispatchers.IO) {
-            res = repo.insertAlertWeatherLocalRepo(alertCalendar,context)
-            getAlertWeatherVM(context)
-        }
+            res = repo.insertAlertWeatherLocalRepo(alertCalendar)
+            getAlertWeatherVM()
+        }.await()
         return res
     }
 

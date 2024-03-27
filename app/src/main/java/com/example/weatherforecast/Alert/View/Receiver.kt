@@ -30,10 +30,8 @@ class Receiver : BroadcastReceiver(){
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        id = intent?.getStringExtra("myData") ?: "not found"
+        id = AlertFragment.alertWeatherId
         Log.i("alertRemote", "id : $id ")
-
-        val application = context?.applicationContext as Application
 
 
         alertFragmentViewModel.getAlertWeatherRemoteVM(
@@ -44,6 +42,10 @@ class Receiver : BroadcastReceiver(){
             alertFragmentViewModel.alertWeatherRemote.collectLatest { value ->
                 when (value) {
                     is DataStateAlertRemote.Success -> {
+                        Log.i("receive", "success: ")
+                        Log.i("receive", "event:${value.data.alerts[0].event} ")
+                        Log.i("receive", "desc:${value.data.alerts[0].description} ")
+
                         val builder = context?.let {
                             NotificationCompat.Builder(it, "notifyLemubit")
                                 .setSmallIcon(R.drawable.ic_launcher_background)
@@ -54,6 +56,8 @@ class Receiver : BroadcastReceiver(){
 
 
                         val notificationManager = context?.let { NotificationManagerCompat.from(it) }
+
+                        alertFragmentViewModel.deleteAlertWeatherVM(id)
 
                         if (context?.let {
                                 ActivityCompat.checkSelfPermission(
@@ -81,16 +85,19 @@ class Receiver : BroadcastReceiver(){
                     }
 
                     is DataStateAlertRemote.Failure -> {
+                        Log.i("receive", "fail: ")
                         Log.i("alertRemote", "alertRemote-fail: ")
                     }
 
-                    else -> Log.i("alertRemote", "alertRemote-loading: ")
+                    else -> {
+                        Log.i("receive", "loading: ")
+                        Log.i("alertRemote", "alertRemote-loading: ")
+                    }
                 }
             }
         }
 
 
-        alertFragmentViewModel.deleteAlertWeatherVM(id,application)
 
 
     }
