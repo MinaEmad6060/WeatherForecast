@@ -27,10 +27,10 @@ interface InterWeatherRepository {
     suspend fun insertAllHomeWeatherLocalRepo(homeWeather: HomeWeather, context: Context): Long
 
 
-
-    suspend fun getFavWeatherLocalRepo(context: Context): StateFlow<List<FavWeather>>
-    suspend fun deleteFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Int
-    suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Long
+//
+//    suspend fun getFavWeatherLocalRepo(context: Context): Flow<List<FavWeather>>
+//    suspend fun deleteFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Int
+//    suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Long
 
 
     suspend fun getAlertWeatherLocalRepo(context: Context): StateFlow<List<AlertCalendar>>

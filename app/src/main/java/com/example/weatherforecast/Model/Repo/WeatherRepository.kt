@@ -15,6 +15,7 @@ import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
 import com.example.weatherforecast.Model.Remote.Home.InterWeatherRemoteDataSource
 import com.example.weatherforecast.Model.Remote.Home.WeatherRemoteDataSource
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 object WeatherRepository : InterWeatherRepository {
@@ -22,7 +23,7 @@ object WeatherRepository : InterWeatherRepository {
     private var remoteWeather: InterWeatherRemoteDataSource = WeatherRemoteDataSource()
     private var remoteAlert: InterAlertRemoteDataSource = AlertRemoteDataSource()
     private var roomHomeWeather: InterHomeLocalDataSource = HomeLocalDataSource()
-    private var roomFavWeather: InterFavLocalDataSource = FavLocalDataSource()
+    //private var roomFavWeather: InterFavLocalDataSource = FavLocalDataSource()
     private var roomAlertWeather: InterAlertLocalDataSource = AlertLocalDataSource()
 
     override suspend fun getAdditionalWeatherRemoteRepo(
@@ -46,18 +47,18 @@ object WeatherRepository : InterWeatherRepository {
         return roomHomeWeather.insertAllHomeWeatherLocal(homeWeather,context)
     }
 
-    override suspend fun getFavWeatherLocalRepo(context: Context): StateFlow<List<FavWeather>> {
-        return roomFavWeather.getFavWeatherLocal(context)
-    }
-
-    override suspend fun deleteFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Int {
-        return roomFavWeather.deleteFavWeatherLocal(favWeather,context)
-    }
-
-
-    override suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Long {
-        return roomFavWeather.insertFavWeatherLocal(favWeather,context)
-    }
+//    override suspend fun getFavWeatherLocalRepo(context: Context): Flow<List<FavWeather>> {
+//        return roomFavWeather.getFavWeatherLocal(context)
+//    }
+//
+//    override suspend fun deleteFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Int {
+//        return roomFavWeather.deleteFavWeatherLocal(favWeather,context)
+//    }
+//
+//
+//    override suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather, context: Context): Long {
+//        return roomFavWeather.insertFavWeatherLocal(favWeather,context)
+//    }
 
     override suspend fun getAlertWeatherLocalRepo(context: Context): StateFlow<List<AlertCalendar>> {
         return roomAlertWeather.getAlertWeatherLocal(context)

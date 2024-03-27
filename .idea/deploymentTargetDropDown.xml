@@ -5,21 +5,6 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="deleteFavWeather_returnsOneIfSuccessAndZeroIfFail()">
-        <State />
-      </entry>
-      <entry key="getFavWeatherLocal_listOfFav()">
-        <State />
-      </entry>
-      <entry key="getFavWeather_listOfFav()">
-        <State />
-      </entry>
-      <entry key="insertFavByInstance_favInstanceAndContext_greaterThanZeroIfSuccess()">
-        <State />
-      </entry>
-      <entry key="testGetFavWeatherLocal()">
-        <State />
-      </entry>
     </value>
   </component>
 </project>
