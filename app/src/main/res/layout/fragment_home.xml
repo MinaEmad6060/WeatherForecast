@@ -8,6 +8,8 @@
     tools:context=".Home.View.HomeFragment">
 
 
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -21,12 +23,28 @@
         app:shapeAppearanceOverlay="@style/CircleShape"
         />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_centerInParent="true"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/test2">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/All"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

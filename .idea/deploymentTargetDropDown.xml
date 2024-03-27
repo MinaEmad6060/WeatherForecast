@@ -3,20 +3,22 @@
   <component name="deploymentTargetDropDown">
     <value>
       <entry key="app">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\minae\.android\avd\Pixel_3a_API_34.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-23T21:05:50.687025Z" />
-        </State>
+        <State />
+      </entry>
+      <entry key="deleteFavWeather_returnsOneIfSuccessAndZeroIfFail()">
+        <State />
+      </entry>
+      <entry key="getFavWeatherLocal_listOfFav()">
+        <State />
+      </entry>
+      <entry key="getFavWeather_listOfFav()">
+        <State />
+      </entry>
+      <entry key="insertFavByInstance_favInstanceAndContext_greaterThanZeroIfSuccess()">
+        <State />
+      </entry>
+      <entry key="testGetFavWeatherLocal()">
+        <State />
       </entry>
     </value>
   </component>

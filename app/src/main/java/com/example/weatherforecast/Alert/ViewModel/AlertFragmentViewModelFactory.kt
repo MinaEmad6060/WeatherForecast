@@ -2,11 +2,12 @@ package com.example.weatherforecast.Alert.ViewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
 import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 
 
 @Suppress("UNCHECKED_CAST")
-class AlertFragmentViewModelFactory (var repository: InterWeatherRepository)
+class AlertFragmentViewModelFactory (var repository: InterAlertRepo)
     : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if(modelClass.isAssignableFrom(AlertFragmentViewModel::class.java)){

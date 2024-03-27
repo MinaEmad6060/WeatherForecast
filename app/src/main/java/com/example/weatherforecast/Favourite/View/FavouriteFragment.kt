@@ -23,9 +23,12 @@ import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
-import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.Model.Repo.Fav.FavRepo
+import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.databinding.FragmentFavouriteBinding
+import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -46,6 +49,7 @@ class FavouriteFragment : Fragment() {
     private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
     private lateinit var favWeather: FavWeather
+    private lateinit var appContainer: AppContainer
 
 
 
@@ -57,7 +61,10 @@ class FavouriteFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentFavouriteBinding.inflate(inflater, container, false)
         return binding.root    }
-
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContainer = AppContainer(context.applicationContext)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,7 +77,7 @@ class FavouriteFragment : Fragment() {
         Log.i("goto", "goto: ${sharedPreferences}")
 
 
-        favFragmentViewModel.getFavWeatherVM(requireActivity())
+        favFragmentViewModel.getFavWeatherVM()
 
         Log.i(TAG, "lat&lon $lat $lon")
 
@@ -93,7 +100,7 @@ class FavouriteFragment : Fragment() {
                         favWeather.lat = lat
                         favWeather.lon = lon
                         favWeather.units = degree
-                        favFragmentViewModel.insertFavWeatherVM(favWeather,requireActivity())
+                        favFragmentViewModel.insertFavWeatherVM(favWeather)
                     }
                     is DataStateHomeRemote.Failure -> {Log.i(TAG, "Remote fail: ")}
                     else -> Log.i(TAG, "Remote loading: ")
@@ -149,14 +156,14 @@ class FavouriteFragment : Fragment() {
     }
 
     private fun initFavViewModel(){
-        favFragmentViewModelFactory = FavFragmentViewModelFactory(WeatherRepository)
+        favFragmentViewModelFactory = appContainer.favFactory
         favFragmentViewModel =
             ViewModelProvider(this, favFragmentViewModelFactory)
                 .get(FavFragmentViewModel::class.java)
     }
 
     private fun initHomeViewModel(){
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        homeFragmentViewModelFactory = appContainer.homeFactory
         homeFragmentViewModel =
             ViewModelProvider(this, homeFragmentViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)
@@ -196,7 +203,9 @@ class FavouriteFragment : Fragment() {
         builder.setMessage(message)
         builder.setPositiveButton("OK") { dialog, which ->
             // Handle positive button click
-           result= favFragmentViewModel.deleteFavWeatherVM(delFavWeather, context)
+            lifecycleScope.launch {
+                result = favFragmentViewModel.deleteFavWeatherVM(delFavWeather)
+            }
         }
         builder.setNegativeButton("Cancel") { dialog, which ->
             // Handle negative button click

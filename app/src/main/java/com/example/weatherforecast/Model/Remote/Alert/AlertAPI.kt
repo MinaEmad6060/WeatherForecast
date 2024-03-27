@@ -17,15 +17,10 @@ interface AlertAPI {
 }
 
 
-object RetrofitHelper {
+object AlertRetrofitHelper {
     private const val baseURL = "https://api.openweathermap.org/data/3.0/"
     val retrofitInstance = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(baseURL)
         .build()
-}
-object API {
-    val retrofitAlertService : AlertAPI by lazy {
-        RetrofitHelper.retrofitInstance.create(AlertAPI::class.java)
-    }
 }

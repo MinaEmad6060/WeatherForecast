@@ -1,15 +1,18 @@
 package com.example.weatherforecast.Home.View
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.content.SharedPreferences.Editor
+import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,8 +24,9 @@ import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
-import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.databinding.FragmentHomeBinding
+import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,8 +50,14 @@ class HomeFragment : Fragment() {
     private lateinit var weeklyLayoutManager: LinearLayoutManager
     private lateinit var homeWeather: HomeWeather
     private lateinit var roomList : MutableList<AdditionalWeather>
+    private lateinit var appContainer: AppContainer
 
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        appContainer = AppContainer(context.applicationContext)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i("MAINTEST", "HomeFrag : onCreate")
@@ -63,6 +73,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().window.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            statusBarColor= Color.TRANSPARENT
+        }
+        ObjectAnimator.ofInt(binding.progressBar, "progress", 6)
+            .start()
         handlingHomeFAB()
         setHourlyAdapter()
         setWeeklyAdapter()
@@ -71,7 +88,7 @@ class HomeFragment : Fragment() {
 
 
         Log.i("language", "onViewCreated: $language")
-        homeFragmentViewModel.getAllHomeWeatherVM(requireActivity())
+        homeFragmentViewModel.getAllHomeWeatherVM()
 
         lifecycleScope.launch {
             if (homeFragmentViewModel.isNetworkConnected(requireActivity())){
@@ -79,11 +96,13 @@ class HomeFragment : Fragment() {
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
                     lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, language, 40
                 )
-                homeFragmentViewModel.deleteAllHomeWeatherVM(requireActivity())
+                homeFragmentViewModel.deleteAllHomeWeatherVM()
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                     when(value){
                         is DataStateHomeRemote.Success -> {
                             Log.i(TAG, "additionalWeatherList-Success: ")
+                            binding.progressBar.visibility  = View.GONE
+                            binding.All.visibility = View.VISIBLE
                             roomList = value.data.list
                             val hourlyList = value.data.list.take(9)
                             val weeklyList =
@@ -99,7 +118,12 @@ class HomeFragment : Fragment() {
                             weeklyAdapter.submitList(weeklyList)
                         }
                         is DataStateHomeRemote.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
-                        else -> Log.i(TAG, "loading: ")
+                        else -> {
+                            binding.All.visibility = View.GONE
+                            binding.progressBar.visibility = View.VISIBLE
+                            Log.i(TAG, "loading: ")
+                        }
+
                     }
                 }
             }
@@ -182,7 +206,7 @@ class HomeFragment : Fragment() {
 
 
     private fun initViewModel(){
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        homeFragmentViewModelFactory = appContainer.homeFactory
         homeFragmentViewModel =
             ViewModelProvider(this, homeFragmentViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)
@@ -269,7 +293,7 @@ class HomeFragment : Fragment() {
             homeWeather.clouds = myList[i].clouds.all.toString()
             homeWeather.units = degree
 
-            homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather,requireActivity())
+            homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather)
         }
     }
 

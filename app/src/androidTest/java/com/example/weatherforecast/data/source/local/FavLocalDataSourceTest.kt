@@ -1,12 +1,16 @@
 package com.example.weatherforecast.data.source.local
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.MediumTest
 import com.example.weatherforecast.Model.Local.Fav.FavLocalDataSource
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
+import com.example.weatherforecast.Model.Local.Fav.FavWeatherDAO
 import com.example.weatherforecast.Model.Local.Fav.dbFav
+import junit.framework.TestCase
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,8 +18,11 @@ import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
@@ -39,7 +46,9 @@ import java.sql.ResultSet
 class FavLocalDataSourceTest {
 
     lateinit var db: dbFav
+    lateinit var dao: FavWeatherDAO
     lateinit var localDataSource: FavLocalDataSource
+    lateinit var context: Context
 
 
     //test live data synchronously
@@ -49,14 +58,20 @@ class FavLocalDataSourceTest {
 
     @Before
     fun setUp(){
+        context= ApplicationProvider.getApplicationContext()
+
+
         db = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
+            context,
             dbFav::class.java
         )
             .allowMainThreadQueries()
             .build()
 
-        localDataSource= FavLocalDataSource()
+        dao = db.getFavWeatherDao()
+
+
+        localDataSource= FavLocalDataSource(dao)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -67,40 +82,37 @@ class FavLocalDataSourceTest {
 
         //when
         val resultInsert=localDataSource.insertFavWeatherLocal(
-            favWeather,ApplicationProvider.getApplicationContext()
+            favWeather
         )
-
 
         //then
         assertThat(resultInsert, `is`(greaterThan(0)))
 
     }
 
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getFavWeatherLocal_listOfFav() = runBlockingTest {
-        // Given
+    fun getCurrentWeather_returnTrueOrFalse()= runBlockingTest {
+        //Given
         val favWeather = FavWeather()
-        favWeather.cityName = "Alex"
-        localDataSource.insertFavWeatherLocal(
-            favWeather,ApplicationProvider.getApplicationContext()
-        )
+        favWeather.cityName="Alex"
+        localDataSource.insertFavWeatherLocal(favWeather)
 
-        // When
 
-//        val resultTask = localDataSource.getFavWeatherLocal(ApplicationProvider.getApplicationContext())
-//        val result = resultTask.value[0].cityName
-        var resultTask: StateFlow<List<FavWeather>> = MutableStateFlow(emptyList())
-        val job=launch {
-            resultTask=localDataSource.getFavWeatherLocal(
-                ApplicationProvider.getApplicationContext())
+        var resultTask=listOf(FavWeather())
+        //When
+        val job = launch {
+            localDataSource.getFavWeatherLocal().collect{
+                resultTask = it
             }
+        }
         job.cancelAndJoin()
 
-        // Then
+        //Then
         assertThat(resultTask, not(nullValue()))
-        //assertThat(resultTask.size, `is`(1))
-        assertThat(resultTask.value.size, `is`(1))
+        assertThat(resultTask.size, `is`(1))
+        assertThat(resultTask[0].cityName, `is`("Alex"))
     }
 
 
@@ -111,13 +123,14 @@ class FavLocalDataSourceTest {
         val favWeather = FavWeather(1)
         val favWeather2 = FavWeather(2)
         localDataSource.insertFavWeatherLocal(
-            favWeather,ApplicationProvider.getApplicationContext())
+            favWeather)
+
 
         // When
         val result = localDataSource.deleteFavWeatherLocal(
-            favWeather,ApplicationProvider.getApplicationContext())
+            favWeather)
         val result2 = localDataSource.deleteFavWeatherLocal(
-            favWeather2,ApplicationProvider.getApplicationContext())
+            favWeather2)
 
 
         // Then

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
+import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +15,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class FavFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
+class FavFragmentViewModel(private var repo: InterFavRepo): ViewModel() {
     private val _favWeather= MutableStateFlow<DataStateFavRoom>(DataStateFavRoom.Loading)
     val favWeather: StateFlow<DataStateFavRoom> = _favWeather
 
 
-    fun getFavWeatherVM(context: Context){
+    fun getFavWeatherVM(){
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getFavWeatherLocalRepo(context)
+            repo.getFavWeatherLocalRepo()
                 .catch {
                     Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _favWeather.value = DataStateFavRoom.Failure(it)
@@ -33,21 +34,22 @@ class FavFragmentViewModel(private var repo: InterWeatherRepository): ViewModel(
         }
     }
 
-    fun deleteFavWeatherVM(favWeather: FavWeather, context: Context): Int{
+    suspend fun deleteFavWeatherVM(favWeather: FavWeather): Int{
         var res =0
         viewModelScope.async(Dispatchers.IO) {
-            res = repo.deleteFavWeatherLocalRepo(favWeather,context)
-            getFavWeatherVM(context)
-        }
+            res = repo.deleteFavWeatherLocalRepo(favWeather)
+            getFavWeatherVM()
+        }.await()
         return res
     }
 
-    fun insertFavWeatherVM(favWeather: FavWeather, context: Context): Long{
+    suspend fun insertFavWeatherVM(favWeather: FavWeather): Long{
         var res :Long=0
         viewModelScope.async(Dispatchers.IO) {
-            res = repo.insertFavWeatherLocalRepo(favWeather,context)
-            getFavWeatherVM(context)
-        }
+            res = repo.insertFavWeatherLocalRepo(favWeather)
+            getFavWeatherVM()
+        }.await()
+
         return res
     }
 

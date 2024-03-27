@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 
-interface WeatherAPI {
+interface HomeAPI {
 
     @GET("forecast")
     suspend fun getAdditionalWeatherAPI(
@@ -22,15 +22,10 @@ interface WeatherAPI {
 /*https://api.openweathermap.org/data/2.5/weather?
 lat=31.26863&lon=30.0059383&appid=a92ea15347fafa48d308e4c367a39bb8&units=metric*/
 
-object RetrofitHelper {
+object HomeRetrofitHelper {
     private const val baseURL = "https://api.openweathermap.org/data/2.5/"
     val retrofitInstance = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(baseURL)
         .build()
-}
-object API {
-    val retrofitService : WeatherAPI by lazy {
-        RetrofitHelper.retrofitInstance.create(WeatherAPI::class.java)
-    }
 }

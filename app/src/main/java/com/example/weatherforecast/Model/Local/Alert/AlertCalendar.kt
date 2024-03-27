@@ -5,12 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "alert_table")
 data class AlertCalendar(
-//    @PrimaryKey(autoGenerate = true)
-//    var id: Int=0,
-//    var startDate: String="",
-//    var endDate: String="",
-//    var startTime: String="",
-//    var endTime: String=""
     @PrimaryKey
     var infoOfAlert: String=""
 )
