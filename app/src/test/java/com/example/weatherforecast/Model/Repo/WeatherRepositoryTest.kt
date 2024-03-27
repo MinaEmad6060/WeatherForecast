@@ -2,7 +2,7 @@ package com.example.weatherforecast.Model.Repo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
-import com.example.weatherforecast.Model.Repo.FavTest.FakeFavLocalDataSource
+import com.example.weatherforecast.Model.Repo.FavTest.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before

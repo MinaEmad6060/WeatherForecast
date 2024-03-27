@@ -28,6 +28,7 @@ import com.example.weatherforecast.Model.Repo.WeatherRepository
 import com.example.weatherforecast.databinding.FragmentFavouriteBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -76,7 +77,7 @@ class FavouriteFragment : Fragment() {
         Log.i("goto", "goto: ${sharedPreferences}")
 
 
-        favFragmentViewModel.getFavWeatherVM(requireActivity())
+        favFragmentViewModel.getFavWeatherVM()
 
         Log.i(TAG, "lat&lon $lat $lon")
 
@@ -99,7 +100,7 @@ class FavouriteFragment : Fragment() {
                         favWeather.lat = lat
                         favWeather.lon = lon
                         favWeather.units = degree
-                        favFragmentViewModel.insertFavWeatherVM(favWeather,requireActivity())
+                        favFragmentViewModel.insertFavWeatherVM(favWeather)
                     }
                     is DataStateHomeRemote.Failure -> {Log.i(TAG, "Remote fail: ")}
                     else -> Log.i(TAG, "Remote loading: ")
@@ -202,7 +203,9 @@ class FavouriteFragment : Fragment() {
         builder.setMessage(message)
         builder.setPositiveButton("OK") { dialog, which ->
             // Handle positive button click
-           result= favFragmentViewModel.deleteFavWeatherVM(delFavWeather, context)
+            lifecycleScope.launch {
+                result = favFragmentViewModel.deleteFavWeatherVM(delFavWeather)
+            }
         }
         builder.setNegativeButton("Cancel") { dialog, which ->
             // Handle negative button click

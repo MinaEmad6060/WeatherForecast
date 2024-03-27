@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Repo.FavTest
+package com.example.weatherforecast.Model.Repo.FavTest.Repo
 
 import android.content.Context
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
@@ -14,11 +14,12 @@ class FakeFavLocalDataSource(
 ): InterFavLocalDataSource {
 
     override fun getFavWeatherLocal(): Flow<List<FavWeather>> = flow {
-        emit(favList)
+        emit(favList.toList())
     }
 
     override suspend fun deleteFavWeatherLocal(favWeather: FavWeather): Int {
-        return if(favList.remove(favWeather)) 1 else 0
+        val removed = favList.removeAll { it.cityName == favWeather.cityName }
+        return if (removed) 1 else 0
     }
 
     override suspend fun insertFavWeatherLocal(favWeather: FavWeather): Long {

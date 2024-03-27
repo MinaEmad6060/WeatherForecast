@@ -6,7 +6,7 @@ import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
 import com.example.weatherforecast.Model.Remote.Home.CurrentWeather
-import com.example.weatherforecast.Model.Repo.FavTest.FakeFavLocalDataSource
+import com.example.weatherforecast.Model.Repo.FavTest.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 

@@ -20,7 +20,7 @@ class FavFragmentViewModel(private var repo: InterFavRepo): ViewModel() {
     val favWeather: StateFlow<DataStateFavRoom> = _favWeather
 
 
-    fun getFavWeatherVM(context: Context){
+    fun getFavWeatherVM(){
         viewModelScope.launch(Dispatchers.IO) {
             repo.getFavWeatherLocalRepo()
                 .catch {
@@ -34,21 +34,22 @@ class FavFragmentViewModel(private var repo: InterFavRepo): ViewModel() {
         }
     }
 
-    fun deleteFavWeatherVM(favWeather: FavWeather, context: Context): Int{
+    suspend fun deleteFavWeatherVM(favWeather: FavWeather): Int{
         var res =0
         viewModelScope.async(Dispatchers.IO) {
             res = repo.deleteFavWeatherLocalRepo(favWeather)
-            getFavWeatherVM(context)
-        }
+            getFavWeatherVM()
+        }.await()
         return res
     }
 
-    fun insertFavWeatherVM(favWeather: FavWeather, context: Context): Long{
+    suspend fun insertFavWeatherVM(favWeather: FavWeather): Long{
         var res :Long=0
         viewModelScope.async(Dispatchers.IO) {
             res = repo.insertFavWeatherLocalRepo(favWeather)
-            getFavWeatherVM(context)
-        }
+            getFavWeatherVM()
+        }.await()
+
         return res
     }
 

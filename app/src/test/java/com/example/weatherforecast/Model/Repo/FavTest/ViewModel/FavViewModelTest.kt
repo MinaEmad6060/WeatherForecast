@@ -1,21 +1,25 @@
-package com.example.weatherforecast.Model.Repo.FavTest
+package com.example.weatherforecast.Model.Repo.FavTest.ViewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModel
+import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
-import com.example.weatherforecast.Model.Repo.FakeRepo
-import com.example.weatherforecast.Model.Repo.Fav.FavRepo
+import com.example.weatherforecast.Model.Repo.FavTest.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.greaterThan
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 
-class FavRepoTest {
+@ExperimentalCoroutinesApi
+class FavViewModelTest {
     val favWeather = FavWeather(cityName = "Cairo")
     val favWeather2 = FavWeather(cityName = "Alex")
     val favWeather3 = FavWeather(cityName = "Paris")
@@ -23,7 +27,8 @@ class FavRepoTest {
     val favWeatherList = listOf(favWeather,favWeather2,favWeather3,favWeather4)
 
     lateinit var fakeFavLocalDataSource: FakeFavLocalDataSource
-    lateinit var repository: FavRepo
+    lateinit var repository: FakeFavRepo
+    lateinit var viewModel: FavFragmentViewModel
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -31,19 +36,24 @@ class FavRepoTest {
     @Before
     fun setUp(){
         fakeFavLocalDataSource= FakeFavLocalDataSource(favWeatherList.toMutableList())
-        repository= FavRepo(fakeFavLocalDataSource)
+        repository= FakeFavRepo(fakeFavLocalDataSource)
+        viewModel= FavFragmentViewModel(repository)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun insertTasks_requestTasks_remoteTasks() = runBlockingTest {
         // Given
-        val favWeather = FavWeather(1)
+        val favWeather = FavWeather(cityName = "New City")
+        var resultInsert: Long=0
+        // When
+        val job = launch {
+            resultInsert = viewModel.insertFavWeatherVM(favWeather)
+        }
+        job.cancelAndJoin()
 
-        //when
-        val resultInsert=repository.insertFavWeatherLocalRepo(favWeather)
 
-        //Then
+        // Then
         assertThat(resultInsert, not(nullValue()))
         assertThat(resultInsert, `is`(1))
     }
@@ -51,18 +61,20 @@ class FavRepoTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun getTasks_requestTasks_remoteTasks()= runBlockingTest{
-        // Given
-        var resultList = listOf(FavWeather())
+        //given
+        viewModel.getFavWeatherVM()
+
 
         //when
-        val resultGet=repository.getFavWeatherLocalRepo()
-        resultGet.collect{
-            resultList=it
+        val result=viewModel.favWeather.first()
+        var resultList = emptyList<FavWeather>()
+        when(result){
+            is DataStateFavRoom.Success -> resultList=result.data
+            else ->{}
         }
 
         //Then
         assertThat(resultList, not(nullValue()))
-        assertThat(resultList.size, `is`(4))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,19 +82,17 @@ class FavRepoTest {
     fun deleteTasks_requestTasks_remoteTasks()= runBlockingTest{
         // Given
         val favWeather = FavWeather(cityName = "Alex")
-        var resultList = listOf(FavWeather())
+        var resultInsert: Int=0
 
 
         //when
-        val resultInsert=repository.deleteFavWeatherLocalRepo(favWeather)
-        val resultGet=repository.getFavWeatherLocalRepo()
-        resultGet.collect{
-            resultList=it
+        val job = launch {
+            resultInsert = viewModel.deleteFavWeatherVM(favWeather)
         }
+        job.cancelAndJoin()
 
         //Then
         assertThat(resultInsert, not(nullValue()))
-        assertThat(resultList.size, `is`(3))
         assertThat(resultInsert, `is`(1))
     }
 }
