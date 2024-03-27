@@ -17,7 +17,6 @@ import com.example.weatherforecast.Alert.View.AlertFragment.Companion.alertFragm
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
-import com.example.weatherforecast.Model.Repo.WeatherRepository
 import com.example.weatherforecast.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

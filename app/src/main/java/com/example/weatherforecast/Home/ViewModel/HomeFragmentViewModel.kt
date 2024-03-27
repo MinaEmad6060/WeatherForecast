@@ -10,6 +10,7 @@ import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
+import com.example.weatherforecast.Model.Repo.Home.InterHomeRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,7 @@ import java.util.Calendar
 
 
 
-class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel() {
+class HomeFragmentViewModel(private var repo: InterHomeRepo): ViewModel() {
 
     private val TAG = "HomeFragmentViewModel"
 
@@ -47,9 +48,9 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
     }
 
 
-    fun getAllHomeWeatherVM(context: Context){
+    fun getAllHomeWeatherVM(){
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getAllHomeWeatherLocalRepo(context)
+            repo.getAllHomeWeatherLocalRepo()
                 .catch {
                     Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _homeWeatherList.value = DataStateHomeRoom.Failure(it)
@@ -61,21 +62,21 @@ class HomeFragmentViewModel(private var repo: InterWeatherRepository): ViewModel
         }
     }
 
-    fun deleteAllHomeWeatherVM(context: Context): Int{
+    suspend fun deleteAllHomeWeatherVM(): Int{
         var res =0
         viewModelScope.async(Dispatchers.IO) {
-            res = repo.deleteAllHomeWeatherLocalRepo(context)
-            getAllHomeWeatherVM(context)
-        }
+            res = repo.deleteAllHomeWeatherLocalRepo()
+            getAllHomeWeatherVM()
+        }.await()
         return res
     }
 
-    suspend fun insertAllHomeWeatherVM(homeWeather: HomeWeather, context: Context): Long{
+    suspend fun insertAllHomeWeatherVM(homeWeather: HomeWeather): Long{
         var res :Long=0
         viewModelScope.async(Dispatchers.IO) {
-            res = repo.insertAllHomeWeatherLocalRepo(homeWeather,context)
-            getAllHomeWeatherVM(context)
-        }
+            res = repo.insertAllHomeWeatherLocalRepo(homeWeather)
+            getAllHomeWeatherVM()
+        }.await()
         return res
     }
 

@@ -24,7 +24,7 @@ import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Repo.Fav.FavRepo
-import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.databinding.FragmentFavouriteBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
@@ -156,14 +156,14 @@ class FavouriteFragment : Fragment() {
     }
 
     private fun initFavViewModel(){
-        favFragmentViewModelFactory = FavFragmentViewModelFactory(FavRepo(appContainer.favLocalDataSource))
+        favFragmentViewModelFactory = appContainer.favFactory
         favFragmentViewModel =
             ViewModelProvider(this, favFragmentViewModelFactory)
                 .get(FavFragmentViewModel::class.java)
     }
 
     private fun initHomeViewModel(){
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        homeFragmentViewModelFactory = appContainer.homeFactory
         homeFragmentViewModel =
             ViewModelProvider(this, homeFragmentViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)

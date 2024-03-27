@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Repo.FavTest.ViewModel
+package com.example.weatherforecast.Model.Repo.FavTest.ViewModel.Fav
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModel
@@ -82,17 +82,17 @@ class FavViewModelTest {
     fun deleteTasks_requestTasks_remoteTasks()= runBlockingTest{
         // Given
         val favWeather = FavWeather(cityName = "Alex")
-        var resultInsert: Int=0
+        var resultDelete=0
 
 
         //when
         val job = launch {
-            resultInsert = viewModel.deleteFavWeatherVM(favWeather)
+            resultDelete = viewModel.deleteFavWeatherVM(favWeather)
         }
         job.cancelAndJoin()
 
         //Then
-        assertThat(resultInsert, not(nullValue()))
-        assertThat(resultInsert, `is`(1))
+        assertThat(resultDelete, not(nullValue()))
+        assertThat(resultDelete, `is`(1))
     }
 }

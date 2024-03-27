@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.Repo.FavTest.ViewModel
+package com.example.weatherforecast.Model.Repo.FavTest.ViewModel.Fav
 
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo

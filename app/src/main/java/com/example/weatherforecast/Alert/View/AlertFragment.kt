@@ -37,7 +37,7 @@ import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Repo.Alert.AlertRepo
-import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentAlertBinding
 import com.example.weatherforecast.di.AppContainer
@@ -195,18 +195,14 @@ class AlertFragment : Fragment() {
     }
 
     private fun initHomeViewModel() {
-        homeFragmentViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        homeFragmentViewModelFactory = appContainer.homeFactory
         homeFragmentViewModel =
             ViewModelProvider(this, homeFragmentViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)
     }
 
     private fun initAlertViewModel() {
-        alertFragmentViewModelFactory = AlertFragmentViewModelFactory(
-            AlertRepo(appContainer.alertWeatherRemoteDataSource,
-                appContainer.alertWeatherLocalDataSource
-                )
-        )
+        alertFragmentViewModelFactory = appContainer.alertFactory
         alertFragmentViewModel =
             ViewModelProvider(this, alertFragmentViewModelFactory)
                 .get(AlertFragmentViewModel::class.java)

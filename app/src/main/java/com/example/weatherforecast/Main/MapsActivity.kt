@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.R
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -19,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.weatherforecast.databinding.ActivityMapsBinding
+import com.example.weatherforecast.di.AppContainer
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val TAG = "MapsActivity"
@@ -29,9 +30,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var selectedFragment: String
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
+    private lateinit var appContainer: AppContainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appContainer = AppContainer(applicationContext)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -81,7 +84,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun initViewModel(){
-        mainViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        mainViewModelFactory = appContainer.homeFactory
         mainViewModel =
             ViewModelProvider(this, mainViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)

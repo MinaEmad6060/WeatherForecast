@@ -21,10 +21,11 @@ import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Model.Repo.WeatherRepository
+import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
 import com.example.weatherforecast.databinding.ActivityMainBinding
+import com.example.weatherforecast.di.AppContainer
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -54,12 +55,6 @@ class MainActivity : AppCompatActivity() {
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
     }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        editor.putString("lastFragmentTag", "HomeFragment")
-//        editor.apply()
-//    }
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
         savedInstanceState ?: run {
@@ -118,7 +113,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModel(){
-        mainViewModelFactory = HomeFragmentViewModelFactory(WeatherRepository)
+        mainViewModelFactory = (application as MyApplication).appContainer.homeFactory
         mainViewModel =
             ViewModelProvider(this, mainViewModelFactory)
                 .get(HomeFragmentViewModel::class.java)
