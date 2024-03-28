@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo

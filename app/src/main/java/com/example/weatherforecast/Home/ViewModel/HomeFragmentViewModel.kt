@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
-import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.Repo.Home.InterHomeRepo
