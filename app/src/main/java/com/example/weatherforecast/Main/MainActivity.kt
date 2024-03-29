@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -37,6 +38,7 @@ const val REQUEST_LOCATION_CODE=100
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
+    private var language="EN"
     private lateinit var binding: ActivityMainBinding
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var sharedPreferences: SharedPreferences
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
+        setAppLang(this, language)
     }
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
@@ -123,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences =
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
+        language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
     }
 
     private fun replaceFragment(fragment: Fragment, fragTag: String){
@@ -204,6 +208,16 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent)
+    }
+
+    @SuppressLint("ResourceType")
+    fun setAppLang(context: Context, language: String){
+        //if(LocaleHelper.getLanguage(context).equals(language)){
+        var myContext = LocaleHelper.setLocale(context,language)
+        var resources = myContext.resources
+
+        //binding.today.text=resources.getString(R.string.today)
+        //}
     }
 
 }
