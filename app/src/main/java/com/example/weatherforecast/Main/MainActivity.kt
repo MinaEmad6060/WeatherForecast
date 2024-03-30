@@ -27,6 +27,9 @@ import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.editor
+import com.example.weatherforecast.Main.Utils.Companion.language
+import com.example.weatherforecast.Main.Utils.Companion.sharedPreferences
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
 import com.example.weatherforecast.databinding.ActivityMainBinding
@@ -44,11 +47,8 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private val backGround ="android.resource://com.example.weatherforecast/"
     private var backGroundDesc =""
-    private var language="EN"
     private lateinit var binding: ActivityMainBinding
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var sharedPreferences: SharedPreferences
-    lateinit var editor: Editor
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
 

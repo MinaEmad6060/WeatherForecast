@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.R
 import java.text.SimpleDateFormat
@@ -29,18 +30,22 @@ class HomeFragmentWeeklyAdapter :
     override fun onBindViewHolder(holder: WeeklyWeatherViewHolder, position: Int) {
         val currentObj = getItem(position)
         if (position==0){
-            holder.weeklyDay.text = "Tomorrow"
+//            holder.weeklyDay.text =
         }else{
             holder.weeklyDay.text = convertDateFormat(currentObj.dt_txt.split(" ")[0])
         }
             holder.weeklyDesc.text = currentObj.weather[0].description
-            holder.weeklyDate.text = currentObj.dt_txt.split(" ")[0]
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val date = dateFormat.parse(currentObj.dt_txt)
 
+        val arabicDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale(language))
+        val arabicDate = arabicDateFormat.format(date)
+
+        holder.weeklyDate.text = arabicDate.split(" ")[0]
             if (position==0){
                 units=currentObj.units
             }
-        holder.weeklyTemp.text =
-            currentObj.main.temp_min.toInt().toString()+"/"+
+        holder.weeklyTemp.text = currentObj.main.temp_min.toInt().toString()+"/"+
                     currentObj.main.temp_max.toInt().toString()+" "+units
             Glide.with(holder.itemView.context)
                 .load("https://openweathermap.org/img/wn/"

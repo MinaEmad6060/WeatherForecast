@@ -31,6 +31,8 @@ import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 
 class AppContainer(context: Context): InterAppContainer {
 
+
+
     //fav
     override val favWeatherDAO: FavWeatherDAO by lazy {
         val database: dbFav = dbFav.getInstance(context)

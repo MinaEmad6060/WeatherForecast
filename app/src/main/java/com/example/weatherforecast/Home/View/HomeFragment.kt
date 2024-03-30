@@ -21,6 +21,9 @@ import com.bumptech.glide.Glide
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MapsActivity
+import com.example.weatherforecast.Main.Utils.Companion.language
+import com.example.weatherforecast.Main.Utils.Companion.lat
+import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
@@ -36,9 +39,7 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
-    private var lat=0.0
-    private var lon=0.0
-    private var language="EN"
+
     private var temperature="metric"
     private var degree="°C"
     private var measure="m/s"
@@ -137,6 +138,7 @@ class HomeFragment : Fragment() {
                 }
             }
             else{
+                binding.progressBar.visibility = View.GONE
 
                 Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                 homeFragmentViewModel.homeWeatherList.collectLatest { value ->
@@ -232,7 +234,7 @@ class HomeFragment : Fragment() {
             .into(binding.mainWeatherImage)
         editor.putString("backGround", value.data.list[0].weather[0].icon)
         editor.apply()
-        binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()+" "+degree
+        binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()+""+degree
         binding.humidityValue.text = value.data.list[0].main.humidity
         binding.pressureValue.text = value.data.list[0].main.pressure
         if (measure=="mile/h"){
@@ -248,10 +250,14 @@ class HomeFragment : Fragment() {
         binding.weatherDate.text = homeFragmentViewModel.getDateAndTime().split(" ")[0]
         binding.weatherTime.text = homeFragmentViewModel.getDateAndTime().split(" ")[1]
         binding.city.text = value.data[0].cityName
+        Glide.with(requireActivity())
+            .load("https://openweathermap.org/img/wn/"
+                    +value.data[0].weatherIcon+"@2x.png")
+            .into(binding.mainWeatherImage)
         binding.temperatureValue.text = value.data[0].temperature+" "+value.data[0].units
         binding.humidityValue.text = value.data[0].humidity
         binding.pressureValue.text = value.data[0].pressure
-        if (measure=="mile/h"){
+        if (measure=="mile/h"&&language=="en"){
             binding.windValue.text = String.format("%.1f", ((value.data[0].windSpeed.toDouble())*2.23694))+" "+measure
         }else{
             binding.windValue.text = value.data[0].windSpeed+" "+measure
@@ -274,7 +280,9 @@ class HomeFragment : Fragment() {
             additionalWeather.main.pressure=homeWeatherList[i].pressure
             additionalWeather.main.temp_min=homeWeatherList[i].minTemperature.toDouble()
             additionalWeather.main.temp_max=homeWeatherList[i].maxTemperature.toDouble()
-            additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
+            if(language=="en"){
+                additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
+            }
             additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
             additionalWeather.weather[0].description=homeWeatherList[i].weatherDescription
             additionalWeather.weather[0].icon=homeWeatherList[i].weatherIcon
