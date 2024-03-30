@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.content.SharedPreferences.Editor
 import android.graphics.Color
+import android.net.Uri
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -90,6 +91,7 @@ class HomeFragment : Fragment() {
         setWeeklyAdapter()
         getSharedPreferences()
         initViewModel()
+
 
 
         Log.i("language", "onViewCreated: $language")

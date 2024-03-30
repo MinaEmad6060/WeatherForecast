@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -57,6 +58,18 @@ class MainActivity : AppCompatActivity() {
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
         setAppLang(this, language)
+        val path = "android.resource://com.example.weatherforecast/"+ R.raw.splash_video
+        val uri = Uri.parse(path)
+        binding.mainVideo.setVideoURI(uri)
+        binding.mainVideo.start()
+        binding.mainVideo.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.isLooping = true
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mainVideo.stopPlayback()
     }
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
