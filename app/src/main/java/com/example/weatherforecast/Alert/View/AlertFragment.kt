@@ -168,13 +168,13 @@ class AlertFragment : Fragment() {
         builder.setTitle(title)
         builder.setMessage(message)
         builder.setPositiveButton("OK") { dialog, which ->
-//            result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.id, context)
             lifecycleScope.launch {
                 result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.infoOfAlert)
             }
         }
 
         builder.setNegativeButton("Cancel") { dialog, which ->
+            alarmManager.cancel(pendingIntent);
         }
 
         builder.show()
