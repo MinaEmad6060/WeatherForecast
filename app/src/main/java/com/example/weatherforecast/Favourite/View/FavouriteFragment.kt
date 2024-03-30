@@ -121,7 +121,11 @@ class FavouriteFragment : Fragment() {
                 when(value){
                     is DataStateFavRoom.Success -> {
                         Log.i(TAG, "favWeather-success: $lat $lon")
-                        favAdapter.submitList(value.data)
+                        if (value.data.isNotEmpty()) {
+                            binding.noFavImg.visibility = View.GONE
+                            binding.favRecyclerView.visibility = View.VISIBLE
+                        }
+                            favAdapter.submitList(value.data)
                     }
                     is DataStateFavRoom.Failure -> {Log.i(TAG, "favWeather-fail: ")}
                     else -> Log.i(TAG, "favWeather-loading: ")

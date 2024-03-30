@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="light_white">#66FFFFFF</color>
     <color name="bg_view_white">#26FFFFFF</color>
+    <color name="recyc_bg">#00FFFFFF</color>
 
 </resources>

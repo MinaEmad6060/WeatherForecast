@@ -124,6 +124,10 @@ class AlertFragment : Fragment() {
                 when(value){
                     is DataStateAlertRoom.Success -> {
                         Log.i("alert", "favWeather-success:")
+                        if (value.data.isNotEmpty()){
+                            binding.alarmOffImg.visibility=View.GONE
+                            binding.alertRecyclerView.visibility=View.VISIBLE
+                        }
                         alertAdapter.submitList(value.data)
                     }
                     is DataStateAlertRoom.Failure -> {Log.i(TAG, "favWeather-fail: ")}

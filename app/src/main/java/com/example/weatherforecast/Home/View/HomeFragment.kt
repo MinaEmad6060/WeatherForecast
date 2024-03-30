@@ -106,8 +106,7 @@ class HomeFragment : Fragment() {
                     when(value){
                         is DataStateHomeRemote.Success -> {
                             Log.i(TAG, "additionalWeatherList-Success: ")
-                            binding.progressBar.visibility  = View.GONE
-                            binding.All.visibility = View.VISIBLE
+
                             roomList = value.data.list
                             val hourlyList = value.data.list.take(9)
                             val weeklyList =
@@ -121,6 +120,8 @@ class HomeFragment : Fragment() {
                             weeklyList[0].units = degree
                             hourlyAdapter.submitList(hourlyList)
                             weeklyAdapter.submitList(weeklyList)
+                            binding.progressBar.visibility  = View.GONE
+                            binding.All.visibility = View.VISIBLE
 
                         }
                         is DataStateHomeRemote.Failure -> {
