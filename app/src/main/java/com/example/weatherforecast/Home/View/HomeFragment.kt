@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.LocaleHelper
@@ -120,8 +121,14 @@ class HomeFragment : Fragment() {
                             weeklyList[0].units = degree
                             hourlyAdapter.submitList(hourlyList)
                             weeklyAdapter.submitList(weeklyList)
+
                         }
-                        is DataStateHomeRemote.Failure -> {Log.i(TAG, "additionalWeatherList-fail: ")}
+                        is DataStateHomeRemote.Failure -> {
+                            Log.i(TAG, "additionalWeatherList-fail: ")
+                            binding.All.visibility = View.GONE
+                            binding.progressBar.visibility = View.GONE
+                            Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
+                        }
                         else -> {
                             binding.All.visibility = View.GONE
                             binding.progressBar.visibility = View.VISIBLE
@@ -221,6 +228,10 @@ class HomeFragment : Fragment() {
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
         binding.city.text = value.data.city.name
+        Glide.with(requireActivity())
+            .load("https://openweathermap.org/img/wn/"
+                    +value.data.list[0].weather[0].icon+"@2x.png")
+            .into(binding.mainWeatherImage)
         binding.temperatureUnitHome.text = degree
         binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()
         binding.humidityValue.text = value.data.list[0].main.humidity
