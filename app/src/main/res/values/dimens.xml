@@ -9,7 +9,7 @@
     <dimen name="margin_card">15dp</dimen>
     <dimen name="elevation_card">50dp</dimen>
     <dimen name="small_radius_card">20dp</dimen>
-    <dimen name="large_radius_card">15dp</dimen>
+    <dimen name="large_radius_card">35dp</dimen>
     <dimen name="very_small_text">14sp</dimen>
     <dimen name="big2_header_text">50sp</dimen>
     <dimen name="medium_text_size">32sp</dimen>
