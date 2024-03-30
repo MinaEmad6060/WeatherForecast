@@ -3,7 +3,6 @@ package com.example.weatherforecast.Alert.ViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
-import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 
 
 @Suppress("UNCHECKED_CAST")

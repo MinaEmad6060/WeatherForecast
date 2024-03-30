@@ -76,9 +76,9 @@ class AlertFragment : Fragment() {
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
 
     private lateinit var alertFragmentViewModelFactory: AlertFragmentViewModelFactory
+    private lateinit var alertFragmentViewModel: AlertFragmentViewModel
     companion object {
-        lateinit var alertFragmentViewModel: AlertFragmentViewModel
-        lateinit var alertWeatherId: String
+        var alertWeatherId: String=""
     }
 
     private lateinit var alertAdapter: AlertFragmentAdapter
@@ -248,6 +248,8 @@ class AlertFragment : Fragment() {
         Toast.makeText(requireActivity(), "Reminder Set!", Toast.LENGTH_SHORT).show()
         val intent = Intent(requireActivity(), Receiver::class.java)
         alertWeatherId=alertCalendar.infoOfAlert
+        editor.putString("AlertID",alertWeatherId)
+        editor.apply()
 //        intent.putExtra("myId", alertCalendar.infoOfAlert)
         Log.i("alertRemote", "initAlarm : $alertWeatherId ")
         pendingIntent = PendingIntent.getBroadcast(requireActivity(), 0, intent,

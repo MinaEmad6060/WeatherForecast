@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote

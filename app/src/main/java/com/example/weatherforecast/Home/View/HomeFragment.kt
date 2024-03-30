@@ -1,6 +1,7 @@
 package com.example.weatherforecast.Home.View
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,18 +14,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.LocaleHelper
 import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
 import com.example.weatherforecast.Model.Repo.Home.HomeRepo
+import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
@@ -73,7 +77,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+//        setAppLang(requireActivity(), language.toLowerCase())
         requireActivity().window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             statusBarColor= Color.TRANSPARENT
@@ -296,6 +300,16 @@ class HomeFragment : Fragment() {
             homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather)
         }
     }
+
+//    @SuppressLint("ResourceType")
+//    fun setAppLang(context: Context, language: String){
+//        //if(LocaleHelper.getLanguage(context).equals(language)){
+//            var myContext = LocaleHelper.setLocale(context,language)
+//            var resources = myContext.resources
+//
+//            binding.today.text=resources.getString(R.string.today)
+//        //}
+//    }
 
 
 }

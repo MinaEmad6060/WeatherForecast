@@ -3,7 +3,6 @@ package com.example.weatherforecast.Favourite.ViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
-import com.example.weatherforecast.Model.Repo.InterWeatherRepository
 
 
 @Suppress("UNCHECKED_CAST")
