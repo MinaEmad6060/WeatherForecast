@@ -22,7 +22,7 @@
     <string name="wind_unit">م/ث</string>
     <string name="wind">الرياح</string>
     <string name="pressure_value">1000</string>
-    <string name="pressure_unit">با</string>
+    <string name="pressure_unit">ض.جوي</string>
     <string name="pressure">الضغط</string>
     <string name="cloud_value">5</string>
     <string name="cloud_unit">%</string>
@@ -76,4 +76,5 @@
     <string name="dialog_ok">موافق</string>
     <string name="dialog_cancel">الغاء</string>
     <string name="empty_dialog_time">-:-</string>
+
 </resources>

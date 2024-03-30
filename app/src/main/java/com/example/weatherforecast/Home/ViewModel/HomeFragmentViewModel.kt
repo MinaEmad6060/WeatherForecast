@@ -16,8 +16,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
-
+import java.util.Locale
 
 
 class HomeFragmentViewModel(private var repo: InterHomeRepo): ViewModel() {
@@ -82,12 +83,8 @@ class HomeFragmentViewModel(private var repo: InterHomeRepo): ViewModel() {
 
     fun getDateAndTime(): String {
         val calendar = Calendar.getInstance()
-        return "${calendar.get(Calendar.YEAR)}"+
-                "-" + "${calendar.get(Calendar.MONTH) + 1}"+
-                "-" + "${calendar.get(Calendar.DAY_OF_MONTH)}"+
-                " " + String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY)) +
-                ":" + String.format("%02d", calendar.get(Calendar.MINUTE))+
-                ":" + String.format("%02d", calendar.get(Calendar.SECOND))
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(calendar.time)
     }
 
     fun isNetworkConnected(context: Context): Boolean {

@@ -29,11 +29,11 @@ class HomeFragmentHourlyAdapter :
     override fun onBindViewHolder(holder: HourlyWeatherViewHolder, position: Int) {
         val currentObj = getItem(position)
             holder.hourlyTime.text = convertTimeFormat(currentObj.dt_txt.split(" ")[1])
-            holder.hourlyTemp.text = currentObj.main.temp.toInt().toString()
+
             if (position==0){
                 units=currentObj.units
             }
-            holder.hourlyUnit.text = units
+            holder.hourlyTemp.text = (currentObj.main.temp.toInt().toString()+" "+units).format(Locale("ar"))
             Glide.with(holder.itemView.context)
                 .load("https://openweathermap.org/img/wn/"
                         +currentObj.weather[0].icon+"@2x.png")
@@ -46,7 +46,6 @@ class HourlyWeatherViewHolder (view : View): RecyclerView.ViewHolder(view){
     var hourlyTime : TextView = view.findViewById(R.id.additional_weather_time_hourly)
     var hourlyImg : ImageView = view.findViewById(R.id.additional_weather_img_hourly)
     var hourlyTemp : TextView = view.findViewById(R.id.additional_weather_temp_hourly)
-    var hourlyUnit : TextView = view.findViewById(R.id.temperature_unit_hourly)
 }
 
 

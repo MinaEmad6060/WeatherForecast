@@ -6,39 +6,44 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.DisplayMetrics
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieDrawable
 import com.example.weatherforecast.Alert.View.AlertFragment
 import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
 import com.example.weatherforecast.databinding.ActivityMainBinding
-import com.example.weatherforecast.di.AppContainer
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import java.util.Locale
 
 const val REQUEST_LOCATION_CODE=100
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
+    private val backGround ="android.resource://com.example.weatherforecast/"
+    private var backGroundDesc =""
     private var language="EN"
     private lateinit var binding: ActivityMainBinding
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -57,20 +62,34 @@ class MainActivity : AppCompatActivity() {
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
-        setAppLang(this, language)
-        val path = "android.resource://com.example.weatherforecast/"+ R.raw.splash_video
-        val uri = Uri.parse(path)
-        binding.mainVideo.setVideoURI(uri)
-        binding.mainVideo.start()
-        binding.mainVideo.setOnPreparedListener { mediaPlayer ->
-            mediaPlayer.isLooping = true
-        }
+        setLocale(language)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.mainVideo.stopPlayback()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        binding.mainVideo.stopPlayback()
+//    }
+
+//    fun initBackGround(){
+//        Log.i(TAG, "initBackGround: $backGroundDesc")
+//        when(backGroundDesc){
+//            "01d","02d" -> {
+//                Log.i(TAG, "initBackGroundEnter: $backGroundDesc")
+//                initVideo(R.raw.splash_video)}
+//            else -> {initVideo(R.raw.splash_video)}
+//        }
+//    }
+
+
+//    fun initVideo(raw: Int){
+//        val path = backGround + raw
+//        val uri = Uri.parse(path)
+//        binding.mainVideo.setVideoURI(uri)
+//        binding.mainVideo.start()
+//        binding.mainVideo.setOnPreparedListener { mediaPlayer ->
+//            mediaPlayer.isLooping = true
+//        }
+//    }
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
         savedInstanceState ?: run {
@@ -139,6 +158,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences =
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
+        backGroundDesc = sharedPreferences.getString("backGround", "")!!
         language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
     }
 
@@ -223,14 +243,16 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    @SuppressLint("ResourceType")
-    fun setAppLang(context: Context, language: String){
-        //if(LocaleHelper.getLanguage(context).equals(language)){
-        var myContext = LocaleHelper.setLocale(context,language)
-        var resources = myContext.resources
+    fun setLocale(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
 
-        //binding.today.text=resources.getString(R.string.today)
-        //}
+        val resources = resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
 }

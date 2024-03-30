@@ -60,7 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:layout_marginTop="48dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/today"
                 android:textSize="@dimen/big_header_text"
@@ -80,6 +81,7 @@
                 android:text="@string/date"
                 android:textSize="@dimen/small_text"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/main_weather_image"
                 app:layout_constraintBottom_toBottomOf="@id/main_weather_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/today" />
@@ -96,6 +98,7 @@
                 android:textSize="@dimen/small_text"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/main_weather_image"
+                app:layout_constraintStart_toEndOf="@id/main_weather_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/today" />
 
@@ -103,9 +106,9 @@
                 android:id="@+id/main_weather_image"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
                 android:scaleType="fitCenter"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintBottom_toTopOf="@+id/city"
                 app:layout_constraintEnd_toStartOf="@+id/weather_time"
@@ -127,42 +130,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/main_weather_image" />
 
-            <LinearLayout
-                android:id="@+id/temperature_layout"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:weightSum="20"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/city">
+
 
                 <TextView
                     android:id="@+id/temperature_value"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="13"
-                    android:gravity="end"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:text="@string/temperature"
                     android:textSize="@dimen/very_big_header_text"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/city" />
-
-                <TextView
-                    android:id="@+id/temperature_unit_home"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="5"
-                    android:gravity="start"
-                    android:text="@string/c"
-                    android:textSize="70sp">
-
-                </TextView>
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/weather_status"
@@ -175,7 +156,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/temperature_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/temperature_value" />
 
             <FrameLayout
                 android:id="@+id/widgets"
@@ -276,33 +257,18 @@
 
                             android:src="@drawable/wind" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="2"
-                            android:orientation="horizontal"
-                            android:weightSum="8">
+
 
                             <TextView
                                 android:id="@+id/wind_value"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:gravity="end"
+                                android:layout_weight="2"
+                                android:gravity="center"
                                 android:text="@string/wind_value"
                                 android:textSize="14sp" />
 
-                            <TextView
-                                android:id="@+id/wind_unit_home"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:gravity="start"
-                                android:paddingLeft="@dimen/small_padding"
-                                android:text="@string/wind_unit"
-                                android:textSize="14sp" />
 
-                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/wind_text"

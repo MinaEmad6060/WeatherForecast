@@ -17,6 +17,7 @@ import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentSettingsBinding
+import java.util.Locale
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
@@ -68,6 +69,7 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 "language" -> {
+                        setLocale(itemSelected.toLowerCase())
                         editor.putString("languageSettings",itemSelected)
                         editor.apply()
                         startActivity(Intent(requireActivity(), MainActivity::class.java))
@@ -113,6 +115,18 @@ class SettingsFragment : Fragment() {
         editor=sharedPreferences.edit()
 //        editor.putString("SelectedFragment","Home")
 //        editor.apply()
+    }
+
+    fun setLocale(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val resources = resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
 }
