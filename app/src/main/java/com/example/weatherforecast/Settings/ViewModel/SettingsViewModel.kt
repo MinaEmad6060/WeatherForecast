@@ -1,20 +1,27 @@
 package com.example.weatherforecast.Settings.ViewModel
-
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.GlobalScope
+import com.example.weatherforecast.Main.Utils
+//import com.example.weatherforecast.Main.Utils.Companion.language
+import com.example.weatherforecast.Main.Utils.Companion.sharedPreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
-class SharedViewModel : ViewModel() {
-    private val _sharedFlow = MutableSharedFlow<String>(replay = 1)
-    val sharedFlow: SharedFlow<String> = _sharedFlow
-
-    suspend fun sendData(data: String) {
-        _sharedFlow.emit(data)
-        val i=_sharedFlow.subscriptionCount.value
-        Log.i("SharedFlow", "sendData: $i")
+class CentralSharedFlow(
+    externalScope: CoroutineScope,
+) {
+    private val _tickFlow = MutableSharedFlow<String>(replay = 0)
+    val tickFlow: SharedFlow<String> = _tickFlow
+    private var generalJob: Job
+    val centralLanguage= sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
+    init {
+        generalJob=externalScope.launch {
+            _tickFlow.emit(centralLanguage)
+            Log.i("newShare", "newShare: $centralLanguage")
+        }
     }
 }

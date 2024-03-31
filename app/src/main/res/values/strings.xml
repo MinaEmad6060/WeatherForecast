@@ -7,10 +7,11 @@
     <string name="get_started">GET STARTED</string>
     <string name="homeFrag">Home</string>
     <string name="today">Today</string>
-    <string name="date">date</string>
-    <string name="time">time</string>
-    <string name="city">city</string>
-    <string name="temperature">20</string>
+    <string name="date">-</string>
+    <string name="time">-</string>
+    <string name="city">-</string>
+    <string name="tomorrow">"Tomorrow"</string>
+    <string name="temperature">-</string>
     <string name="o">o</string>
     <string name="c">°C</string>
     <string name="cloudy">Cloudy</string>
@@ -75,4 +76,5 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="empty_dialog_time">-:-</string>
+    <string name="set_alarm">Alarm</string>
 </resources>

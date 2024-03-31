@@ -19,6 +19,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -113,6 +115,7 @@ class AlertFragment : Fragment() {
         initHomeViewModel()
         initAlertViewModel()
         setAlertAdapter()
+        onClickAlarmRadioButtons()
         alertFragmentViewModel.getAlertWeatherVM()
 
         Log.i("alertLatLon", "lat: $lat lon: $lon")
@@ -124,6 +127,10 @@ class AlertFragment : Fragment() {
                 when(value){
                     is DataStateAlertRoom.Success -> {
                         Log.i("alert", "favWeather-success:")
+                        if (value.data.isNotEmpty()){
+                            binding.alarmOffImg.visibility=View.GONE
+                            binding.alertRecyclerView.visibility=View.VISIBLE
+                        }
                         alertAdapter.submitList(value.data)
                     }
                     is DataStateAlertRoom.Failure -> {Log.i(TAG, "favWeather-fail: ")}
@@ -134,6 +141,17 @@ class AlertFragment : Fragment() {
 
     }
 
+    private fun onClickAlarmRadioButtons(){
+        val radioGroup = dialogAlert.findViewById<RadioGroup>(R.id.radio_group_alarm)
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            val radioButton = group.findViewById<RadioButton>(checkedId)
+            if(radioButton.text=="Notification"){
+                Log.i("alarmNotify", "Notification")
+            }else if(radioButton.text=="Alarm"){
+                Log.i("alarmNotify", "Alarm")
+            }
+        }
+    }
 
     private fun getSharedPreferences()
     {
@@ -168,13 +186,13 @@ class AlertFragment : Fragment() {
         builder.setTitle(title)
         builder.setMessage(message)
         builder.setPositiveButton("OK") { dialog, which ->
-//            result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.id, context)
             lifecycleScope.launch {
                 result= alertFragmentViewModel.deleteAlertWeatherVM(alertCalendar.infoOfAlert)
             }
         }
 
         builder.setNegativeButton("Cancel") { dialog, which ->
+            alarmManager.cancel(pendingIntent);
         }
 
         builder.show()

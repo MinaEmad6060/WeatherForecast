@@ -15,13 +15,19 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
+import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.R
+import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import com.example.weatherforecast.databinding.FragmentSettingsBinding
+import kotlinx.coroutines.CoroutineScope
+import java.util.Locale
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+//    private lateinit var centralSharedFlow: CentralSharedFlow
+//    private lateinit var externalScope: CoroutineScope
     var itemSelected="a"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +74,9 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 "language" -> {
+                        setLocale(itemSelected.toLowerCase())
+                        language=itemSelected.toLowerCase()
+                        Log.i("newShare", "handlingDropDownListClick: $language")
                         editor.putString("languageSettings",itemSelected)
                         editor.apply()
                         startActivity(Intent(requireActivity(), MainActivity::class.java))
@@ -113,6 +122,18 @@ class SettingsFragment : Fragment() {
         editor=sharedPreferences.edit()
 //        editor.putString("SelectedFragment","Home")
 //        editor.apply()
+    }
+
+    fun setLocale(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val resources = resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
 }
