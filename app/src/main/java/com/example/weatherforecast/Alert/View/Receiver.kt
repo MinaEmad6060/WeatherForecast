@@ -1,6 +1,7 @@
 package com.example.weatherforecast.Alert.View
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Application
 
 import android.content.BroadcastReceiver
@@ -8,8 +9,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.PixelFormat
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.WindowManager
+import android.widget.Button
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -26,6 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Receiver : BroadcastReceiver(){
     private var lat=0.0
@@ -37,7 +46,15 @@ class Receiver : BroadcastReceiver(){
     private lateinit var sharedPreferences: SharedPreferences
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context?, intent: Intent?) {
+
+
+        if (context != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                alarm(context)
+            }
+        }
 
         if (context != null) {
             getSharedPreferences(context)
@@ -130,6 +147,34 @@ class Receiver : BroadcastReceiver(){
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
         id = sharedPreferences.getString("AlertID","0")!!
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("InflateParams")
+    private suspend fun alarm(context: Context) {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val floatingLayout =
+            LayoutInflater.from(context).inflate(R.layout.dialog_alert, null)
+        val btnOk = floatingLayout.findViewById<Button>(R.id.dialog_ok)
+        btnOk.setOnClickListener {
+            windowManager.removeView(floatingLayout)
+        }
+        val params = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+        params.gravity = Gravity.TOP
+//                params.x = 0
+//                params.y = 100
+
+        // Add the view to the window
+        withContext(Dispatchers.Main) {
+            // Add the view to the window
+            windowManager.addView(floatingLayout, params)
+        }
     }
 
 

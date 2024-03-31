@@ -77,7 +77,6 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 "language" -> {
-                        //setLocale(itemSelected.toLowerCase())
                         Log.i("newShare", "handlingDropDownListClick: $language")
                         editor.putString("languageSettings",itemSelected)
                         editor.apply()
