@@ -3,17 +3,11 @@ package com.example.weatherforecast.Main
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.SharedPreferences.Editor
 import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,14 +15,14 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
 import com.example.weatherforecast.Alert.View.AlertFragment
 import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.editor
+import com.example.weatherforecast.Main.Utils.Companion.setLocale
 import com.example.weatherforecast.Main.Utils.Companion.sharedPreferences
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
@@ -41,12 +35,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import java.util.Locale
 
 const val REQUEST_LOCATION_CODE=100
 
@@ -58,8 +47,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
+
     private lateinit var centralSharedFlow: CentralSharedFlow
     private lateinit var externalScope: CoroutineScope
+
     private lateinit var job: Job
     private var mainLanguage =""
 
@@ -67,33 +58,29 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("MAINTEST", "Activity : onCreate")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initSharedPreferences()
+        createCentralSharedLanguage(lifecycleScope,resources)
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
-
-        externalScope= lifecycleScope
-        centralSharedFlow=CentralSharedFlow(externalScope)
-        job = externalScope.launch {
-            centralSharedFlow.tickFlow.collect {
-                Log.i("newShare", "main: $it")
-                mainLanguage=it
-            }
-        }
-
-        setLocale(mainLanguage)
+//        initBackGround()
+//        externalScope= lifecycleScope
+//        centralSharedFlow=CentralSharedFlow(externalScope)
+//        job = externalScope.launch {
+//            centralSharedFlow.tickFlow.collectLatest {
+//                Log.i("newShare", "main: $it")
+//                mainLanguage=it
+//            }
+//        }
+//        mainLanguage=createCentralSharedLanguage(lifecycleScope)
+//        setLocale(mainLanguage,resources)
     }
 
 //    override fun onDestroy() {
 //        super.onDestroy()
-////        binding.mainVideo.stopPlayback()
-//        externalScope.cancel()
-//        job.cancel()
-//        centralSharedFlow.cleanup()
-//
+//        //binding.homeVideo.stopPlayback()
 //    }
 
 //    fun initBackGround(){
@@ -105,14 +92,14 @@ class MainActivity : AppCompatActivity() {
 //            else -> {initVideo(R.raw.splash_video)}
 //        }
 //    }
-
-
+//
+//
 //    fun initVideo(raw: Int){
 //        val path = backGround + raw
 //        val uri = Uri.parse(path)
-//        binding.mainVideo.setVideoURI(uri)
-//        binding.mainVideo.start()
-//        binding.mainVideo.setOnPreparedListener { mediaPlayer ->
+//        binding.homeVideo.setVideoURI(uri)
+//        binding.homeVideo.start()
+//        binding.homeVideo.setOnPreparedListener { mediaPlayer ->
 //            mediaPlayer.isLooping = true
 //        }
 //    }
@@ -185,7 +172,6 @@ class MainActivity : AppCompatActivity() {
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
         backGroundDesc = sharedPreferences.getString("backGround", "")!!
-        mainLanguage = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
     }
 
     private fun replaceFragment(fragment: Fragment, fragTag: String){
@@ -267,18 +253,6 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent)
-    }
-
-    fun setLocale(languageCode: String) {
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
-
-        val resources = resources
-        val configuration = resources.configuration
-        configuration.setLocale(locale)
-
-        @Suppress("DEPRECATION")
-        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
 }

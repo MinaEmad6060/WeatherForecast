@@ -42,7 +42,8 @@ class HomeFragmentWeeklyAdapter :
         val arabicDate = arabicDateFormat.format(date)
 
         holder.weeklyDate.text = arabicDate.split(" ")[0]
-            if (position==0){
+
+        if (position==0){
                 units=currentObj.units
             }
         holder.weeklyTemp.text = currentObj.main.temp_min.toInt().toString()+"/"+

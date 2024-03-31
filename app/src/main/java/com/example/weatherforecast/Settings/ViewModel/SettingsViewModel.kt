@@ -14,14 +14,16 @@ import kotlinx.coroutines.launch
 class CentralSharedFlow(
     externalScope: CoroutineScope,
 ) {
-    private val _tickFlow = MutableSharedFlow<String>(replay = 0)
+    private val _tickFlow = MutableSharedFlow<String>(replay = 3)
     val tickFlow: SharedFlow<String> = _tickFlow
-    private var generalJob: Job
-    val centralLanguage= sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
+    val centralLanguage= sharedPreferences.getString("languageSettings", "")!!.toLowerCase()
     init {
-        generalJob=externalScope.launch {
-            _tickFlow.emit(centralLanguage)
-            Log.i("newShare", "newShare: $centralLanguage")
+        externalScope.launch {
+            while (true){
+                _tickFlow.emit(centralLanguage)
+                //Log.i("newShare", "newShare: $centralLanguage")
+                delay(3000)
+            }
         }
     }
 }

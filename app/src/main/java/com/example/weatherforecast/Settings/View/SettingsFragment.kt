@@ -13,8 +13,11 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
+import com.example.weatherforecast.Main.Utils
+import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
@@ -74,11 +77,11 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 "language" -> {
-                        setLocale(itemSelected.toLowerCase())
-                        language=itemSelected.toLowerCase()
+                        //setLocale(itemSelected.toLowerCase())
                         Log.i("newShare", "handlingDropDownListClick: $language")
                         editor.putString("languageSettings",itemSelected)
                         editor.apply()
+                        language= createCentralSharedLanguage(lifecycleScope, resources)
                         startActivity(Intent(requireActivity(), MainActivity::class.java))
                 }
                 "temperature" -> {

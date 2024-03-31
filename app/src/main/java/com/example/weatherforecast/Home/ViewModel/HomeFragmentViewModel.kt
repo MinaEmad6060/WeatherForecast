@@ -87,10 +87,10 @@ class HomeFragmentViewModel(private var repo: InterHomeRepo): ViewModel() {
         return dateFormat.format(calendar.time)
     }
 
-    fun isNetworkConnected(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
-    }
+//    fun isNetworkConnected(context: Context): Boolean {
+//        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+//        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+//    }
 
 }
