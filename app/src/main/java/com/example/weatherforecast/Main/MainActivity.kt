@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.example.weatherforecast.Alert.View.AlertFragment
@@ -28,10 +29,10 @@ import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.Utils.Companion.editor
-import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Main.Utils.Companion.sharedPreferences
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
+import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import com.example.weatherforecast.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -39,6 +40,12 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 const val REQUEST_LOCATION_CODE=100
@@ -51,6 +58,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
+    private lateinit var centralSharedFlow: CentralSharedFlow
+    private lateinit var externalScope: CoroutineScope
+    private lateinit var job: Job
+    private var mainLanguage =""
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,12 +74,26 @@ class MainActivity : AppCompatActivity() {
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
-        setLocale(language)
+
+        externalScope= lifecycleScope
+        centralSharedFlow=CentralSharedFlow(externalScope)
+        job = externalScope.launch {
+            centralSharedFlow.tickFlow.collect {
+                Log.i("newShare", "main: $it")
+                mainLanguage=it
+            }
+        }
+
+        setLocale(mainLanguage)
     }
 
 //    override fun onDestroy() {
 //        super.onDestroy()
-//        binding.mainVideo.stopPlayback()
+////        binding.mainVideo.stopPlayback()
+//        externalScope.cancel()
+//        job.cancel()
+//        centralSharedFlow.cleanup()
+//
 //    }
 
 //    fun initBackGround(){
@@ -159,7 +185,7 @@ class MainActivity : AppCompatActivity() {
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
         backGroundDesc = sharedPreferences.getString("backGround", "")!!
-        language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
+        mainLanguage = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
     }
 
     private fun replaceFragment(fragment: Fragment, fragTag: String){
