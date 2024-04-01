@@ -26,8 +26,9 @@ class Utils {
         lateinit var editor: SharedPreferences.Editor
 
         var language=""
+        var backGroundDesc = "09d"
 
-
+        var radioGroupBtn = ""
 
 
         fun initBackGround(backGroundDesc: String, activity: Activity){

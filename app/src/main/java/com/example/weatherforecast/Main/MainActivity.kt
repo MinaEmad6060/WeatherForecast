@@ -21,6 +21,7 @@ import com.example.weatherforecast.Favourite.View.FavouriteFragment
 import com.example.weatherforecast.Home.View.HomeFragment
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.editor
 import com.example.weatherforecast.Main.Utils.Companion.initBackGround
@@ -44,7 +45,6 @@ const val REQUEST_LOCATION_CODE=100
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private val backGround ="android.resource://com.example.weatherforecast/"
-    private var backGroundDesc =""
     private lateinit var binding: ActivityMainBinding
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("video", "onCreate: ")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initSharedPreferences()
@@ -61,10 +62,20 @@ class MainActivity : AppCompatActivity() {
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
-        //initBackGround(backGroundDesc,this)
         //initBackGround()
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.i("video", "onStart: ")
+        initBackGround(backGroundDesc,this)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("video", "onResume: ")
+    }
 //    override fun onDestroy() {
 //        super.onDestroy()
 //        binding.homeVideo.stopPlayback()
@@ -138,6 +149,8 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences =
             this.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
+        editor.putString("backGround",backGroundDesc)
+        editor.apply()
         backGroundDesc = sharedPreferences.getString("backGround", "")!!
     }
 

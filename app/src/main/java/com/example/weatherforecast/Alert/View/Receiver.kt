@@ -3,6 +3,7 @@ package com.example.weatherforecast.Alert.View
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.Dialog
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,18 +16,22 @@ import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.radioGroupBtn
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
 import com.example.weatherforecast.R
 import com.example.weatherforecast.di.AppContainer
@@ -50,11 +55,11 @@ class Receiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
 
 
-        if (context != null) {
-            CoroutineScope(Dispatchers.IO).launch {
-                alarm(context)
-            }
-        }
+//        if (context != null) {
+//            CoroutineScope(Dispatchers.IO).launch {
+//                alarm(context)
+//            }
+//        }
 
         if (context != null) {
             getSharedPreferences(context)
@@ -72,12 +77,11 @@ class Receiver : BroadcastReceiver(){
                             Log.i("receive", "success: ")
                             Log.i("receive", "event:${value.data.alerts[0].event} ")
                             Log.i("receive", "desc:${value.data.alerts[0].description} ")
-                            val mediaPlayer = MediaPlayer.create(context, R.raw.alarm)
-                            mediaPlayer.start()
+
 
                             val builder = context?.let {
                                 NotificationCompat.Builder(it, "notifyLemubit")
-                                    .setSmallIcon(R.drawable.ic_launcher_background)
+                                    .setSmallIcon(R.drawable.app)
                                     .setContentTitle(value.data.alerts[0].event)
                                     .setContentText(value.data.alerts[0].description)
                                     .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -105,8 +109,14 @@ class Receiver : BroadcastReceiver(){
                                 // for ActivityCompat#requestPermissions for more details.
                                 return@collectLatest
                             }
-                            if (notificationManager != null && builder != null) {
+                            if (notificationManager != null && builder != null && radioGroupBtn=="Notification") {
                                 notificationManager.notify(200, builder.build())
+                            }else if(radioGroupBtn=="Alarm"){
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    alarm(context,value.data.alerts[0].event,value.data.alerts[0].description)
+                                    val mediaPlayer = MediaPlayer.create(context, R.raw.alarm)
+                                    mediaPlayer.start()
+                                }
                             }
                             Log.i("alertRemote", "alertRemote-Success: ")
                             Log.i("alertRemote", "alertRemote-${value.data.timezone}")
@@ -132,6 +142,7 @@ class Receiver : BroadcastReceiver(){
         }
     }
 
+
     fun initViewModel(context: Context){
         appContainer = AppContainer(context.applicationContext)
         alertFragmentViewModelFactory = appContainer.alertFactory
@@ -146,17 +157,22 @@ class Receiver : BroadcastReceiver(){
             context.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        radioGroupBtn = sharedPreferences.getString("alarmNotify", "Notification")!!
         id = sharedPreferences.getString("AlertID","0")!!
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("InflateParams")
-    private suspend fun alarm(context: Context) {
+    private suspend fun alarm(context: Context, event: String, desc: String) {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val floatingLayout =
-            LayoutInflater.from(context).inflate(R.layout.dialog_alert, null)
-        val btnOk = floatingLayout.findViewById<Button>(R.id.dialog_ok)
-        btnOk.setOnClickListener {
+            LayoutInflater.from(context).inflate(R.layout.item_alarm, null)
+        val eventInfo=floatingLayout.findViewById<TextView>(R.id.event_alarm_text)
+        val descInfo=floatingLayout.findViewById<TextView>(R.id.desc_alarm_text)
+        val btnDismiss = floatingLayout.findViewById<Button>(R.id.dismiss_btn)
+        eventInfo.text=event
+        descInfo.text=desc
+        btnDismiss.setOnClickListener {
             windowManager.removeView(floatingLayout)
         }
         val params = WindowManager.LayoutParams(

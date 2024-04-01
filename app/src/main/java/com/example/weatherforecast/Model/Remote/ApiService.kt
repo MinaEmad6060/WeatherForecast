@@ -18,7 +18,7 @@ interface ApiService {
         @Query("cnt") cnt: Int
     ): CurrentWeather
 
-    @GET("onecall")
+    @GET("https://api.openweathermap.org/data/3.0/onecall")
     suspend fun getAlertWeatherAPI(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,

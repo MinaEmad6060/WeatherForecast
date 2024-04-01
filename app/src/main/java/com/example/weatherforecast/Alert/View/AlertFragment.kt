@@ -37,6 +37,10 @@ import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils
+import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
+import com.example.weatherforecast.Main.Utils.Companion.initBackGround
+import com.example.weatherforecast.Main.Utils.Companion.radioGroupBtn
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
 import com.example.weatherforecast.Model.Local.Alert.AlertWeatherDAO
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
@@ -152,8 +156,12 @@ class AlertFragment : Fragment() {
             val radioButton = group.findViewById<RadioButton>(checkedId)
             if(radioButton.text=="Notification"){
                 Log.i("alarmNotify", "Notification")
+                editor.putString("alarmNotify","Notification")
+                editor.apply()
             }else if(radioButton.text=="Alarm"){
                 Log.i("alarmNotify", "Alarm")
+                editor.putString("alarmNotify","Alarm")
+                editor.apply()
             }
         }
     }
@@ -246,6 +254,8 @@ class AlertFragment : Fragment() {
             dialogAlert.cancel()
         }
     }
+
+
     private fun onClickDialogCancel(){
         btnCancel=dialogAlert.findViewById(R.id.dialog_cancel)
         btnCancel.setOnClickListener{
@@ -284,14 +294,14 @@ class AlertFragment : Fragment() {
         endChoice=convertToMillisecond(endDateAlert,endTimeAlert)
         val diff=endChoice-startChoice
 
-//        val random = Random()
-//        val randomNumberBetweenStartAndEnd = (random.nextInt(diff.toInt()) + 1)
-//        Log.i("initAlarm", "initAlarm: $randomNumberBetweenStartAndEnd")
+        val random = Random()
+        val randomNumberBetweenStartAndEnd = (random.nextInt(diff.toInt()) + 1)
+        Log.i("initAlarm", "initAlarm: $randomNumberBetweenStartAndEnd")
 
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
-//            startChoice + randomNumberBetweenStartAndEnd,
-            System.currentTimeMillis() + 2000,
+            startChoice + randomNumberBetweenStartAndEnd,
+//            System.currentTimeMillis() + 2000,
             pendingIntent)
     }
 
