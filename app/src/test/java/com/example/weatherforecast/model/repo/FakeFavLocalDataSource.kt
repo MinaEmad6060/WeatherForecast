@@ -20,5 +20,5 @@ class FakeFavLocalDataSource(
         val removed = favList.removeAll { it.cityName == favWeather.cityName }
         return if (removed) 1 else 0
     }
-    
+
 }

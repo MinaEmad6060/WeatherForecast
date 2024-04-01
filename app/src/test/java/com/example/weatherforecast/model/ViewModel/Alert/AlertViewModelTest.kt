@@ -1,24 +1,16 @@
 package com.example.weatherforecast.Model.ViewModel.Alert
 
-import android.util.Log
-import com.example.weatherforecast.Model.ViewModel.Fav.FakeFavRepo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
-import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModel
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
-import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
-import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
-import com.example.weatherforecast.Model.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
