@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 
 
 class FakeAlertLocalDataSource(
-    private var alertList: MutableList<AlertCalendar> = mutableListOf()
+    private var alertList: MutableList<AlertCalendar>
 ) :InterAlertLocalDataSource{
     override fun getAlertWeatherLocal(): Flow<List<AlertCalendar>> =
         flow {

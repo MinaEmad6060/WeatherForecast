@@ -40,11 +40,11 @@ class AlertFragmentViewModel(private var repo: InterAlertRepo): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.getAlertWeatherLocalRepo()
                 .catch {
-                    Log.i("vmRoom", "getAllHomeWeatherVM: fail")
+                    //Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _alertWeatherRoom.value = DataStateAlertRoom.Failure(it)
                 }
                 .collect{
-                    Log.i("vmRoom", "getAllHomeWeatherVM: success")
+                    //Log.i("vmRoom", "getAllHomeWeatherVM: success")
                     _alertWeatherRoom.value = DataStateAlertRoom.Success(it)
                 }
         }
