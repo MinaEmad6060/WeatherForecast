@@ -142,6 +142,7 @@ class FavouriteFragment : Fragment() {
         binding.favFab.setOnClickListener {
             if (isNetworkConnected(favContext)){
                 editor.putString("goToFragment","")
+                editor.putString("SelectedFragment","Fav")
                 editor.apply()
                 startActivity(Intent(requireActivity(), MapsActivity::class.java))
             }else{
@@ -191,7 +192,6 @@ class FavouriteFragment : Fragment() {
         temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
         degree = sharedPreferences.getString("degreeSettings", "°C")!!
         editor = sharedPreferences.edit()
-        editor.putString("SelectedFragment","Fav")
         editor.apply()
 
     }

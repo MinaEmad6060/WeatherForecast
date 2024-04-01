@@ -73,6 +73,8 @@ class SettingsFragment : Fragment() {
                     if(itemSelected == "GPS"){
                         startActivity(Intent(requireActivity(), MainActivity::class.java))
                     }else if(itemSelected == "Map"){
+                        editor.putString("SelectedFragment","Set")
+                        editor.apply()
                         startActivity(Intent(requireActivity(), MapsActivity::class.java))
                     }
                 }

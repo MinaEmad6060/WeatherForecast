@@ -433,7 +433,4 @@ class AlertFragment : Fragment() {
             someActivityResultLauncher.launch(intent)
         }
     }
-
-
-
 }
