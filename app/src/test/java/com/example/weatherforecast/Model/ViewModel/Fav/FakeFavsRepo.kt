@@ -2,22 +2,22 @@ package com.example.weatherforecast.Model.ViewModel.Fav
 
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
-import com.example.weatherforecast.Model.Repo.FakeFavLocalDataSource
+import com.example.weatherforecast.Model.Repo.FakeFavsLocalDataSource
 import kotlinx.coroutines.flow.Flow
 
 
-class FakeFavRepo(
-    private var fakeFavLocalDataSource: FakeFavLocalDataSource
+class FakeFavsRepo(
+    private var fakeFavsLocalDataSource: FakeFavsLocalDataSource
 ) : InterFavRepo {
     override suspend fun getFavWeatherLocalRepo(): Flow<List<FavWeather>> {
-        return fakeFavLocalDataSource.getFavWeatherLocal()
+        return fakeFavsLocalDataSource.getFavWeatherLocal()
     }
 
     override suspend fun deleteFavWeatherLocalRepo(favWeather: FavWeather): Int {
-        return fakeFavLocalDataSource.deleteFavWeatherLocal(favWeather)
+        return fakeFavsLocalDataSource.deleteFavWeatherLocal(favWeather)
     }
 
     override suspend fun insertFavWeatherLocalRepo(favWeather: FavWeather): Long {
-        return fakeFavLocalDataSource.insertFavWeatherLocal(favWeather)
+        return fakeFavsLocalDataSource.insertFavWeatherLocal(favWeather)
     }
 }

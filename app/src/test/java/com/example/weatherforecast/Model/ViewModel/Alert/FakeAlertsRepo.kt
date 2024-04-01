@@ -2,17 +2,14 @@ package com.example.weatherforecast.Model.ViewModel.Alert
 
 
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
-import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
 import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
-import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
-import com.example.weatherforecast.Model.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.flow.Flow
 
 
-class FakeAlertRepo (
+class FakeAlertsRepo (
     private var fakeAlertRemoteDataSource: FakeAlertRemoteDataSource,
-    private var fakeAlertLocalDataSource: FakeAlertLocalDataSource
+    private var fakeAlertsLocalDataSource: FakeAlertsLocalDataSource
 ) : InterAlertRepo {
 
     override suspend fun getAlertWeatherRemoteRepo(
@@ -24,14 +21,14 @@ class FakeAlertRepo (
     }
 
     override suspend fun getAlertWeatherLocalRepo(): Flow<List<AlertCalendar>> {
-        return fakeAlertLocalDataSource.getAlertWeatherLocal()
+        return fakeAlertsLocalDataSource.getAlertWeatherLocal()
     }
 
     override suspend fun deleteAlertWeatherLocalRepo(id: String): Int {
-        return fakeAlertLocalDataSource.deleteAlertWeatherLocal(id)
+        return fakeAlertsLocalDataSource.deleteAlertWeatherLocal(id)
     }
 
     override suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long {
-        return fakeAlertLocalDataSource.insertAlertWeatherLocal(alertCalendar)
+        return fakeAlertsLocalDataSource.insertAlertWeatherLocal(alertCalendar)
     }
 }
