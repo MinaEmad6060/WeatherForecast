@@ -22,6 +22,8 @@ import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
+import com.example.weatherforecast.Main.Utils.Companion.initBackGround
+//import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
 //import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Main.Utils.Companion.lat
@@ -56,6 +58,7 @@ class HomeFragment : Fragment() {
     private lateinit var roomList : MutableList<AdditionalWeather>
     private lateinit var appContainer: AppContainer
     private var homeLanguage=""
+    private var backGroundDesc =""
 
 
 
@@ -109,7 +112,10 @@ class HomeFragment : Fragment() {
                     when(value){
                         is DataStateHomeRemote.Success -> {
                             Log.i(TAG, "additionalWeatherList-Success: ")
-                            roomList = value.data.list
+                            backGroundDesc=value.data.list[0].weather[0].icon
+                            editor.putString("backGround",backGroundDesc)
+                            editor.apply()
+                            initBackGround(backGroundDesc, requireActivity())
                             val hourlyList = value.data.list.take(9)
                             val weeklyList =
                                 value.data.list.filterIndexed { index, _ -> ((index+1) % 8 == 0)}

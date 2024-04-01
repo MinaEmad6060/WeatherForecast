@@ -1,10 +1,15 @@
-package com.example.weatherforecast.Model.Remote.Home
+package com.example.weatherforecast.model.Remote.Home
 
+import com.example.weatherforecast.Model.Remote.Home.CurrentWeather
+import com.example.weatherforecast.Model.Remote.Home.InterRemoteDataSource
 import com.example.weatherforecast.model.Remote.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class HomeRemoteDataSource(private val homeAPI: ApiService): InterRemoteDataSource
+
+class HomeRemoteDataSource(
+    private val homeAPI: ApiService
+): InterRemoteDataSource
 {
     override suspend fun getAdditionalWeatherRemote(
         lat: Double, lon: Double, key: String, units: String, lang: String, cnt: Int

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -22,6 +23,7 @@ import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.editor
+import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 import com.example.weatherforecast.Main.Utils.Companion.setLocale
 import com.example.weatherforecast.Main.Utils.Companion.sharedPreferences
 import com.example.weatherforecast.R
@@ -48,12 +50,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var mainViewModel: HomeFragmentViewModel
 
-    private lateinit var centralSharedFlow: CentralSharedFlow
-    private lateinit var externalScope: CoroutineScope
-
-    private lateinit var job: Job
-    private var mainLanguage =""
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,44 +61,15 @@ class MainActivity : AppCompatActivity() {
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
-//        initBackGround()
-//        externalScope= lifecycleScope
-//        centralSharedFlow=CentralSharedFlow(externalScope)
-//        job = externalScope.launch {
-//            centralSharedFlow.tickFlow.collectLatest {
-//                Log.i("newShare", "main: $it")
-//                mainLanguage=it
-//            }
-//        }
-//        mainLanguage=createCentralSharedLanguage(lifecycleScope)
-//        setLocale(mainLanguage,resources)
+        //initBackGround(backGroundDesc,this)
+        //initBackGround()
     }
 
 //    override fun onDestroy() {
 //        super.onDestroy()
-//        //binding.homeVideo.stopPlayback()
+//        binding.homeVideo.stopPlayback()
 //    }
 
-//    fun initBackGround(){
-//        Log.i(TAG, "initBackGround: $backGroundDesc")
-//        when(backGroundDesc){
-//            "01d","02d" -> {
-//                Log.i(TAG, "initBackGroundEnter: $backGroundDesc")
-//                initVideo(R.raw.splash_video)}
-//            else -> {initVideo(R.raw.splash_video)}
-//        }
-//    }
-//
-//
-//    fun initVideo(raw: Int){
-//        val path = backGround + raw
-//        val uri = Uri.parse(path)
-//        binding.homeVideo.setVideoURI(uri)
-//        binding.homeVideo.start()
-//        binding.homeVideo.setOnPreparedListener { mediaPlayer ->
-//            mediaPlayer.isLooping = true
-//        }
-//    }
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
         savedInstanceState ?: run {

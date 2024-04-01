@@ -72,7 +72,7 @@ class Receiver : BroadcastReceiver(){
                             Log.i("receive", "success: ")
                             Log.i("receive", "event:${value.data.alerts[0].event} ")
                             Log.i("receive", "desc:${value.data.alerts[0].description} ")
-                            val mediaPlayer = MediaPlayer.create(context, R.raw.abc)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.alarm)
                             mediaPlayer.start()
 
                             val builder = context?.let {

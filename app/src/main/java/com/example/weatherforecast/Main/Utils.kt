@@ -1,11 +1,17 @@
 package com.example.weatherforecast.Main
 
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.net.Uri
+import android.provider.MediaStore.Video
 import android.util.Log
+import android.view.View
+import android.widget.VideoView
+import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -21,6 +27,36 @@ class Utils {
 
         var language=""
 
+
+
+
+        fun initBackGround(backGroundDesc: String, activity: Activity){
+            var videoCode=0
+            videoCode = when(backGroundDesc){
+                "01d","01n" -> { R.raw.clear_sky }
+                "02d","02n","03d","03n","04d","04n" -> { R.raw.cloudy }
+                "09d","09n","10d","10n" -> { R.raw.rain }
+                "13d","13n" -> { R.raw.snow }
+                "11d","11n" -> { R.raw.thunder }
+                "50d","50n" -> { R.raw.mist_def }
+                else -> { R.raw.splash_video }
+            }
+
+            initVideo(videoCode,activity)
+        }
+
+
+        fun initVideo(raw: Int, activity: Activity){
+            val video=activity.findViewById<VideoView>(R.id.home_video)
+            val path = "android.resource://com.example.weatherforecast/" + raw
+            val uri = Uri.parse(path)
+            video.setVideoURI(uri)
+            video.start()
+            video.setOnPreparedListener { mediaPlayer ->
+                mediaPlayer.isLooping = true
+                mediaPlayer.setVolume(0f, 0f)
+            }
+        }
         fun isNetworkConnected(context: Context): Boolean {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
