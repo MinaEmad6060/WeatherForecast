@@ -28,6 +28,8 @@ class Utils {
         var language=""
         var backGroundDesc = "09d"
 
+        var radioGroupBtn = ""
+
 
         fun initBackGround(backGroundDesc: String, activity: Activity){
             var videoCode=0

@@ -22,6 +22,7 @@
     <string name="humidity_value">100</string>
     <string name="wind_unit">م/ث</string>
     <string name="wind">الرياح</string>
+    <string name="dismiss">إيقاف</string>
     <string name="pressure_value">1000</string>
     <string name="pressure_unit">ض.جوي</string>
     <string name="pressure">الضغط</string>
