@@ -1,5 +1,6 @@
 package com.example.weatherforecast.Alert.View
 
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -11,8 +12,10 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -23,6 +26,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -90,6 +94,7 @@ class AlertFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         appContainer = AppContainer(context.applicationContext)
+        checkPermissions()
     }
 
     override fun onCreateView(
@@ -279,13 +284,14 @@ class AlertFragment : Fragment() {
         endChoice=convertToMillisecond(endDateAlert,endTimeAlert)
         val diff=endChoice-startChoice
 
-        val random = Random()
-        val randomNumberBetweenStartAndEnd = (random.nextInt(diff.toInt()) + 1)
-        Log.i("initAlarm", "initAlarm: $randomNumberBetweenStartAndEnd")
+//        val random = Random()
+//        val randomNumberBetweenStartAndEnd = (random.nextInt(diff.toInt()) + 1)
+//        Log.i("initAlarm", "initAlarm: $randomNumberBetweenStartAndEnd")
 
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
-            startChoice + randomNumberBetweenStartAndEnd,
+//            startChoice + randomNumberBetweenStartAndEnd,
+            System.currentTimeMillis() + 2000,
             pendingIntent)
     }
 
@@ -389,6 +395,42 @@ class AlertFragment : Fragment() {
                 endTimeEditText.setText(endTimeAlert)
             }, hour, minute, true)
             timePickerDialog.show()
+        }
+    }
+
+
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            requireActivity().setShowWhenLocked(true)
+            requireActivity().setTurnScreenOn(true)
+
+            if (!Settings.canDrawOverlays(activity)) {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply {
+                    data = Uri.parse("package:" + requireContext().packageName)
+                }
+                someActivityResultLauncher.launch(intent)
+            }
+        }
+    }
+
+
+
+    val someActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (!Settings.canDrawOverlays(requireContext())) {
+            requestOverlayPermission()
+            Toast.makeText(requireActivity(), "Permission not granted", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun requestOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(requireContext())) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + requireContext().packageName)
+            )
+            someActivityResultLauncher.launch(intent)
         }
     }
 }

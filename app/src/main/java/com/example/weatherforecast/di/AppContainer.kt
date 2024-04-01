@@ -15,19 +15,21 @@ import com.example.weatherforecast.Model.Local.Home.HomeLocalDataSource
 import com.example.weatherforecast.Model.Local.Home.HomeWeatherDAO
 import com.example.weatherforecast.Model.Local.Home.InterHomeLocalDataSource
 import com.example.weatherforecast.Model.Local.Home.dbHome
-import com.example.weatherforecast.Model.Remote.Alert.AlertAPI
+//import com.example.weatherforecast.Model.Remote.Alert.AlertAPI
 import com.example.weatherforecast.Model.Remote.Alert.AlertRemoteDataSource
-import com.example.weatherforecast.Model.Remote.Alert.AlertRetrofitHelper
+//import com.example.weatherforecast.Model.Remote.Alert.AlertRetrofitHelper
 import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
-import com.example.weatherforecast.Model.Remote.Home.HomeAPI
-import com.example.weatherforecast.Model.Remote.Home.HomeRemoteDataSource
-import com.example.weatherforecast.Model.Remote.Home.HomeRetrofitHelper
+//import com.example.weatherforecast.Model.Remote.Home.HomeAPI
+import com.example.weatherforecast.model.Remote.Home.HomeRemoteDataSource
+//import com.example.weatherforecast.Model.Remote.Home.HomeRetrofitHelper
 import com.example.weatherforecast.Model.Remote.Home.InterRemoteDataSource
 import com.example.weatherforecast.Model.Repo.Alert.AlertRepo
 import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
 import com.example.weatherforecast.Model.Repo.Fav.FavRepo
 import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
 import com.example.weatherforecast.Model.Repo.Home.HomeRepo
+import com.example.weatherforecast.model.Remote.ApiRetrofitHelper
+import com.example.weatherforecast.model.Remote.ApiService
 
 class AppContainer(context: Context): InterAppContainer {
 
@@ -56,14 +58,14 @@ class AppContainer(context: Context): InterAppContainer {
         val dao = database.getAlertWeatherDao()
         dao
     }
-    override val alertWeatherAPI: AlertAPI by lazy {
-        AlertRetrofitHelper.retrofitInstance.create(AlertAPI::class.java)
-    }
+//    override val alertWeatherAPI: AlertAPI by lazy {
+//        AlertRetrofitHelper.retrofitInstance.create(AlertAPI::class.java)
+//    }
     override val alertWeatherLocalDataSource: InterAlertLocalDataSource by lazy {
         AlertLocalDataSource(alertWeatherDAO)
     }
     override val alertWeatherRemoteDataSource: InterAlertRemoteDataSource by lazy {
-        AlertRemoteDataSource(alertWeatherAPI)
+        AlertRemoteDataSource(apiService)
     }
     override val alertRepo: InterAlertRepo by lazy {
         AlertRepo(
@@ -81,14 +83,14 @@ class AppContainer(context: Context): InterAppContainer {
         val dao = database.getHomeWeatherDao()
         dao
     }
-    override val homeWeatherAPI: HomeAPI by lazy {
-        HomeRetrofitHelper.retrofitInstance.create(HomeAPI::class.java)
-    }
+//    override val homeWeatherAPI: HomeAPI by lazy {
+//        HomeRetrofitHelper.retrofitInstance.create(HomeAPI::class.java)
+//    }
     override val homeWeatherLocalDataSource: InterHomeLocalDataSource by lazy {
         HomeLocalDataSource(homeWeatherDAO)
     }
     override val homeWeatherRemoteDataSource: InterRemoteDataSource by lazy {
-        HomeRemoteDataSource(homeWeatherAPI)
+        HomeRemoteDataSource(apiService)
     }
     override val homeRepo: HomeRepo by lazy {
         HomeRepo(
@@ -98,6 +100,10 @@ class AppContainer(context: Context): InterAppContainer {
     }
     override val homeFactory: HomeFragmentViewModelFactory by lazy {
         HomeFragmentViewModelFactory(homeRepo)
+    }
+
+    override val apiService: ApiService by lazy {
+        ApiRetrofitHelper.retrofitInstance.create(ApiService::class.java)
     }
 
 }

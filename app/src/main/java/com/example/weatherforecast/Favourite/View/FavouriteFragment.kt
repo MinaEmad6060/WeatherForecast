@@ -20,6 +20,7 @@ import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
+import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
@@ -50,6 +51,7 @@ class FavouriteFragment : Fragment() {
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
     private lateinit var favWeather: FavWeather
     private lateinit var appContainer: AppContainer
+    private lateinit var favContext: Context
 
 
 
@@ -63,12 +65,13 @@ class FavouriteFragment : Fragment() {
         return binding.root    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        favContext=context
         appContainer = AppContainer(context.applicationContext)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        handlingFavFAB()
+        handlingFavFAB(view)
         setFavAdapter()
         getSharedPreferences()
         initHomeViewModel()
@@ -135,11 +138,17 @@ class FavouriteFragment : Fragment() {
 
     }
 
-    private fun handlingFavFAB(){
+    private fun handlingFavFAB(view: View){
         binding.favFab.setOnClickListener {
-            editor.putString("goToFragment","")
-            editor.apply()
-            startActivity(Intent(requireActivity(), MapsActivity::class.java))
+            if (isNetworkConnected(favContext)){
+                editor.putString("goToFragment","")
+                editor.putString("SelectedFragment","Fav")
+                editor.apply()
+                startActivity(Intent(requireActivity(), MapsActivity::class.java))
+            }else{
+                Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
+            }
+
         }
     }
 
@@ -183,13 +192,12 @@ class FavouriteFragment : Fragment() {
         temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
         degree = sharedPreferences.getString("degreeSettings", "°C")!!
         editor = sharedPreferences.edit()
-        editor.putString("SelectedFragment","Fav")
         editor.apply()
 
     }
 
     fun navToFavDetails(favDetails: FavWeather){
-        if(homeFragmentViewModel.isNetworkConnected(requireActivity())){
+        if(isNetworkConnected(requireActivity())){
             editor.putString("latitude",favDetails.lat.toString())
             editor.putString("longitude",favDetails.lon.toString())
             editor.putString("lastFragmentTag","HomeFragment")

@@ -21,21 +21,23 @@ import com.bumptech.glide.Glide
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MapsActivity
-import com.example.weatherforecast.Main.Utils.Companion.language
+import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
+import com.example.weatherforecast.Main.Utils.Companion.initBackGround
+//import com.example.weatherforecast.Main.Utils.Companion.initBackGround
+import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
+//import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
+import com.example.weatherforecast.Main.Utils.Companion.setLocale
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
-import com.example.weatherforecast.Model.Repo.Home.HomeRepo
-import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
@@ -55,6 +57,8 @@ class HomeFragment : Fragment() {
     private lateinit var homeWeather: HomeWeather
     private lateinit var roomList : MutableList<AdditionalWeather>
     private lateinit var appContainer: AppContainer
+    private var homeLanguage=""
+    private var backGroundDesc =""
 
 
 
@@ -64,6 +68,7 @@ class HomeFragment : Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        homeLanguage=createCentralSharedLanguage(lifecycleScope,resources)
         Log.i("MAINTEST", "HomeFrag : onCreate")
     }
 
@@ -77,13 +82,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         requireActivity().window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             statusBarColor= Color.TRANSPARENT
         }
         ObjectAnimator.ofInt(binding.progressBar, "progress", 6)
             .start()
-        handlingHomeFAB()
+        handlingHomeFAB(view)
         setHourlyAdapter()
         setWeeklyAdapter()
         getSharedPreferences()
@@ -91,21 +98,24 @@ class HomeFragment : Fragment() {
 
 
 
-        Log.i("language", "onViewCreated: $language")
+//        Log.i("language", "onViewCreated: $homeLanguage")
         homeFragmentViewModel.getAllHomeWeatherVM()
 
         lifecycleScope.launch {
-            if (homeFragmentViewModel.isNetworkConnected(requireActivity())){
+            if (isNetworkConnected(requireActivity())){
                 Log.i("myLoc", "onViewCreated: $lat & $lon")
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-                    lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, language, 40
+                    lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, homeLanguage, 40
                 )
                 homeFragmentViewModel.deleteAllHomeWeatherVM()
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                     when(value){
                         is DataStateHomeRemote.Success -> {
                             Log.i(TAG, "additionalWeatherList-Success: ")
-                            roomList = value.data.list
+                            backGroundDesc=value.data.list[0].weather[0].icon
+                            editor.putString("backGround",backGroundDesc)
+                            editor.apply()
+                            initBackGround(backGroundDesc, requireActivity())
                             val hourlyList = value.data.list.take(9)
                             val weeklyList =
                                 value.data.list.filterIndexed { index, _ -> ((index+1) % 8 == 0)}
@@ -172,11 +182,15 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun handlingHomeFAB(){
+    private fun handlingHomeFAB(view: View){
         binding.fab.setOnClickListener {
-            editor.putString("goToFragment","")
-            editor.apply()
-            startActivity(Intent(requireActivity(), MapsActivity::class.java))
+            if (isNetworkConnected(requireActivity())) {
+                editor.putString("goToFragment", "")
+                editor.apply()
+                startActivity(Intent(requireActivity(), MapsActivity::class.java))
+            }else{
+                Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -206,7 +220,7 @@ class HomeFragment : Fragment() {
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
-        language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
+        //language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
         temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
         degree = sharedPreferences.getString("degreeSettings", "°C")!!
         measure = sharedPreferences.getString("measureSettings", "m/s")!!
@@ -257,7 +271,7 @@ class HomeFragment : Fragment() {
         binding.temperatureValue.text = value.data[0].temperature+" "+value.data[0].units
         binding.humidityValue.text = value.data[0].humidity
         binding.pressureValue.text = value.data[0].pressure
-        if (measure=="mile/h"&&language=="en"){
+        if (measure=="mile/h"&&homeLanguage=="en"){
             binding.windValue.text = String.format("%.1f", ((value.data[0].windSpeed.toDouble())*2.23694))+" "+measure
         }else{
             binding.windValue.text = value.data[0].windSpeed+" "+measure
@@ -280,7 +294,7 @@ class HomeFragment : Fragment() {
             additionalWeather.main.pressure=homeWeatherList[i].pressure
             additionalWeather.main.temp_min=homeWeatherList[i].minTemperature.toDouble()
             additionalWeather.main.temp_max=homeWeatherList[i].maxTemperature.toDouble()
-            if(language=="en"){
+            if(homeLanguage=="en"){
                 additionalWeather.wind.speed=homeWeatherList[i].windSpeed.toDouble()
             }
             additionalWeather.clouds.all=homeWeatherList[i].clouds.toInt()
