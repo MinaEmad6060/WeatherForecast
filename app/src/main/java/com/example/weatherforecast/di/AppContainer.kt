@@ -20,7 +20,7 @@ import com.example.weatherforecast.Model.Remote.Alert.AlertRemoteDataSource
 //import com.example.weatherforecast.Model.Remote.Alert.AlertRetrofitHelper
 import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
 //import com.example.weatherforecast.Model.Remote.Home.HomeAPI
-import com.example.weatherforecast.model.Remote.HomeRemoteDataSource
+import com.example.weatherforecast.model.Remote.Home.HomeRemoteDataSource
 //import com.example.weatherforecast.Model.Remote.Home.HomeRetrofitHelper
 import com.example.weatherforecast.Model.Remote.Home.InterRemoteDataSource
 import com.example.weatherforecast.Model.Repo.Alert.AlertRepo
