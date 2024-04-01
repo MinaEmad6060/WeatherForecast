@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MapsActivity
+import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 //import com.example.weatherforecast.Main.Utils.Companion.initBackGround
@@ -58,7 +59,6 @@ class HomeFragment : Fragment() {
     private lateinit var roomList : MutableList<AdditionalWeather>
     private lateinit var appContainer: AppContainer
     private var homeLanguage=""
-    private var backGroundDesc =""
 
 
 

@@ -26,8 +26,7 @@ class Utils {
         lateinit var editor: SharedPreferences.Editor
 
         var language=""
-
-
+        var backGroundDesc = "09d"
 
 
         fun initBackGround(backGroundDesc: String, activity: Activity){

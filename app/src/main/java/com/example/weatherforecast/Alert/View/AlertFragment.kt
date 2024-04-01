@@ -37,6 +37,9 @@ import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils
+import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
+import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
 import com.example.weatherforecast.Model.Local.Alert.AlertWeatherDAO
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
