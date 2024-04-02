@@ -66,8 +66,7 @@ class Utils {
             var result=""
             val centralSharedFlow= CentralSharedFlow(externalScope)
             externalScope.launch {
-                centralSharedFlow.tickFlow.collectLatest {
-                    Log.i("newShare", "main: $it")
+                centralSharedFlow.languageFlow.collectLatest {
                     result=it
                 }
             }

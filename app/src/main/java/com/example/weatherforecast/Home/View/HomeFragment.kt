@@ -96,6 +96,7 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             if (isNetworkConnected(requireActivity())){
+                Log.i("lastTesr", "onViewCreated: ")
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
                     lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, homeLanguage, 40
                 )
@@ -156,7 +157,7 @@ class HomeFragment : Fragment() {
                         is DataStateHomeRoom.Failure -> {
                             Snackbar.make(view, "Can't display previous items, try again!", Snackbar.LENGTH_LONG).show()
                         }
-                        else -> Snackbar.make(view, "Loading...", Snackbar.LENGTH_SHORT).show()
+                        else -> Log.i(TAG, "Loading... ")
 
                     }
                 }
@@ -208,8 +209,8 @@ class HomeFragment : Fragment() {
     {
         sharedPreferences =
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
-        lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
-        lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
+        lat = sharedPreferences.getString("latitude", "31.26863")!!.toDouble()
+        lon = sharedPreferences.getString("longitude", "30.0059383")!!.toDouble()
         temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
         degree = sharedPreferences.getString("degreeSettings", "°C")!!
         measure = sharedPreferences.getString("measureSettings", "m/s")!!

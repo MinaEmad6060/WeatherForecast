@@ -101,7 +101,7 @@ class FavouriteFragment : Fragment() {
                     is DataStateHomeRemote.Failure -> {
                         Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Snackbar.make(view, "Loading...", Snackbar.LENGTH_LONG).show()
+                    else -> Log.i(TAG, "Loading... ")
 
                 }
             }
@@ -125,7 +125,7 @@ class FavouriteFragment : Fragment() {
                     is DataStateFavRoom.Failure -> {
                         Snackbar.make(view, "Can't access favourite items, try again!", Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Snackbar.make(view, "Loading...", Snackbar.LENGTH_LONG).show()
+                    else -> Log.i(TAG, "Loading...")
                 }
             }
         }

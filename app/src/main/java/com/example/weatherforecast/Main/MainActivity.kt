@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                     addNavigationListener()
                 }
                 else ->  {
-                    checkLocationAvailability()
+                    //checkLocationAvailability()
                     replaceFragment(HomeFragment(), "HomeFragment")
                     binding.bottomNav.selectedItemId = R.id.homeFragment
                     addNavigationListener()
