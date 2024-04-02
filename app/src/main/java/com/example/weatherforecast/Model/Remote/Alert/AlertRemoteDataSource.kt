@@ -2,8 +2,6 @@ package com.example.weatherforecast.Model.Remote.Alert
 
 import com.example.weatherforecast.model.Remote.ApiService
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 
 class AlertRemoteDataSource(private val alertAPI: ApiService): InterAlertRemoteDataSource {

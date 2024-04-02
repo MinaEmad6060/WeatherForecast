@@ -16,21 +16,16 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
-import com.example.weatherforecast.Main.Utils
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.R
-import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import com.example.weatherforecast.databinding.FragmentSettingsBinding
-import kotlinx.coroutines.CoroutineScope
 import java.util.Locale
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-//    private lateinit var centralSharedFlow: CentralSharedFlow
-//    private lateinit var externalScope: CoroutineScope
     var itemSelected="a"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +54,6 @@ class SettingsFragment : Fragment() {
         val adapter = ArrayAdapter(requireActivity(), R.layout.item_drop_list,items)
         dropDownList.setAdapter(adapter)
         handlingDropDownListClick(dropDownList, category)
-        Log.i("setting", "updateDropList: $itemSelected")
-
     }
 
 
@@ -79,7 +72,6 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 "language" -> {
-                        Log.i("newShare", "handlingDropDownListClick: $language")
                         editor.putString("languageSettings",itemSelected)
                         editor.apply()
                         language= createCentralSharedLanguage(lifecycleScope, resources)
@@ -121,23 +113,7 @@ class SettingsFragment : Fragment() {
     {
         sharedPreferences =
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
-//        lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
-//        lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
         editor=sharedPreferences.edit()
-//        editor.putString("SelectedFragment","Home")
-//        editor.apply()
-    }
-
-    fun setLocale(languageCode: String) {
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
-
-        val resources = resources
-        val configuration = resources.configuration
-        configuration.setLocale(locale)
-
-        @Suppress("DEPRECATION")
-        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
 }

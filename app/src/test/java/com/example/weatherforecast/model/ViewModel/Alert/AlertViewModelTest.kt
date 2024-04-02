@@ -1,16 +1,11 @@
 package com.example.weatherforecast.Model.ViewModel.Alert
 
-import com.example.weatherforecast.Model.ViewModel.Fav.FakeFavRepo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
-import com.example.weatherforecast.Favourite.ViewModel.FavFragmentViewModel
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
-import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
-import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
-import com.example.weatherforecast.Model.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
@@ -55,10 +50,10 @@ class AlertViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getTasksRemote_requestTasks_remoteTasks()= runBlockingTest{
+    fun getAlertInstanceRemoteVM_listOfAlert()= runBlockingTest{
         //given
         viewModel.getAlertWeatherRemoteVM(
-            33.44, -94.04, "a92ea15347fafa48d308e4c367a39bb8"
+            0.0, 0.0, ""
         )
 
 
@@ -80,10 +75,11 @@ class AlertViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertTasks_requestTasks_remoteTasks() = runBlockingTest {
+    fun insertAlertInstanceVM_AlertInstance_greaterThanZeroIfSuccess() = runBlockingTest {
         // Given
         val alertCalendar = AlertCalendar()
         var resultInsert: Long=0
+
         // When
         val job = launch {
             resultInsert = viewModel.insertAlertWeatherVM(alertCalendar)
@@ -98,7 +94,8 @@ class AlertViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun getAlertInstanceLocalVM_listOfAlert()= runBlockingTest{
+
         //given
         viewModel.getAlertWeatherVM()
 
@@ -117,7 +114,7 @@ class AlertViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun deleteTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun deleteAlertWeatherVM_returnsOneIfSuccessAndZeroIfFail()= runBlockingTest{
         // Given
         val alertCalendarId = "alert"
         var resultDelete=0

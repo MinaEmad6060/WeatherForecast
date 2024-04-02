@@ -2,11 +2,8 @@ package com.example.weatherforecast.Model.ViewModel.Alert
 
 
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
-import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
 import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
-import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
-import com.example.weatherforecast.Model.Repo.FakeFavLocalDataSource
 import kotlinx.coroutines.flow.Flow
 
 

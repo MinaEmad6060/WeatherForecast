@@ -60,7 +60,6 @@ class FavLocalDataSourceTest {
     fun setUp(){
         context= ApplicationProvider.getApplicationContext()
 
-
         db = Room.inMemoryDatabaseBuilder(
             context,
             dbFav::class.java
@@ -70,30 +69,27 @@ class FavLocalDataSourceTest {
 
         dao = db.getFavWeatherDao()
 
-
         localDataSource= FavLocalDataSource(dao)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertFavByInstanceLocal_favInstanceAndContext_greaterThanZeroIfSuccess()= runBlockingTest{
+    fun insertFavInstanceLocal_favInstance_greaterThanZeroIfSuccess()= runBlockingTest{
         //given
         val favWeather=FavWeather()
 
         //when
-        val resultInsert=localDataSource.insertFavWeatherLocal(
-            favWeather
-        )
+        val resultInsert=localDataSource
+            .insertFavWeatherLocal(favWeather)
 
         //then
         assertThat(resultInsert, `is`(greaterThan(0)))
-
     }
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getCurrentWeather_returnTrueOrFalse()= runBlockingTest {
+    fun getFavWeatherLocal_listOfFav()= runBlockingTest {
         //Given
         val favWeather = FavWeather()
         favWeather.cityName="Alex"
@@ -122,15 +118,12 @@ class FavLocalDataSourceTest {
         // Given
         val favWeather = FavWeather(1)
         val favWeather2 = FavWeather(2)
-        localDataSource.insertFavWeatherLocal(
-            favWeather)
+        localDataSource.insertFavWeatherLocal(favWeather)
 
 
         // When
-        val result = localDataSource.deleteFavWeatherLocal(
-            favWeather)
-        val result2 = localDataSource.deleteFavWeatherLocal(
-            favWeather2)
+        val result = localDataSource.deleteFavWeatherLocal(favWeather)
+        val result2 = localDataSource.deleteFavWeatherLocal(favWeather2)
 
 
         // Then

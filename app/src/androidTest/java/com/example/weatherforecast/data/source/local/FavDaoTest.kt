@@ -51,7 +51,7 @@ class FavDaoTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertFavByInstanceDao_favInstance_greaterThanZeroIfSuccess() = runBlockingTest {
+    fun insertFavInstanceDao_favInstance_greaterThanZeroIfSuccess() = runBlockingTest {
         // Given
         val favWeather = FavWeather()
         val resultInsert=dao.insert(favWeather)

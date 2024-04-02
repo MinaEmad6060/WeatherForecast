@@ -1,7 +1,6 @@
 package com.example.weatherforecast.Model.Local.Alert
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -15,8 +14,6 @@ interface AlertWeatherDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(alertCalendar: AlertCalendar): Long
 
-//    @Query("DELETE FROM alert_table WHERE id = :id")
-//    suspend fun delete(id: Int): Int
     @Query("DELETE FROM alert_table WHERE infoOfAlert = :id")
     suspend fun delete(id: String): Int
 

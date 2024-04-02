@@ -1,6 +1,5 @@
 package com.example.weatherforecast.Alert.View
 
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -37,17 +36,11 @@ import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Main.Utils
-import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
-import com.example.weatherforecast.Main.Utils.Companion.initBackGround
+import com.example.weatherforecast.Main.Utils.Companion.lat
+import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Main.Utils.Companion.radioGroupBtn
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
-import com.example.weatherforecast.Model.Local.Alert.AlertWeatherDAO
 import com.example.weatherforecast.Model.Local.Alert.DataStateAlertRoom
-import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
-import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
-import com.example.weatherforecast.Model.Repo.Alert.AlertRepo
-import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentAlertBinding
 import com.example.weatherforecast.di.AppContainer
@@ -63,8 +56,6 @@ class AlertFragment : Fragment() {
     private lateinit var alarmManager: AlarmManager
     private lateinit var pendingIntent: PendingIntent
 
-    private var lat=0.0
-    private var lon=0.0
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
@@ -127,10 +118,6 @@ class AlertFragment : Fragment() {
         onClickAlarmRadioButtons()
         alertFragmentViewModel.getAlertWeatherVM()
 
-        Log.i("alertLatLon", "lat: $lat lon: $lon")
-
-        //33.44//-94.04
-
         lifecycleScope.launch {
             alertFragmentViewModel.alertWeatherRoom.collectLatest { value ->
                 when(value){
@@ -156,12 +143,10 @@ class AlertFragment : Fragment() {
             val radioButton = group.findViewById<RadioButton>(checkedId)
             if(radioButton.text=="Notification"){
                 Log.i("alarmNotify", "Notification")
-                editor.putString("alarmNotify","Notification")
-                editor.apply()
+                radioGroupBtn="Notification"
             }else if(radioButton.text=="Alarm"){
                 Log.i("alarmNotify", "Alarm")
-                editor.putString("alarmNotify","Alarm")
-                editor.apply()
+                radioGroupBtn="Alarm"
             }
         }
     }
@@ -170,8 +155,6 @@ class AlertFragment : Fragment() {
     {
         sharedPreferences =
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
-        lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
-        lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
         editor = sharedPreferences.edit()
         editor.putString("SelectedFragment","Fav")
         editor.apply()
@@ -268,7 +251,7 @@ class AlertFragment : Fragment() {
             val name = "Channel Name"
             val descriptionText = "Channel Description"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("notifyLemubit", name, importance).apply {
+            val channel = NotificationChannel("notificationChannel", name, importance).apply {
                 description = descriptionText
             }
             val notificationManager: NotificationManager =
@@ -278,7 +261,7 @@ class AlertFragment : Fragment() {
     }
 
     private fun initAlarm(alertCalendar: AlertCalendar){
-        Toast.makeText(requireActivity(), "Reminder Set!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireActivity(), "Alert Set!", Toast.LENGTH_SHORT).show()
         val intent = Intent(requireActivity(), Receiver::class.java)
         alertWeatherId=alertCalendar.infoOfAlert
         editor.putString("AlertID",alertWeatherId)

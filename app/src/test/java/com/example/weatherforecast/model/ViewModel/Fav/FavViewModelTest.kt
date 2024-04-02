@@ -42,16 +42,16 @@ class FavViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertTasks_requestTasks_remoteTasks() = runBlockingTest {
+    fun insertFavInstanceVM_favInstance_greaterThanZeroIfSuccess() = runBlockingTest {
         // Given
         val favWeather = FavWeather(cityName = "New City")
         var resultInsert: Long=0
+
         // When
         val job = launch {
             resultInsert = viewModel.insertFavWeatherVM(favWeather)
         }
         job.cancelAndJoin()
-
 
         // Then
         assertThat(resultInsert, not(nullValue()))
@@ -60,7 +60,7 @@ class FavViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun getFavInstanceVM_listOfFav()= runBlockingTest{
         //given
         viewModel.getFavWeatherVM()
 
@@ -79,7 +79,7 @@ class FavViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun deleteTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun deleteFavWeatherVM_returnsOneIfSuccessAndZeroIfFail()= runBlockingTest{
         // Given
         val favWeather = FavWeather(cityName = "Alex")
         var resultDelete=0

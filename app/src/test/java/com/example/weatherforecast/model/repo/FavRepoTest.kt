@@ -34,7 +34,7 @@ class FavRepoTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun insertTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun insertFavInstanceRepo_favInstance_greaterThanZeroIfSuccess()= runBlockingTest{
         // Given
         val favWeather = FavWeather(1)
 
@@ -48,7 +48,7 @@ class FavRepoTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun getTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun getFavInstanceRepo_listOfFav()= runBlockingTest{
         // Given
         var resultList = listOf(FavWeather())
 
@@ -65,7 +65,7 @@ class FavRepoTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun deleteTasks_requestTasks_remoteTasks()= runBlockingTest{
+    fun deleteFavWeatherRepo_returnsOneIfSuccessAndZeroIfFail()= runBlockingTest{
         // Given
         val favWeather = FavWeather(cityName = "Alex")
         var resultList = listOf(FavWeather())

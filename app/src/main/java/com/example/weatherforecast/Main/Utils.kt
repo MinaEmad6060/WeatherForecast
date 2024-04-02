@@ -7,9 +7,7 @@ import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
-import android.provider.MediaStore.Video
 import android.util.Log
-import android.view.View
 import android.widget.VideoView
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
@@ -68,8 +66,7 @@ class Utils {
             var result=""
             val centralSharedFlow= CentralSharedFlow(externalScope)
             externalScope.launch {
-                centralSharedFlow.tickFlow.collectLatest {
-                    Log.i("newShare", "main: $it")
+                centralSharedFlow.languageFlow.collectLatest {
                     result=it
                 }
             }
@@ -89,12 +86,5 @@ class Utils {
             resources.updateConfiguration(configuration, resources.displayMetrics)
         }
 
-//        fun initGeneralSharedPreferences(context: Context){
-//            sharedPreferences =
-//                context.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
-//            editor = sharedPreferences.edit()
-////            backGroundDesc = sharedPreferences.getString("backGround", "")!!
-//            language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
-//        }
     }
 }

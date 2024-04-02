@@ -2,9 +2,6 @@ package com.example.weatherforecast.Alert.View
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Application
-import android.app.Dialog
-
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,7 +13,6 @@ import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
@@ -24,13 +20,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.lat
+import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Main.Utils.Companion.radioGroupBtn
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
 import com.example.weatherforecast.R
@@ -42,45 +37,32 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class Receiver : BroadcastReceiver(){
-    private var lat=0.0
-    private var lon=0.0
     private var id = "n"
     private lateinit var appContainer: AppContainer
     private lateinit var alertFragmentViewModelFactory: AlertFragmentViewModelFactory
     private lateinit var alertFragmentViewModel: AlertFragmentViewModel
     private lateinit var sharedPreferences: SharedPreferences
-
+    private lateinit var mediaPlayer : MediaPlayer
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context?, intent: Intent?) {
-
-
-//        if (context != null) {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                alarm(context)
-//            }
-//        }
+        mediaPlayer = MediaPlayer.create(context, R.raw.alarm)
 
         if (context != null) {
             getSharedPreferences(context)
             initViewModel(context)
-            //id = AlertFragment.alertWeatherId
-            Log.i("alertRemote", "id : $id ")
+
             alertFragmentViewModel.getAlertWeatherRemoteVM(
-                33.44, -94.04, "fbcc4a868720bf2c249f5c6b9561a30b"
+                lat, lon, "fbcc4a868720bf2c249f5c6b9561a30b"
             )
 
             CoroutineScope(Dispatchers.IO).launch {
                 alertFragmentViewModel.alertWeatherRemote.collectLatest { value ->
                     when (value) {
                         is DataStateAlertRemote.Success -> {
-                            Log.i("receive", "success: ")
-                            Log.i("receive", "event:${value.data.alerts[0].event} ")
-                            Log.i("receive", "desc:${value.data.alerts[0].description} ")
-
 
                             val builder = context?.let {
-                                NotificationCompat.Builder(it, "notifyLemubit")
+                                NotificationCompat.Builder(it, "notificationChannel")
                                     .setSmallIcon(R.drawable.app)
                                     .setContentTitle(value.data.alerts[0].event)
                                     .setContentText(value.data.alerts[0].description)
@@ -109,12 +91,12 @@ class Receiver : BroadcastReceiver(){
                                 // for ActivityCompat#requestPermissions for more details.
                                 return@collectLatest
                             }
+                            Log.i("notifyAlarm", "radioGroupBtn: $radioGroupBtn")
                             if (notificationManager != null && builder != null && radioGroupBtn=="Notification") {
                                 notificationManager.notify(200, builder.build())
                             }else if(radioGroupBtn=="Alarm"){
                                 CoroutineScope(Dispatchers.IO).launch {
                                     alarm(context,value.data.alerts[0].event,value.data.alerts[0].description)
-                                    val mediaPlayer = MediaPlayer.create(context, R.raw.alarm)
                                     mediaPlayer.start()
                                 }
                             }
@@ -157,7 +139,6 @@ class Receiver : BroadcastReceiver(){
             context.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
-        radioGroupBtn = sharedPreferences.getString("alarmNotify", "Notification")!!
         id = sharedPreferences.getString("AlertID","0")!!
     }
 
@@ -174,6 +155,7 @@ class Receiver : BroadcastReceiver(){
         descInfo.text=desc
         btnDismiss.setOnClickListener {
             windowManager.removeView(floatingLayout)
+            mediaPlayer.stop()
         }
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -183,12 +165,8 @@ class Receiver : BroadcastReceiver(){
             PixelFormat.TRANSLUCENT
         )
         params.gravity = Gravity.TOP
-//                params.x = 0
-//                params.y = 100
 
-        // Add the view to the window
         withContext(Dispatchers.Main) {
-            // Add the view to the window
             windowManager.addView(floatingLayout, params)
         }
     }

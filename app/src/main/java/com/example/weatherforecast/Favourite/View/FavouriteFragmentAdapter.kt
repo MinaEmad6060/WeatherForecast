@@ -32,7 +32,6 @@ class FavouriteFragmentAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: FavouriteWeatherViewHolder, position: Int) {
         val currentObj = getItem(position)
-        Log.i("adapterFav", "currentObj :${currentObj.cityName}")
         holder.favCity.text = currentObj.cityName
         holder.favTemp.text = currentObj.temperature.toInt().toString()+""+currentObj.units
         Glide.with(holder.itemView.context)

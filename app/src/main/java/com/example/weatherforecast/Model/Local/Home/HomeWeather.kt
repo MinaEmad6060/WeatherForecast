@@ -3,7 +3,6 @@ package com.example.weatherforecast.Model.Local.Home
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
 @Entity(tableName = "weather_table")
 data class HomeWeather(
     @PrimaryKey

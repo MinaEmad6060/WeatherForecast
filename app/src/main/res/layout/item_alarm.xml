@@ -61,6 +61,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:layout_weight="5"
+            android:gravity="center"
             android:text="Alert Message"
             android:textColor="@android:color/white"
             android:textSize="14sp" />

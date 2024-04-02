@@ -29,12 +29,10 @@ class HomeFragmentWeeklyAdapter :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: WeeklyWeatherViewHolder, position: Int) {
         val currentObj = getItem(position)
-        if (position==0){
-//            holder.weeklyDay.text =
-        }else{
+        if (position!=0){
             holder.weeklyDay.text = convertDateFormat(currentObj.dt_txt.split(" ")[0])
         }
-            holder.weeklyDesc.text = currentObj.weather[0].description
+        holder.weeklyDesc.text = currentObj.weather[0].description
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = dateFormat.parse(currentObj.dt_txt)
 
