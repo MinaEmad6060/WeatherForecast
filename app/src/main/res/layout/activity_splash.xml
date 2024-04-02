@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.SplashActivity">
+    android:background="@drawable/a"
+    tools:context=".Main.SplashActivity">
 
     <VideoView
         android:id="@+id/start_video"
@@ -15,16 +16,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#1AFFFFFF"
+        />
+
+
+
+
+
     
     <Button
         android:id="@+id/btn_start"
-        android:layout_width="250dp"
+        android:layout_width="240dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="60dp"
-        android:backgroundTint="#4DFFFFFF"
+        android:layout_marginBottom="90dp"
+        android:backgroundTint="#73FFFFFF"
         android:text="@string/get_started"
-        android:textColor="#66216524"
+        android:textColor="@color/black"
+        android:fontFamily="cursive"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
