@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -25,11 +24,11 @@ import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.editor
 import com.example.weatherforecast.Main.Utils.Companion.initBackGround
-import com.example.weatherforecast.Main.Utils.Companion.setLocale
+import com.example.weatherforecast.Main.Utils.Companion.lat
+import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Main.Utils.Companion.sharedPreferences
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.View.SettingsFragment
-import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import com.example.weatherforecast.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -37,14 +36,11 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 
 const val REQUEST_LOCATION_CODE=100
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
-    private val backGround ="android.resource://com.example.weatherforecast/"
     private lateinit var binding: ActivityMainBinding
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mainViewModelFactory: HomeFragmentViewModelFactory
@@ -54,7 +50,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("video", "onCreate: ")
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initSharedPreferences()
@@ -62,25 +57,12 @@ class MainActivity : AppCompatActivity() {
         checkLocationAvailability()
         checkSaveOnInstance(savedInstanceState)
         initViewModel()
-        //initBackGround()
     }
 
     override fun onStart() {
         super.onStart()
-        Log.i("video", "onStart: ")
         initBackGround(backGroundDesc,this)
-
     }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("video", "onResume: ")
-    }
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        binding.homeVideo.stopPlayback()
-//    }
-
 
     private fun checkSaveOnInstance(savedInstanceState: Bundle?){
         savedInstanceState ?: run {
@@ -163,7 +145,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLocationAvailability(){
-        Log.i("MAINTEST", "checkLocationAvailability : onCreate")
         if(checkPermission()){
             if(isLocationEnabled()) getFreshLocation()
             else enableLocationServices()
@@ -209,7 +190,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getFreshLocation(){
-        Log.i("MAINTEST", "getFreshLocation : onCreate")
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this)
         fusedLocationProviderClient.requestLocationUpdates(
             LocationRequest.Builder(0).apply {
@@ -218,8 +198,9 @@ class MainActivity : AppCompatActivity() {
             object : LocationCallback(){
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
-                    Log.i("MAINTEST", "onLocationResult : onCreate")
                     val location = locationResult.lastLocation
+                    lat=location?.latitude!!
+                    lon=location?.longitude!!
                     editor.putString("latitude", location?.latitude.toString())
                     editor.putString("longitude", location?.longitude.toString())
                     editor.apply()

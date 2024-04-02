@@ -1,6 +1,7 @@
 package com.example.weatherforecast.Home.View
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -24,12 +25,9 @@ import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.initBackGround
-//import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
-//import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
-import com.example.weatherforecast.Main.Utils.Companion.setLocale
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
@@ -56,7 +54,6 @@ class HomeFragment : Fragment() {
     private lateinit var weeklyAdapter: HomeFragmentWeeklyAdapter
     private lateinit var weeklyLayoutManager: LinearLayoutManager
     private lateinit var homeWeather: HomeWeather
-    private lateinit var roomList : MutableList<AdditionalWeather>
     private lateinit var appContainer: AppContainer
     private var homeLanguage=""
 
@@ -69,7 +66,6 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         homeLanguage=createCentralSharedLanguage(lifecycleScope,resources)
-        Log.i("MAINTEST", "HomeFrag : onCreate")
     }
 
     override fun onCreateView(
@@ -96,14 +92,10 @@ class HomeFragment : Fragment() {
         getSharedPreferences()
         initViewModel()
 
-
-
-//        Log.i("language", "onViewCreated: $homeLanguage")
         homeFragmentViewModel.getAllHomeWeatherVM()
 
         lifecycleScope.launch {
             if (isNetworkConnected(requireActivity())){
-                Log.i("myLoc", "onViewCreated: $lat & $lon")
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
                     lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, homeLanguage, 40
                 )
@@ -111,7 +103,6 @@ class HomeFragment : Fragment() {
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                     when(value){
                         is DataStateHomeRemote.Success -> {
-                            Log.i(TAG, "additionalWeatherList-Success: ")
                             backGroundDesc=value.data.list[0].weather[0].icon
                             editor.putString("backGround",backGroundDesc)
                             editor.apply()
@@ -133,7 +124,6 @@ class HomeFragment : Fragment() {
 
                         }
                         is DataStateHomeRemote.Failure -> {
-                            Log.i(TAG, "additionalWeatherList-fail: ")
                             binding.All.visibility = View.GONE
                             binding.progressBar.visibility = View.GONE
                             Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
@@ -141,7 +131,6 @@ class HomeFragment : Fragment() {
                         else -> {
                             binding.All.visibility = View.GONE
                             binding.progressBar.visibility = View.VISIBLE
-                            Log.i(TAG, "loading: ")
                         }
 
                     }
@@ -149,12 +138,10 @@ class HomeFragment : Fragment() {
             }
             else{
                 binding.progressBar.visibility = View.GONE
-
                 Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                 homeFragmentViewModel.homeWeatherList.collectLatest { value ->
                     when(value){
                         is DataStateHomeRoom.Success -> {
-                            Log.i(TAG, "room-success: ")
                             if (value.data.isNotEmpty()){
                                 updateOfflineWeatherUI(value)
                                 val hourlyList = value.data.filterIndexed { index, _ -> index in 0..8}
@@ -166,8 +153,11 @@ class HomeFragment : Fragment() {
                             }
 
                         }
-                        is DataStateHomeRoom.Failure -> {Log.i(TAG, "room-fail: ")}
-                        else -> Log.i(TAG, "room-loading: ")
+                        is DataStateHomeRoom.Failure -> {
+                            Snackbar.make(view, "Can't display previous items, try again!", Snackbar.LENGTH_LONG).show()
+                        }
+                        else -> Snackbar.make(view, "Loading...", Snackbar.LENGTH_SHORT).show()
+
                     }
                 }
 
@@ -220,7 +210,6 @@ class HomeFragment : Fragment() {
             requireActivity().getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
         lat = sharedPreferences.getString("latitude", "0")!!.toDouble()
         lon = sharedPreferences.getString("longitude", "0")!!.toDouble()
-        //language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
         temperature = sharedPreferences.getString("temperatureSettings", "metric")!!
         degree = sharedPreferences.getString("degreeSettings", "°C")!!
         measure = sharedPreferences.getString("measureSettings", "m/s")!!
@@ -238,6 +227,7 @@ class HomeFragment : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun updateOnlineWeatherUI(value: DataStateHomeRemote.Success){
         binding.weatherDate.text = value.data.date
         binding.weatherTime.text = value.data.time
@@ -260,6 +250,7 @@ class HomeFragment : Fragment() {
         binding.weatherStatus.text = value.data.list[0].weather[0].description
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateOfflineWeatherUI(value: DataStateHomeRoom.Success){
         binding.weatherDate.text = homeFragmentViewModel.getDateAndTime().split(" ")[0]
         binding.weatherTime.text = homeFragmentViewModel.getDateAndTime().split(" ")[1]
@@ -327,7 +318,6 @@ class HomeFragment : Fragment() {
             }
             homeWeather.clouds = myList[i].clouds.all.toString()
             homeWeather.units = degree
-
             homeFragmentViewModel.insertAllHomeWeatherVM(homeWeather)
         }
     }

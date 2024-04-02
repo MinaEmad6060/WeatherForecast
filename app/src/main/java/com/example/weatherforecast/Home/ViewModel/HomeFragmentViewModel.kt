@@ -1,8 +1,5 @@
 package com.example.weatherforecast.Home.ViewModel
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,11 +49,9 @@ class HomeFragmentViewModel(private var repo: InterHomeRepo): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.getAllHomeWeatherLocalRepo()
                 .catch {
-                    Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _homeWeatherList.value = DataStateHomeRoom.Failure(it)
                 }
                 .collect{
-                    Log.i("vmRoom", "getAllHomeWeatherVM: success")
                     _homeWeatherList.value = DataStateHomeRoom.Success(it)
                 }
         }
@@ -80,17 +75,10 @@ class HomeFragmentViewModel(private var repo: InterHomeRepo): ViewModel() {
         return res
     }
 
-
     fun getDateAndTime(): String {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return dateFormat.format(calendar.time)
     }
-
-//    fun isNetworkConnected(context: Context): Boolean {
-//        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-//        return activeNetwork != null && activeNetwork.isConnectedOrConnecting
-//    }
 
 }

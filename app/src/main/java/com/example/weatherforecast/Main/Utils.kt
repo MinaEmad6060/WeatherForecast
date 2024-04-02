@@ -7,9 +7,7 @@ import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
-import android.provider.MediaStore.Video
 import android.util.Log
-import android.view.View
 import android.widget.VideoView
 import com.example.weatherforecast.R
 import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
@@ -89,12 +87,5 @@ class Utils {
             resources.updateConfiguration(configuration, resources.displayMetrics)
         }
 
-//        fun initGeneralSharedPreferences(context: Context){
-//            sharedPreferences =
-//                context.getSharedPreferences("locationDetails", Context.MODE_PRIVATE)
-//            editor = sharedPreferences.edit()
-////            backGroundDesc = sharedPreferences.getString("backGround", "")!!
-//            language = sharedPreferences.getString("languageSettings", "EN")!!.toLowerCase()
-//        }
     }
 }

@@ -1,8 +1,6 @@
 package com.example.weatherforecast.Alert.ViewModel
 
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
@@ -40,11 +38,9 @@ class AlertFragmentViewModel(private var repo: InterAlertRepo): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.getAlertWeatherLocalRepo()
                 .catch {
-                    //Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _alertWeatherRoom.value = DataStateAlertRoom.Failure(it)
                 }
                 .collect{
-                    //Log.i("vmRoom", "getAllHomeWeatherVM: success")
                     _alertWeatherRoom.value = DataStateAlertRoom.Success(it)
                 }
         }

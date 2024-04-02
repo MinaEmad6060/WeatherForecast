@@ -21,22 +21,19 @@ import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
+import com.example.weatherforecast.Main.Utils.Companion.lat
+import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
 import com.example.weatherforecast.Model.Local.Fav.FavWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
-import com.example.weatherforecast.Model.Repo.Fav.FavRepo
-import com.example.weatherforecast.Model.Repo.Home.HomeRepo
 import com.example.weatherforecast.databinding.FragmentFavouriteBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class FavouriteFragment : Fragment() {
     private val TAG = "FavFragment"
-    private var lat=0.0
-    private var lon=0.0
     private var language="EN"
     private var temperature="metric"
     private var degree="°C"
@@ -60,7 +57,6 @@ class FavouriteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentFavouriteBinding.inflate(inflater, container, false)
         return binding.root    }
     override fun onAttach(context: Context) {
@@ -77,12 +73,10 @@ class FavouriteFragment : Fragment() {
         initHomeViewModel()
         initFavViewModel()
         val sharedPreferences = sharedPreferences.getString("goToFragment","")
-        Log.i("goto", "goto: ${sharedPreferences}")
 
 
         favFragmentViewModel.getFavWeatherVM()
 
-        Log.i(TAG, "lat&lon $lat $lon")
 
 
     lifecycleScope.launch {
@@ -95,7 +89,6 @@ class FavouriteFragment : Fragment() {
             homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                 when(value){
                     is DataStateHomeRemote.Success -> {
-                        Log.i(TAG, "Remote Success: ")
                         favWeather = FavWeather()
                         favWeather.cityName = value.data.city.name
                         favWeather.temperature = value.data.list[0].main.temp
@@ -105,15 +98,15 @@ class FavouriteFragment : Fragment() {
                         favWeather.units = degree
                         favFragmentViewModel.insertFavWeatherVM(favWeather)
                     }
-                    is DataStateHomeRemote.Failure -> {Log.i(TAG, "Remote fail: ")}
-                    else -> Log.i(TAG, "Remote loading: ")
+                    is DataStateHomeRemote.Failure -> {
+                        Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
+                    }
+                    else -> Snackbar.make(view, "Loading...", Snackbar.LENGTH_LONG).show()
+
                 }
             }
 
-        }else{
-            Log.i("goto", "if goto: fail")
         }
-
     }
 
 
@@ -123,15 +116,16 @@ class FavouriteFragment : Fragment() {
             favFragmentViewModel.favWeather.collectLatest { value ->
                 when(value){
                     is DataStateFavRoom.Success -> {
-                        Log.i(TAG, "favWeather-success: $lat $lon")
                         if (value.data.isNotEmpty()) {
                             binding.noFavImg.visibility = View.GONE
                             binding.favRecyclerView.visibility = View.VISIBLE
                         }
                             favAdapter.submitList(value.data)
                     }
-                    is DataStateFavRoom.Failure -> {Log.i(TAG, "favWeather-fail: ")}
-                    else -> Log.i(TAG, "favWeather-loading: ")
+                    is DataStateFavRoom.Failure -> {
+                        Snackbar.make(view, "Can't access favourite items, try again!", Snackbar.LENGTH_LONG).show()
+                    }
+                    else -> Snackbar.make(view, "Loading...", Snackbar.LENGTH_LONG).show()
                 }
             }
         }
@@ -198,6 +192,8 @@ class FavouriteFragment : Fragment() {
 
     fun navToFavDetails(favDetails: FavWeather){
         if(isNetworkConnected(requireActivity())){
+            lat=favDetails.lat
+            lon=favDetails.lon
             editor.putString("latitude",favDetails.lat.toString())
             editor.putString("longitude",favDetails.lon.toString())
             editor.putString("lastFragmentTag","HomeFragment")
@@ -214,14 +210,11 @@ class FavouriteFragment : Fragment() {
         builder.setTitle(title)
         builder.setMessage(message)
         builder.setPositiveButton("OK") { dialog, which ->
-            // Handle positive button click
             lifecycleScope.launch {
                 result = favFragmentViewModel.deleteFavWeatherVM(delFavWeather)
             }
         }
-        builder.setNegativeButton("Cancel") { dialog, which ->
-            // Handle negative button click
-        }
+        builder.setNegativeButton("Cancel") { dialog, which -> }
         builder.show()
         return result
     }

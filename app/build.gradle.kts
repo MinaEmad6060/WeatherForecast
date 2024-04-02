@@ -3,9 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("kotlin-kapt")
-    //
-    id("kotlin-parcelize")
-}
+    }
 
 android {
     namespace = "com.example.weatherforecast"

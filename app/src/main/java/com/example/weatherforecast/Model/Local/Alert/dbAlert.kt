@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-
 @Database(entities = arrayOf(AlertCalendar::class), version = 5 )
 abstract class dbAlert : RoomDatabase() {
     abstract fun getAlertWeatherDao(): AlertWeatherDAO

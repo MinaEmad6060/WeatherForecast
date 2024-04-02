@@ -10,7 +10,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
-import com.example.weatherforecast.Model.Repo.Home.HomeRepo
+import com.example.weatherforecast.Main.Utils.Companion.lat
+import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.R
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -52,13 +53,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             myMap.clear()
             myMap.addMarker(MarkerOptions().position(latLng).title("Selected Location"))
             myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7f))
+            lat=latLng.latitude
+            lon=latLng.longitude
             editor.putString("latitude", latLng.latitude.toString())
             editor.putString("longitude", latLng.longitude.toString())
             editor.apply()
-            val selectedLatitude = latLng.latitude
-            val selectedLongitude = latLng.longitude
             Toast.makeText(
-                this, "Latitude = $selectedLatitude & Longitude = $selectedLongitude",
+                this, "Let's see more details..",
                 Toast.LENGTH_LONG
             ).show()
         }

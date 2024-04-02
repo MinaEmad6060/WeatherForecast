@@ -1,7 +1,5 @@
 package com.example.weatherforecast.Favourite.ViewModel
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
@@ -23,11 +21,9 @@ class FavFragmentViewModel(private var repo: InterFavRepo): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.getFavWeatherLocalRepo()
                 .catch {
-                    Log.i("vmRoom", "getAllHomeWeatherVM: fail")
                     _favWeather.value = DataStateFavRoom.Failure(it)
                 }
                 .collect{
-                    Log.i("vmRoom", "getAllHomeWeatherVM: success")
                     _favWeather.value = DataStateFavRoom.Success(it)
                 }
         }
