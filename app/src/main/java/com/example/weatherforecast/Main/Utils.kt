@@ -14,6 +14,7 @@ import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.util.Locale
 
 class Utils {
@@ -84,6 +85,13 @@ class Utils {
 
             @Suppress("DEPRECATION")
             resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
+
+        fun setNumberLocale(number: Int, unit: String):String{
+            val locale = Locale.getDefault()
+            val numberFormat = NumberFormat.getInstance(locale)
+            val tempFormat = numberFormat.format(number)
+            return "$tempFormat $unit"
         }
 
     }

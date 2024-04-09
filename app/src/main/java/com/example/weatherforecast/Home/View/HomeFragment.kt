@@ -28,6 +28,7 @@ import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
+import com.example.weatherforecast.Main.Utils.Companion.setNumberLocale
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
@@ -239,7 +240,7 @@ class HomeFragment : Fragment() {
             .into(binding.mainWeatherImage)
         editor.putString("backGround", value.data.list[0].weather[0].icon)
         editor.apply()
-        binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()+""+degree
+        binding.temperatureValue.text = setNumberLocale(value.data.list[0].main.temp.toInt(),degree)
         binding.humidityValue.text = value.data.list[0].main.humidity
         binding.pressureValue.text = value.data.list[0].main.pressure
         if (measure=="mile/h"){

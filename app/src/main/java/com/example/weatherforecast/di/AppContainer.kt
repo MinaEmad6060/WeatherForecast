@@ -15,8 +15,8 @@ import com.example.weatherforecast.Model.Local.Home.HomeLocalDataSource
 import com.example.weatherforecast.Model.Local.Home.HomeWeatherDAO
 import com.example.weatherforecast.Model.Local.Home.InterHomeLocalDataSource
 import com.example.weatherforecast.Model.Local.Home.dbHome
-import com.example.weatherforecast.Model.Remote.Alert.AlertRemoteDataSource
-import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
+//import com.example.weatherforecast.Model.Remote.Alert.AlertRemoteDataSource
+//import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
 import com.example.weatherforecast.Model.Remote.Home.InterRemoteDataSource
 import com.example.weatherforecast.Model.Repo.Alert.AlertRepo
 import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
@@ -59,12 +59,12 @@ class AppContainer(context: Context): InterAppContainer {
     override val alertWeatherLocalDataSource: InterAlertLocalDataSource by lazy {
         AlertLocalDataSource(alertWeatherDAO)
     }
-    override val alertWeatherRemoteDataSource: InterAlertRemoteDataSource by lazy {
-        AlertRemoteDataSource(apiService)
-    }
+//    override val alertWeatherRemoteDataSource: InterAlertRemoteDataSource by lazy {
+//        AlertRemoteDataSource(apiService)
+//    }
     override val alertRepo: InterAlertRepo by lazy {
         AlertRepo(
-            alertWeatherRemoteDataSource,
+//            alertWeatherRemoteDataSource
             alertWeatherLocalDataSource
         )
     }

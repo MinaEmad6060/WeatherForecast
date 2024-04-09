@@ -9,7 +9,7 @@ import com.example.weatherforecast.Model.Local.Fav.FavWeatherDAO
 import com.example.weatherforecast.Model.Local.Fav.InterFavLocalDataSource
 import com.example.weatherforecast.Model.Local.Home.HomeWeatherDAO
 import com.example.weatherforecast.Model.Local.Home.InterHomeLocalDataSource
-import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
+//import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
 import com.example.weatherforecast.Model.Remote.Home.InterRemoteDataSource
 import com.example.weatherforecast.Model.Repo.Alert.InterAlertRepo
 import com.example.weatherforecast.Model.Repo.Fav.InterFavRepo
@@ -24,7 +24,7 @@ interface InterAppContainer {
     val favFactory: FavFragmentViewModelFactory
     val alertWeatherDAO: AlertWeatherDAO
     val alertWeatherLocalDataSource: InterAlertLocalDataSource
-    val alertWeatherRemoteDataSource: InterAlertRemoteDataSource
+//    val alertWeatherRemoteDataSource: InterAlertRemoteDataSource
     val alertRepo: InterAlertRepo
     val alertFactory: AlertFragmentViewModelFactory
     val homeWeatherDAO: HomeWeatherDAO

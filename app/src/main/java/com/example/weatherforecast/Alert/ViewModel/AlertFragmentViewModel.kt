@@ -18,21 +18,21 @@ class AlertFragmentViewModel(private var repo: InterAlertRepo): ViewModel() {
     private val _alertWeatherRoom= MutableStateFlow<DataStateAlertRoom>(DataStateAlertRoom.Loading)
     val alertWeatherRoom: StateFlow<DataStateAlertRoom> = _alertWeatherRoom
 
-    private val _alertWeatherRemote= MutableStateFlow<DataStateAlertRemote>(DataStateAlertRemote.Loading)
-    val alertWeatherRemote: StateFlow<DataStateAlertRemote> = _alertWeatherRemote
+//    private val _alertWeatherRemote= MutableStateFlow<DataStateAlertRemote>(DataStateAlertRemote.Loading)
+//    val alertWeatherRemote: StateFlow<DataStateAlertRemote> = _alertWeatherRemote
 
 
-    fun getAlertWeatherRemoteVM(lat: Double, lon: Double, key: String) {
-        viewModelScope.launch(Dispatchers.IO){
-            repo.getAlertWeatherRemoteRepo(lat,lon,key)
-                .catch {
-                    _alertWeatherRemote.value = DataStateAlertRemote.Failure(it)
-                }
-                .collect{
-                    _alertWeatherRemote.value = DataStateAlertRemote.Success(it)
-                }
-        }
-    }
+//    fun getAlertWeatherRemoteVM(lat: Double, lon: Double, key: String) {
+//        viewModelScope.launch(Dispatchers.IO){
+//            repo.getAlertWeatherRemoteRepo(lat,lon,key)
+//                .catch {
+//                    _alertWeatherRemote.value = DataStateAlertRemote.Failure(it)
+//                }
+//                .collect{
+//                    _alertWeatherRemote.value = DataStateAlertRemote.Success(it)
+//                }
+//        }
+//    }
 
     fun getAlertWeatherVM(){
         viewModelScope.launch(Dispatchers.IO) {
