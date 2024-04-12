@@ -52,7 +52,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         myMap.setOnMapClickListener { latLng ->
             myMap.clear()
             myMap.addMarker(MarkerOptions().position(latLng).title("Selected Location"))
-            myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7f))
+            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7f))
             lat=latLng.latitude
             lon=latLng.longitude
             editor.putString("latitude", latLng.latitude.toString())

@@ -24,7 +24,7 @@
     <string name="wind">الرياح</string>
     <string name="dismiss">إيقاف</string>
     <string name="pressure_value">1000</string>
-    <string name="pressure_unit">ض.جوي</string>
+    <string name="pressure_unit">hpa</string>
     <string name="pressure">الضغط</string>
     <string name="cloud_value">5</string>
     <string name="cloud_unit">%</string>
@@ -79,6 +79,15 @@
     <string name="dialog_cancel">الغاء</string>
     <string name="empty_dialog_time">-:-</string>
     <string name="set_alarm">Alarm</string>
+    <string name="gps">موقعي</string>
+    <string name="map">الخريطة</string>
+    <string name="en">الانجليزية</string>
+    <string name="ar">العربية</string>
+    <string name="set_c">°م</string>
+    <string name="set_f">°ف</string>
+    <string name="set_k">ك</string>
+    <string name="m_s">م/ث</string>
+    <string name="mile_h">ميل/ث</string>
 
 
 </resources>
