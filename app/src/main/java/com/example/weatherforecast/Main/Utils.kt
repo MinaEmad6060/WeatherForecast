@@ -89,10 +89,18 @@ class Utils {
         }
 
         fun setNumberLocale(number: Int, unit: String):String{
+            var retUnit=unit
             val locale = Locale.getDefault()
             val numberFormat = NumberFormat.getInstance(locale)
             val tempFormat = numberFormat.format(number)
-            return "$tempFormat$unit"
+            if (locale.language == "ar") {
+                when(unit){
+                    "°C" -> retUnit="°م"
+                    "°F" -> retUnit="°ف"
+                    "K" -> retUnit="ك"
+                }
+            }
+            return "$tempFormat$retUnit"
         }
 
     }
