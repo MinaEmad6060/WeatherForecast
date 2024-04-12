@@ -78,4 +78,6 @@
     <string name="empty_dialog_time">-:-</string>
     <string name="set_alarm">Alarm</string>
     <string name="dismiss">Dismiss</string>
+    <string name="alert_message">Alert Message</string>
+    <string name="alert_title">Alert Title</string>
 </resources>

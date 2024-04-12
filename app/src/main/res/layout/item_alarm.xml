@@ -35,7 +35,6 @@
                 android:padding="@dimen/small_padding"
                 android:scaleType="fitCenter"
                 android:src="@drawable/app"
-                android:text="Alert Title"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
@@ -46,7 +45,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:gravity="start"
-                android:text="Alert Title"
+                android:text="@string/alert_title"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:textSize="18sp" />
@@ -59,11 +58,10 @@
             android:id="@+id/desc_alarm_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:layout_weight="5"
-            android:gravity="center"
-            android:text="Alert Message"
+            android:gravity="start|top"
+            android:text="@string/alert_message"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
