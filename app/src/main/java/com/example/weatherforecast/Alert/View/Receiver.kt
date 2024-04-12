@@ -154,7 +154,7 @@ class Receiver : BroadcastReceiver(){
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("InflateParams")
+    @SuppressLint("InflateParams", "SetTextI18n")
     private suspend fun alarm(context: Context, event: String, desc: String) {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val floatingLayout =
@@ -163,7 +163,7 @@ class Receiver : BroadcastReceiver(){
         val descInfo=floatingLayout.findViewById<TextView>(R.id.desc_alarm_text)
         val btnDismiss = floatingLayout.findViewById<Button>(R.id.dismiss_btn)
         eventInfo.text=event
-        descInfo.text=desc
+        descInfo.text= "Weather Status: $desc"
         btnDismiss.setOnClickListener {
             windowManager.removeView(floatingLayout)
             mediaPlayer.stop()

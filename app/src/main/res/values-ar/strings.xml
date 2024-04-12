@@ -88,6 +88,8 @@
     <string name="set_k">ك</string>
     <string name="m_s">م/ث</string>
     <string name="mile_h">ميل/ث</string>
+    <string name="alert_message">Alert Message</string>
+    <string name="alert_title">Alert Title</string>
 
 
 </resources>
