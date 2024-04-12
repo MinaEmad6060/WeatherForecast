@@ -16,7 +16,9 @@ class AlertRepo(
 ): InterAlertRepo {
 
 
-
+    override suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long {
+        return roomAlertWeather.insertAlertWeatherLocal(alertCalendar)
+    }
 
     override suspend fun getAlertWeatherLocalRepo(): Flow<List<AlertCalendar>> {
         return roomAlertWeather.getAlertWeatherLocal()
@@ -25,7 +27,5 @@ class AlertRepo(
         return roomAlertWeather.deleteAlertWeatherLocal(id)
     }
 
-    override suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long {
-        return roomAlertWeather.insertAlertWeatherLocal(alertCalendar)
-    }
+
 }
