@@ -11,4 +11,3 @@ interface InterAlertRepo {
     suspend fun deleteAlertWeatherLocalRepo(id: String): Int
     suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long
 }
-
