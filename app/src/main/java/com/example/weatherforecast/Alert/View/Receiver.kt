@@ -26,6 +26,8 @@ import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
 import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.key
+import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Main.Utils.Companion.radioGroupBtn
@@ -58,7 +60,7 @@ class Receiver : BroadcastReceiver(){
             initViewModel(context)
 
             homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-                lat, lon, "a92ea15347fafa48d308e4c367a39bb8","","",40
+                lat, lon, key,"", language,40
             )
 
             CoroutineScope(Dispatchers.IO).launch {

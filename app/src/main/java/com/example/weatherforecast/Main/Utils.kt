@@ -19,6 +19,7 @@ import java.util.Locale
 
 class Utils {
     companion object{
+        val key="a92ea15347fafa48d308e4c367a39bb8"
         var lat=0.0
         var lon=0.0
         lateinit var sharedPreferences: SharedPreferences
@@ -91,7 +92,7 @@ class Utils {
             val locale = Locale.getDefault()
             val numberFormat = NumberFormat.getInstance(locale)
             val tempFormat = numberFormat.format(number)
-            return "$tempFormat $unit"
+            return "$tempFormat$unit"
         }
 
     }

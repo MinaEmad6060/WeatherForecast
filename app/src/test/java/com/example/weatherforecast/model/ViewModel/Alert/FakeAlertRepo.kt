@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 
 class FakeAlertRepo (
-    private var fakeAlertRemoteDataSource: FakeAlertRemoteDataSource,
+//    private var fakeAlertRemoteDataSource: FakeAlertRemoteDataSource,
     private var fakeAlertLocalDataSource: FakeAlertLocalDataSource
 ) : InterAlertRepo {
 
-    override suspend fun getAlertWeatherRemoteRepo(
-        lat: Double,
-        lon: Double,
-        key: String
-    ): Flow<OneCallAlert> {
-        return fakeAlertRemoteDataSource.getAlertWeatherRemote(lat,lon,key)
-    }
+//    override suspend fun getAlertWeatherRemoteRepo(
+//        lat: Double,
+//        lon: Double,
+//        key: String
+//    ): Flow<OneCallAlert> {
+//        return fakeAlertRemoteDataSource.getAlertWeatherRemote(lat,lon,key)
+//    }
 
     override suspend fun getAlertWeatherLocalRepo(): Flow<List<AlertCalendar>> {
         return fakeAlertLocalDataSource.getAlertWeatherLocal()
