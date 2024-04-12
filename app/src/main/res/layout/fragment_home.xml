@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginStart="60dp"
+                android:layout_marginStart="70dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/date"
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="60dp"
+                android:layout_marginEnd="70dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/time"
                 android:textSize="@dimen/small_text"
@@ -107,8 +107,6 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:scaleType="fitCenter"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintBottom_toTopOf="@+id/city"
                 app:layout_constraintEnd_toStartOf="@+id/weather_time"
@@ -161,7 +159,7 @@
             <FrameLayout
                 android:id="@+id/widgets"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="16dp"
@@ -172,18 +170,19 @@
 
                 <GridLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:columnCount="2"
+                    android:padding="10dp"
                     android:rowCount="2">
 
                     <LinearLayout
                         android:layout_width="@dimen/width_widget"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_widget"
                         android:layout_row="0"
                         android:layout_column="0"
                         android:layout_gravity="center"
-                        android:layout_marginStart="28dp"
-                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:layout_margin="10dp"
                         android:background="@drawable/card_shape"
                         android:orientation="vertical"
                         android:padding="@dimen/padding_widget"
@@ -195,6 +194,7 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_weight="2"
+                            android:padding="@dimen/small_padding"
                             android:src="@drawable/humidity" />
 
                         <LinearLayout
@@ -238,13 +238,14 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/width_widget"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_widget"
                         android:layout_row="0"
                         android:layout_column="1"
                         android:layout_gravity="center"
-                        android:layout_marginTop="16dp"
+                        android:gravity="center"
                         android:background="@drawable/card_shape"
                         android:orientation="vertical"
+                        android:layout_margin="10dp"
                         android:padding="@dimen/padding_widget"
                         android:weightSum="6">
 
@@ -253,8 +254,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_gravity="center"
-                            android:layout_weight="2"
-
+                            android:layout_weight="3"
+                            android:padding="@dimen/small_padding"
                             android:src="@drawable/wind" />
 
 
@@ -263,7 +264,7 @@
                                 android:id="@+id/wind_value"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="2"
+                                android:layout_weight="0"
                                 android:gravity="center"
                                 android:text="@string/wind_value"
                                 android:textSize="14sp" />
@@ -283,14 +284,14 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/width_widget"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_widget"
                         android:layout_row="1"
                         android:layout_column="0"
                         android:layout_gravity="center"
-                        android:layout_marginStart="28dp"
                         android:background="@drawable/card_shape"
                         android:orientation="vertical"
                         android:padding="@dimen/padding_widget"
+                        android:layout_margin="10dp"
                         android:weightSum="6">
 
                         <ImageView
@@ -299,6 +300,7 @@
                             android:layout_height="0dp"
                             android:layout_gravity="center"
                             android:layout_weight="2"
+                            android:padding="@dimen/small_padding"
                             android:src="@drawable/pressure" />
 
                         <LinearLayout
@@ -342,13 +344,14 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/width_widget"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_widget"
                         android:layout_row="1"
                         android:layout_column="1"
                         android:layout_gravity="center"
                         android:background="@drawable/card_shape"
                         android:orientation="vertical"
                         android:padding="@dimen/padding_widget"
+                        android:layout_margin="10dp"
                         android:weightSum="6">
 
                         <ImageView
@@ -404,11 +407,11 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="175dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="10dp"
-                android:backgroundTint="@color/recyc_bg"
+                android:backgroundTint="@color/light_white"
                 app:cardCornerRadius="@dimen/large_radius_card"
                 app:cardElevation="@dimen/elevation_card"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -419,22 +422,24 @@
                     android:id="@+id/hourly_recyclerView"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:padding="5dp" />
+                    android:padding="0dp" />
             </androidx.cardview.widget.CardView>
 
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginEnd="10dp"
-                android:backgroundTint="@android:color/transparent"
+                android:backgroundTint="@color/light_white"
                 app:cardCornerRadius="@dimen/large_radius_card"
                 app:cardElevation="@dimen/elevation_card"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView">
 
                 <androidx.recyclerview.widget.RecyclerView

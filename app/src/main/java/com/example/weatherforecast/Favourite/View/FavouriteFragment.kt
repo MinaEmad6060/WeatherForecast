@@ -130,7 +130,10 @@ class FavouriteFragment : Fragment() {
                     is DataStateFavRoom.Failure -> {
                         Snackbar.make(view, "Can't access favourite items, try again!", Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Toast.makeText(requireContext(),"Loading...",Toast.LENGTH_SHORT).show()
+                    else ->
+                    {
+                        binding.noFavImg.visibility = View.GONE
+                    }
                 }
             }
         }

@@ -92,7 +92,7 @@ class Utils {
             val locale = Locale.getDefault()
             val numberFormat = NumberFormat.getInstance(locale)
             val tempFormat = numberFormat.format(number)
-            return "$tempFormat $unit"
+            return "$tempFormat$unit"
         }
 
     }
