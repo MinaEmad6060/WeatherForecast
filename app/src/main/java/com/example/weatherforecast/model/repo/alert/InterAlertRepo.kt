@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface InterAlertRepo {
+
+
+
     suspend fun getAlertWeatherLocalRepo(): Flow<List<AlertCalendar>>
     suspend fun deleteAlertWeatherLocalRepo(id: String): Int
     suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long
