@@ -34,6 +34,7 @@ import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
+import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
@@ -243,7 +244,7 @@ class HomeFragment : Fragment() {
         editor.apply()
         binding.temperatureValue.text = setNumberLocale(value.data.list[0].main.temp.toInt(),degree)
         binding.humidityValue.text = value.data.list[0].main.humidity
-        binding.pressureValue.text = value.data.list[0].main.pressure
+        binding.pressureValue.text = value.data.list[0].main.pressure+" "+getString(R.string.pressure_unit)
         if (measure=="mile/h"){
             binding.windValue.text = String.format("%.1f", ((value.data.list[0].wind.speed)*2.23694))+" "+measure
         }else{

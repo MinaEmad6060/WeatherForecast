@@ -117,10 +117,9 @@
             <TextView
                 android:id="@+id/city"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
+                android:layout_margin="8dp"
                 android:text="@string/city"
                 android:textSize="@dimen/big_header_text"
                 android:textStyle="bold"
@@ -303,34 +302,21 @@
                             android:padding="@dimen/small_padding"
                             android:src="@drawable/pressure" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="2"
-                            android:orientation="horizontal"
-                            android:weightSum="8">
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="0dp"-->
+<!--                            android:layout_weight="2"-->
+<!--                            android:orientation="horizontal"-->
+<!--                            android:weightSum="8">-->
 
                             <TextView
                                 android:id="@+id/pressure_value"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:gravity="end"
+                                android:layout_height="0dp"
+                                android:layout_weight="2"
+                                android:gravity="center"
                                 android:text="@string/pressure_value"
                                 android:textSize="14sp" />
-
-                            <TextView
-                                android:id="@+id/pressure_unit"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="4"
-                                android:gravity="start"
-                                android:paddingLeft="@dimen/small_padding"
-                                android:text="@string/pressure_unit"
-                                android:textSize="14sp" />
-
-                        </LinearLayout>
-
                         <TextView
                             android:id="@+id/pressure_text"
                             android:layout_width="match_parent"
