@@ -48,6 +48,7 @@
                 android:gravity="start"
                 android:text="Alert Title"
                 android:textColor="@android:color/white"
+                android:textStyle="bold"
                 android:textSize="18sp" />
 
 
@@ -64,7 +65,7 @@
             android:gravity="center"
             android:text="Alert Message"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/dismiss_btn"

@@ -14,10 +14,12 @@ import com.example.weatherforecast.Settings.ViewModel.CentralSharedFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 import java.util.Locale
 
 class Utils {
     companion object{
+        val key="a92ea15347fafa48d308e4c367a39bb8"
         var lat=0.0
         var lon=0.0
         lateinit var sharedPreferences: SharedPreferences
@@ -84,6 +86,21 @@ class Utils {
 
             @Suppress("DEPRECATION")
             resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
+
+        fun setNumberLocale(number: Int, unit: String):String{
+            var retUnit=unit
+            val locale = Locale.getDefault()
+            val numberFormat = NumberFormat.getInstance(locale)
+            val tempFormat = numberFormat.format(number)
+            if (locale.language == "ar") {
+                when(unit){
+                    "°C" -> retUnit="°م"
+                    "°F" -> retUnit="°ف"
+                    "K" -> retUnit="ك"
+                }
+            }
+            return "$tempFormat$retUnit"
         }
 
     }

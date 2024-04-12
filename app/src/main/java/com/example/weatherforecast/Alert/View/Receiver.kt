@@ -24,10 +24,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModel
 import com.example.weatherforecast.Alert.ViewModel.AlertFragmentViewModelFactory
+import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModel
+import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
+import com.example.weatherforecast.Main.Utils.Companion.key
+import com.example.weatherforecast.Main.Utils.Companion.language
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Main.Utils.Companion.radioGroupBtn
 import com.example.weatherforecast.Model.Remote.Alert.DataStateAlertRemote
+import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.R
 import com.example.weatherforecast.di.AppContainer
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +45,9 @@ class Receiver : BroadcastReceiver(){
     private var id = "n"
     private lateinit var appContainer: AppContainer
     private lateinit var alertFragmentViewModelFactory: AlertFragmentViewModelFactory
+    private lateinit var homeFragmentViewModelFactory: HomeFragmentViewModelFactory
     private lateinit var alertFragmentViewModel: AlertFragmentViewModel
+    private lateinit var homeFragmentViewModel: HomeFragmentViewModel
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mediaPlayer : MediaPlayer
 
@@ -52,20 +59,20 @@ class Receiver : BroadcastReceiver(){
             getSharedPreferences(context)
             initViewModel(context)
 
-            alertFragmentViewModel.getAlertWeatherRemoteVM(
-                lat, lon, "fbcc4a868720bf2c249f5c6b9561a30b"
+            homeFragmentViewModel.getAdditionalWeatherRemoteVM(
+                lat, lon, key,"", language,40
             )
 
             CoroutineScope(Dispatchers.IO).launch {
-                alertFragmentViewModel.alertWeatherRemote.collectLatest { value ->
+                homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                     when (value) {
-                        is DataStateAlertRemote.Success -> {
+                        is DataStateHomeRemote.Success -> {
 
                             val builder = context?.let {
                                 NotificationCompat.Builder(it, "notificationChannel")
                                     .setSmallIcon(R.drawable.app)
-                                    .setContentTitle(value.data.alerts[0].event)
-                                    .setContentText(value.data.alerts[0].description)
+                                    .setContentTitle(value.data.city.name)
+                                    .setContentText(value.data.list[0].weather[0].description)
                                     .setPriority(NotificationCompat.PRIORITY_MAX)
                             }
 
@@ -96,20 +103,20 @@ class Receiver : BroadcastReceiver(){
                                 notificationManager.notify(200, builder.build())
                             }else if(radioGroupBtn=="Alarm"){
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    alarm(context,value.data.alerts[0].event,value.data.alerts[0].description)
+                                    alarm(context,value.data.city.name,value.data.list[0].weather[0].description)
                                     mediaPlayer.start()
                                 }
                             }
                             Log.i("alertRemote", "alertRemote-Success: ")
-                            Log.i("alertRemote", "alertRemote-${value.data.timezone}")
-                            Log.i("alertRemote", "alertRemote-${value.data.alerts[0].event}: ")
+                            Log.i("alertRemote", "alertRemote-${value.data.list[0].weather[0].description}")
+                            Log.i("alertRemote", "alertRemote-${value.data.city.name}: ")
                             Log.i(
                                 "alertRemote",
-                                "alertRemote-${value.data.alerts[0].description}: "
+                                "alertRemote-${value.data.list[0].weather[0].description}: "
                             )
                         }
 
-                        is DataStateAlertRemote.Failure -> {
+                        is DataStateHomeRemote.Failure -> {
                             Log.i("receive", "fail: ")
                             Log.i("alertRemote", "alertRemote-fail: ")
                         }
@@ -131,6 +138,10 @@ class Receiver : BroadcastReceiver(){
         alertFragmentViewModel =
             ViewModelProvider(ViewModelStore(), alertFragmentViewModelFactory)
                 .get(AlertFragmentViewModel::class.java)
+        homeFragmentViewModelFactory = appContainer.homeFactory
+        homeFragmentViewModel =
+            ViewModelProvider(ViewModelStore(), homeFragmentViewModelFactory)
+                .get(HomeFragmentViewModel::class.java)
     }
 
     private fun getSharedPreferences(context: Context)

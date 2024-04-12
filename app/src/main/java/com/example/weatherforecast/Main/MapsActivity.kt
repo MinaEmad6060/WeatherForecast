@@ -52,16 +52,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         myMap.setOnMapClickListener { latLng ->
             myMap.clear()
             myMap.addMarker(MarkerOptions().position(latLng).title("Selected Location"))
-            myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7f))
+            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7f))
             lat=latLng.latitude
             lon=latLng.longitude
             editor.putString("latitude", latLng.latitude.toString())
             editor.putString("longitude", latLng.longitude.toString())
             editor.apply()
-            Toast.makeText(
-                this, "Let's see more details..",
-                Toast.LENGTH_LONG
-            ).show()
         }
         myMap.setOnMarkerClickListener {
             if(selectedFragment == "Home"){
@@ -71,6 +67,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 editor.putString("goToFragment","Fav")
                 editor.apply()
             }
+            Toast.makeText(
+                this, "Let's see more details..",
+                Toast.LENGTH_LONG
+            ).show()
             startActivity(Intent(this@MapsActivity, MainActivity::class.java))
             true
         }

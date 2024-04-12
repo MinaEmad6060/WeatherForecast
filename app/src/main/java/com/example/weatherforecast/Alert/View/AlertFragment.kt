@@ -126,11 +126,17 @@ class AlertFragment : Fragment() {
                         if (value.data.isNotEmpty()){
                             binding.alarmOffImg.visibility=View.GONE
                             binding.alertRecyclerView.visibility=View.VISIBLE
+                        }else{
+                            binding.alarmOffImg.visibility=View.VISIBLE
+                            binding.alertRecyclerView.visibility=View.GONE
                         }
                         alertAdapter.submitList(value.data)
                     }
-                    is DataStateAlertRoom.Failure -> {Log.i(TAG, "favWeather-fail: ")}
-                    else -> Log.i("alert", "favWeather-loading: ")
+                    is DataStateAlertRoom.Failure -> {Log.i("alert", "favWeather-fail: ")}
+                    else ->
+                    {
+                        binding.alarmOffImg.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -188,7 +194,7 @@ class AlertFragment : Fragment() {
         }
 
         builder.setNegativeButton("Cancel") { dialog, which ->
-            alarmManager.cancel(pendingIntent);
+            alarmManager.cancel(pendingIntent)
         }
 
         builder.show()

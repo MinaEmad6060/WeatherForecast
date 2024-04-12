@@ -26,12 +26,15 @@ import com.example.weatherforecast.Main.Utils.Companion.backGroundDesc
 import com.example.weatherforecast.Main.Utils.Companion.createCentralSharedLanguage
 import com.example.weatherforecast.Main.Utils.Companion.initBackGround
 import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
+import com.example.weatherforecast.Main.Utils.Companion.key
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
+import com.example.weatherforecast.Main.Utils.Companion.setNumberLocale
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.Model.Remote.Home.DataStateHomeRemote
 import com.example.weatherforecast.Model.Local.Home.DataStateHomeRoom
 import com.example.weatherforecast.Model.Local.Home.HomeWeather
+import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.example.weatherforecast.di.AppContainer
 import com.google.android.material.snackbar.Snackbar
@@ -98,7 +101,7 @@ class HomeFragment : Fragment() {
             if (isNetworkConnected(requireActivity())){
                 Log.i("lastTesr", "onViewCreated: ")
                 homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-                    lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, homeLanguage, 40
+                    lat, lon, key, temperature, homeLanguage, 40
                 )
                 homeFragmentViewModel.deleteAllHomeWeatherVM()
                 homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
@@ -239,9 +242,9 @@ class HomeFragment : Fragment() {
             .into(binding.mainWeatherImage)
         editor.putString("backGround", value.data.list[0].weather[0].icon)
         editor.apply()
-        binding.temperatureValue.text = value.data.list[0].main.temp.toInt().toString()+""+degree
+        binding.temperatureValue.text = setNumberLocale(value.data.list[0].main.temp.toInt(),degree)
         binding.humidityValue.text = value.data.list[0].main.humidity
-        binding.pressureValue.text = value.data.list[0].main.pressure
+        binding.pressureValue.text = value.data.list[0].main.pressure+" "+getString(R.string.pressure_unit)
         if (measure=="mile/h"){
             binding.windValue.text = String.format("%.1f", ((value.data.list[0].wind.speed)*2.23694))+" "+measure
         }else{

@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weatherforecast.Main.Utils
+import com.example.weatherforecast.Main.Utils.Companion.setNumberLocale
 import com.example.weatherforecast.Model.Remote.Home.AdditionalWeather
 import com.example.weatherforecast.R
 import java.text.SimpleDateFormat
@@ -33,8 +35,8 @@ class HomeFragmentHourlyAdapter :
             if (position==0){
                 units=currentObj.units
             }
-            holder.hourlyTemp.text = (currentObj.main.temp.toInt().toString()+" "+units).format(Locale("ar"))
-            Glide.with(holder.itemView.context)
+            holder.hourlyTemp.text = setNumberLocale(currentObj.main.temp.toInt(), units)
+         Glide.with(holder.itemView.context)
                 .load("https://openweathermap.org/img/wn/"
                         +currentObj.weather[0].icon+"@2x.png")
                 .into(holder.hourlyImg)
