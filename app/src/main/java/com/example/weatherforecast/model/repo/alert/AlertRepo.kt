@@ -1,24 +1,23 @@
 package com.example.weatherforecast.Model.Repo.Alert
 
-
+import android.content.Context
 import com.example.weatherforecast.Model.Local.Alert.AlertCalendar
-
 import com.example.weatherforecast.Model.Local.Alert.InterAlertLocalDataSource
-
-
-
+import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
+import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 class AlertRepo(
-
+    private var remoteAlert: InterAlertRemoteDataSource,
     private var roomAlertWeather: InterAlertLocalDataSource
 ): InterAlertRepo {
 
 
-    override suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long {
-        return roomAlertWeather.insertAlertWeatherLocal(alertCalendar)
-    }
+    override suspend fun getAlertWeatherRemoteRepo(
+        lat: Double, lon: Double, key: String): Flow<OneCallAlert> =
+        remoteAlert.getAlertWeatherRemote(lat,lon,key)
+
 
     override suspend fun getAlertWeatherLocalRepo(): Flow<List<AlertCalendar>> {
         return roomAlertWeather.getAlertWeatherLocal()
@@ -27,5 +26,7 @@ class AlertRepo(
         return roomAlertWeather.deleteAlertWeatherLocal(id)
     }
 
-
+    override suspend fun insertAlertWeatherLocalRepo(alertCalendar: AlertCalendar): Long {
+        return roomAlertWeather.insertAlertWeatherLocal(alertCalendar)
+    }
 }
