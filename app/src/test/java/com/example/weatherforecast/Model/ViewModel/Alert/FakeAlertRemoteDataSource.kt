@@ -1,4 +1,4 @@
-package com.example.weatherforecast.Model.ViewModel.Alert
+
 
 import com.example.weatherforecast.Model.Remote.Alert.InterAlertRemoteDataSource
 import com.example.weatherforecast.Model.Remote.Alert.OneCallAlert
