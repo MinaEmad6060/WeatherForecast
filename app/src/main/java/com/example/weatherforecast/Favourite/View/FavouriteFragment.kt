@@ -103,7 +103,7 @@ class FavouriteFragment : Fragment() {
                     is DataStateHomeRemote.Failure -> {
                         Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Toast.makeText(requireContext(),"Loading...",Toast.LENGTH_SHORT).show()
+                    else -> {}
 
                 }
             }
