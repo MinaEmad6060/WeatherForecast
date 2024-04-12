@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import com.example.weatherforecast.Home.ViewModel.HomeFragmentViewModelFactory
 import com.example.weatherforecast.Main.MainActivity
 import com.example.weatherforecast.Main.MapsActivity
 import com.example.weatherforecast.Main.Utils.Companion.isNetworkConnected
+import com.example.weatherforecast.Main.Utils.Companion.key
 import com.example.weatherforecast.Main.Utils.Companion.lat
 import com.example.weatherforecast.Main.Utils.Companion.lon
 import com.example.weatherforecast.Model.Local.Fav.DataStateFavRoom
@@ -84,7 +86,7 @@ class FavouriteFragment : Fragment() {
             editor.putString("goToFragment","")
             editor.apply()
             homeFragmentViewModel.getAdditionalWeatherRemoteVM(
-                lat, lon, "a92ea15347fafa48d308e4c367a39bb8", temperature, language, 1
+                lat, lon, key, temperature, language, 1
             )
             homeFragmentViewModel.additionalWeatherList.collectLatest { value ->
                 when(value){
@@ -101,7 +103,7 @@ class FavouriteFragment : Fragment() {
                     is DataStateHomeRemote.Failure -> {
                         Snackbar.make(view, "Please Check Your Internet Connection..", Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Log.i(TAG, "Loading... ")
+                    else -> Toast.makeText(requireContext(),"Loading...",Toast.LENGTH_SHORT).show()
 
                 }
             }
@@ -119,13 +121,16 @@ class FavouriteFragment : Fragment() {
                         if (value.data.isNotEmpty()) {
                             binding.noFavImg.visibility = View.GONE
                             binding.favRecyclerView.visibility = View.VISIBLE
+                        }else{
+                            binding.noFavImg.visibility = View.VISIBLE
+                            binding.favRecyclerView.visibility = View.GONE
                         }
                             favAdapter.submitList(value.data)
                     }
                     is DataStateFavRoom.Failure -> {
                         Snackbar.make(view, "Can't access favourite items, try again!", Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Log.i(TAG, "Loading...")
+                    else -> Toast.makeText(requireContext(),"Loading...",Toast.LENGTH_SHORT).show()
                 }
             }
         }

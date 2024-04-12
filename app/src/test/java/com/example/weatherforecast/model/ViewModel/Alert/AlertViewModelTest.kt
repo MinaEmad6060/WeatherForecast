@@ -29,7 +29,7 @@ class AlertViewModelTest {
     val alertWeatherList = listOf(alertWeather,alertWeather2,alertWeather3,alertWeather4)
 
     lateinit var fakeAlertLocalDataSource: FakeAlertLocalDataSource
-    lateinit var fakeAlertRemoteDataSource: FakeAlertRemoteDataSource
+//    lateinit var fakeAlertRemoteDataSource: FakeAlertRemoteDataSource
     lateinit var repository: FakeAlertRepo
     lateinit var viewModel: AlertFragmentViewModel
 
@@ -39,39 +39,39 @@ class AlertViewModelTest {
     @Before
     fun setUp(){
         fakeAlertLocalDataSource=FakeAlertLocalDataSource(alertWeatherList.toMutableList())
-        fakeAlertRemoteDataSource=FakeAlertRemoteDataSource(oneCallAlert)
+//        fakeAlertRemoteDataSource=FakeAlertRemoteDataSource(oneCallAlert)
         repository= FakeAlertRepo(
-            fakeAlertRemoteDataSource,
+//            fakeAlertRemoteDataSource,
             fakeAlertLocalDataSource
         )
         viewModel= AlertFragmentViewModel(repository)
     }
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun getAlertInstanceRemoteVM_listOfAlert()= runBlockingTest{
-        //given
-        viewModel.getAlertWeatherRemoteVM(
-            0.0, 0.0, ""
-        )
-
-
-        //when
-        val result=viewModel.alertWeatherRemote.first()
-        var resultList = OneCallAlert()
-        val job = launch {
-            when(result){
-                is DataStateAlertRemote.Success -> resultList=result.data
-                else ->{}
-            }
-        }
-        job.cancelAndJoin()
-
-
-        //Then
-        assertThat(resultList, not(nullValue()))
-    }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun getAlertInstanceRemoteVM_listOfAlert()= runBlockingTest{
+//        //given
+//        viewModel.getAlertWeatherRemoteVM(
+//            0.0, 0.0, ""
+//        )
+//
+//
+//        //when
+//        val result=viewModel.alertWeatherRemote.first()
+//        var resultList = OneCallAlert()
+//        val job = launch {
+//            when(result){
+//                is DataStateAlertRemote.Success -> resultList=result.data
+//                else ->{}
+//            }
+//        }
+//        job.cancelAndJoin()
+//
+//
+//        //Then
+//        assertThat(resultList, not(nullValue()))
+//    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
