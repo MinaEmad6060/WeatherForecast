@@ -133,10 +133,7 @@ class AlertFragment : Fragment() {
                         alertAdapter.submitList(value.data)
                     }
                     is DataStateAlertRoom.Failure -> {Log.i("alert", "favWeather-fail: ")}
-                    else ->
-                    {
-                        binding.alarmOffImg.visibility = View.GONE
-                    }
+                    else -> Log.i("alert", "favWeather-loading: ")
                 }
             }
         }

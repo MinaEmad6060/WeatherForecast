@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_margin="15dp"
-        android:backgroundTint="@color/medium_white"
+        android:backgroundTint="@color/light_white"
         app:cardCornerRadius="@dimen/small_radius_card"
         app:cardElevation="@dimen/elevation_card"
         >
@@ -64,7 +64,7 @@
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:background="@android:color/transparent"
+                android:background="@color/white"
                 android:layout_weight="2"
                 android:src="@drawable/delete"
                 />
