@@ -43,7 +43,7 @@ To use the Weather Forecast App, follow these steps:
 3. Explore the app's features, including viewing weather information, setting alerts, and customizing preferences.
 
 #### Support
-For support or inquiries, please contact the app developer at [developer@example.com](minaemad6060@gmail.com).
+For support or inquiries, please contact me at minaemad6060@gmail.com.
 
 #### LinkedIn
 ###### www.linkedin.com/in/mina-emad-57525b1b5
