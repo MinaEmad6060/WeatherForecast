@@ -14,6 +14,9 @@ The Weather Forecast App is an Android mobile application that provides users wi
 - **Alert Settings:** Set weather alerts with customizable notification or alarm preferences.
 - **Offline Mode:** View the last fetched weather data even without an internet connection.
 
+#### Demo Video
+https://drive.google.com/file/d/1A3Y3W0roJSDvTEY2Z3GNSiMBQ7Pto5jQ/view?usp=sharing
+
 #### Technologies Used
 - Model-View-ViewModel (MVVM) design pattern
 - Dependency Injection
